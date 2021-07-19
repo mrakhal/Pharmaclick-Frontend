@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-
+import RegisterPage from './pages/RegisterPage';
 
 class App extends React.Component {
   constructor(props) {
@@ -13,7 +13,8 @@ class App extends React.Component {
     return (
       <>
         <Switch>
-          <Route path={'/'} component={LandingPage}/>
+          <Route path={'/'} component={LandingPage} exact/>
+          <Route path={'/register'} component={RegisterPage}/>
         </Switch>
       </>
     );
