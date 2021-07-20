@@ -100,6 +100,7 @@ class LoginPage extends React.Component {
                 return null
             }
             let resendVerif = await axios.post(URL_API + `/user/re-verif`, { email: this.state.resetEmail })
+
             if (resendVerif.data) {
                 this.setState({ successReset: 1 })
             }
@@ -134,7 +135,7 @@ class LoginPage extends React.Component {
         }
 
         return (
-            <div className="container-fluid" style={{ height: '100vh' }}>
+            <div className="container-fluid" style={{ height: '100vh', overflow: 'hidden' }}>
 
                 <div className="row" style={{ height: '100%', width: '100vw' }} >
                     <div className="col-sm-12 col-lg-6 d-flex flex-column align-items-center justify-content-center" >
