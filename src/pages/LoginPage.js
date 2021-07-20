@@ -102,7 +102,7 @@ class LoginPage extends React.Component {
                         <div className="d-flex flex-column align-items-center justify-content-center" style={{ backgroundImage: 'linear-gradient(to right, #56b1ff , #1994f7)', padding: '10%', boxShadow: '10px 10px 5px grey', width: '100%' }}>
                             <img src={drug} style={{ height: '45px' }} />
                             <h1 className="my-3" style={{ fontFamily: 'Open Sans, sans-serif', color: 'white', fontWeight: 'bolder' }}>Welcome!</h1>
-                            <p style={{ color: 'white' }}>Log In to Your Account. Dont have any account? <Link to="/register" style={{ color: '#fec107', textDecoration: 'none' }}>Sign up</Link></p>
+                            <p style={{ color: 'white' }}>Log In to Your Account. Don't have any account? <Link to="/register" style={{ color: '#fec107', textDecoration: 'none' }}>Sign up</Link></p>
                             <Messages ref={(el) => this.msgs = el} />
                             <div className="p-fluid row">
                                 <div className="p-field d-flex flex-column col-12 col-md-6">
@@ -121,7 +121,9 @@ class LoginPage extends React.Component {
                                 </div>
                             </div>
                             <Button color="warning" className='mt-2' onClick={this.onBtnLogin} loading={loading}>Login</Button>
-                            <p className="mt-2" style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }} onClick={() => this.setState({ visible: !this.state.visible })}>Forget password?</p>
+                            <p className="mt-2 mb-1" style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }} onClick={() => this.setState({ visible: !this.state.visible })}>Forget password?</p>
+                            <span style={{ color: 'white' }} >Account not verified? <span style={{textDecoration: 'none', cursor: 'pointer', color: '#fec107'}}>Resend verification email</span></span>
+                            {/* RESET PASSWORD DIALOG */}
                             <Dialog header="Reset Password" visible={visible} onHide={() => this.setState({ visible: !this.state.visible, invalidForm: [] })} >
                                 <div className="d-flex flex-column justofy-content-center align-items-center">
                                     <p>To reset your password please input your email here: </p>
