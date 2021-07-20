@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import PassResetPage from './pages/PassResetPage';
 
 
 class App extends React.Component {
@@ -13,7 +14,8 @@ class App extends React.Component {
     return (
       <>
         <Switch>
-          <Route path={'/'} component={LandingPage}/>
+          <Route path={'/'} component={LandingPage} exact/>
+          <Route path={'/'} component={PassResetPage}/>
         </Switch>
       </>
     );
