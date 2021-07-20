@@ -1,6 +1,6 @@
 import React from 'react';
-import drug from '../assets/illurstration/drugs.svg'
-import remoteWork from '../assets/illurstration/remote-work-man.svg'
+import drug from '../assets/illustration/drugs.svg'
+import remoteWork from '../assets/illustration/remote-work-man.svg'
 import { InputText } from "primereact/inputtext";
 import { Button } from 'primereact/button';
 import { Link, Redirect } from 'react-router-dom';
