@@ -20,7 +20,7 @@ class App extends React.Component {
           <Route path={'/'} component={LandingPage} exact/>
           <Route path={'/register'} component={RegisterPage}/>
           <Route path={'/login'} component={LoginPage}/>
-          <Route path={'/'} component={PassResetPage}/>
+          <Route path={'/reset'} component={PassResetPage}/>
           <Route path={'/verif'} component={VerificationPage}/>
         </Switch>
       </>
