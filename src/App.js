@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import PassResetPage from './pages/PassResetPage';
+import VerificationPage from './pages/VerificationPage';
 
 
 class App extends React.Component {
@@ -20,6 +21,7 @@ class App extends React.Component {
           <Route path={'/register'} component={RegisterPage}/>
           <Route path={'/login'} component={LoginPage}/>
           <Route path={'/'} component={PassResetPage}/>
+          <Route path={'/verif'} component={VerificationPage}/>
         </Switch>
       </>
     );

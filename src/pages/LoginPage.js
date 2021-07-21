@@ -1,6 +1,6 @@
 import React from 'react';
-import drug from '../assets/illurstration/drugs.svg'
-import remoteWork from '../assets/illurstration/remote-work-man.svg'
+import drug from '../assets/illustration/drugs.svg'
+import remoteWork from '../assets/illustration/remote-work-man.svg'
 import { InputText } from "primereact/inputtext";
 import { Button } from 'primereact/button';
 import { Link, Redirect } from 'react-router-dom';
@@ -26,7 +26,8 @@ class LoginPage extends React.Component {
             successReset: 0,
             invalidEmail: false,
             invalidPassword: false,
-            invalidForm: []
+            invalidForm: [],
+            index: ''
         }
     }
 
@@ -88,21 +89,60 @@ class LoginPage extends React.Component {
         }
     }
 
+    resendVerif = async () => {
+        try {
+            this.setState({ loading: true })
+            
+            if (this.state.resetEmail == '') {
+                let invalid = [...this.state.invalidForm]
+                invalid.push('p-invalid', 'p-error')
+                this.setState({ invalidForm: invalid, loading: false })
+                return null
+            }
+            let resendVerif = await axios.post(URL_API + `/user/re-verif`, { email: this.state.resetEmail })
+
+            if (resendVerif.data) {
+                this.setState({ successReset: 1 })
+            }
+            this.setState({ loading: false })
+            setTimeout(() => {
+                this.setState({ successReset: 0, visible: false, resetEmail: '' })
+            }, 3000);
+        } catch (error) {
+            this.setState({ successReset: 2, loading: false })
+            setTimeout(() => {
+                this.setState({ successReset: 0, visible: false, resetEmail: '' })
+            }, 6000);
+            console.log("error resend verification", error)
+        }
+    }
+
+    onBtnSend = async (index) => {
+        try {
+            if (index == 0) {
+                return this.onBtnReset()
+            } else if (index == 1) {
+                return this.resendVerif()
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     render() {
-        let { email, password, loading, invalidEmail, invalidPassword, visible, resetEmail, successReset } = this.state
+        let { email, password, loading, invalidEmail, invalidPassword, visible, resetEmail, successReset, index } = this.state
         if (this.props.iduser) {
             return <Redirect to="/" />
         }
 
         return (
-            <div className="container-fluid" style={{ height: '100vh' }}>
+            <div className="container-fluid" style={{ height: '100vh', overflow: 'hidden' }}>
 
                 <div className="row" style={{ height: '100%', width: '100vw' }} >
                     <div className="col-sm-12 col-lg-6 d-flex flex-column align-items-center justify-content-center" >
                         <div className="d-flex flex-column align-items-center justify-content-center" style={{ backgroundImage: 'linear-gradient(to right, #56b1ff , #1994f7)', padding: '10%', boxShadow: '10px 10px 5px grey', width: '100%' }}>
                             <img src={drug} style={{ height: '45px' }} />
                             <h1 className="my-3" style={{ fontFamily: 'Open Sans, sans-serif', color: 'white', fontWeight: 'bolder' }}>Welcome!</h1>
-                            <p style={{ color: 'white' }}>Log In to Your Account. Dont have any account? <Link to="/register" style={{ color: '#fec107', textDecoration: 'none' }}>Sign up</Link></p>
+                            <p style={{ color: 'white' }}>Log In to Your Account. Don't have any account? <Link to="/register" style={{ color: '#fec107', textDecoration: 'none' }}>Sign up</Link></p>
                             <Messages ref={(el) => this.msgs = el} />
                             <div className="p-fluid row">
                                 <div className="p-field d-flex flex-column col-12 col-md-6">
@@ -121,10 +161,12 @@ class LoginPage extends React.Component {
                                 </div>
                             </div>
                             <Button color="warning" className='mt-2' onClick={this.onBtnLogin} loading={loading}>Login</Button>
-                            <p className="mt-2" style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }} onClick={() => this.setState({ visible: !this.state.visible })}>Forget password?</p>
-                            <Dialog header="Reset Password" visible={visible} onHide={() => this.setState({ visible: !this.state.visible, invalidForm: [] })} >
+                            <p className="mt-2 mb-1" style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }} onClick={() => this.setState({ visible: !this.state.visible, index: 0 })}>Forget password?</p>
+                            <span style={{ color: 'white' }} >Account not verified? <span style={{ textDecoration: 'none', cursor: 'pointer', color: '#fec107' }} onClick={() => this.setState({ visible: !this.state.visible, index: 1 })}>Resend verification email</span></span>
+                            {/* RESET DIALOG */}
+                            <Dialog header={index == 0 ? 'Reset Password' : 'Resend Verification Email'} visible={visible} onHide={() => this.setState({ visible: !this.state.visible, invalidForm: [] })} >
                                 <div className="d-flex flex-column justofy-content-center align-items-center">
-                                    <p>To reset your password please input your email here: </p>
+                                    <p>{index == 0 ? 'To reset your password please input your email here' : 'To resend verification email input your email here'}: </p>
                                     <InputText value={resetEmail} onChange={(e) => this.setState({ resetEmail: e.target.value })} style={{ width: '100%' }} className={this.state.invalidForm[0]} />
                                     {
 
@@ -134,12 +176,14 @@ class LoginPage extends React.Component {
                                         successReset == 2 && <p>Your email is not registered! Please sign up first.</p>
                                     }
                                     {
-                                        this.state.invalidForm.length >0 ?
-                                        <small className="p-error">*This field is required</small> : null
+                                        this.state.invalidForm.length > 0 ?
+                                            <small className="p-error">*This field is required</small> : null
                                     }
-                                    <Button color="warning" className="mt-3" onClick={this.onBtnReset} loading={loading} style={{ width: 'auto' }}>Reset</Button>
+                                    <Button color="warning" className="mt-3" onClick={() => this.onBtnSend(index)} loading={loading} style={{ width: 'auto' }}>Send</Button>
                                 </div>
                             </Dialog>
+
+
                         </div>
                     </div>
                     <div className="col-md-12 col-lg-6 d-none d-md-flex flex-column align-items-center justify-content-center" style={{ overflowY: 'hidden', height: '100%', position: 'relative', overflowX: 'hidden' }}>
