@@ -7,7 +7,6 @@ const INTIAL_STATE = {
     gender: "", 
     username: "",
     role: "",
-    status: "",
     profile_image: "",
     cart: [],
     address: [],
