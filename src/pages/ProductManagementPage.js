@@ -29,7 +29,8 @@ class ProductManagementPage extends React.Component {
             loading: false,
             costumers: [],
             productDialog: false,
-            productDetail: []
+            productDetail: [],
+            addDialog: false
         }
     }
 
@@ -72,21 +73,11 @@ class ProductManagementPage extends React.Component {
         )
     }
 
-    bodyUnitPrice = (rowData) => {
-        return (
-            <>
-                <Row>
-                    {`Rp. ${rowData.unit_price}/${rowData.unit}`}
-                </Row>
-            </>
-        )
-    }
-
     bodyPrice = (rowData) => {
         return (
             <>
                 <Row>
-                    Rp. {rowData.pack_price.toLocaleString()}
+                    IDR. {rowData.pack_price.toLocaleString()}
                 </Row>
             </>
         )
@@ -143,7 +134,7 @@ class ProductManagementPage extends React.Component {
     rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="New" icon="pi pi-plus" className="p-button-success mx-3" />
+                <Button label="New" icon="pi pi-plus" className="p-button-success mx-3" onClick={() => this.setState({addDialog: true})}/>
                 <Button label="Export" icon="pi pi-upload" className="p-button-danger" />
             </React.Fragment>
         )
@@ -211,7 +202,7 @@ class ProductManagementPage extends React.Component {
 
                     {/* DIALOG */}
                     <DialogProduct productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} />
-                    
+                    <DialogAdd productDetail={productDetail} addDialog={addDialog} hide={() => this.setState({ addDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)}/>
                 </main>
             </div>
         );
