@@ -24,7 +24,7 @@ class App extends React.Component {
           <Route path={'/verif'} component={VerificationPage} />
         </Switch>
         {
-          this.props.role == "admin" &&
+          // this.props.role == "admin" &&
           <>
             <SidebarComp />
             <Switch>

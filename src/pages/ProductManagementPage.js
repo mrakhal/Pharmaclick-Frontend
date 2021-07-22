@@ -22,6 +22,7 @@ import '../components/SidebarComp.css'
 import DialogAdd from '../components/DialogAdd';
 import { Toast } from 'primereact/toast';
 import { URL_API } from '../Helper';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 class ProductManagementPage extends React.Component {
     constructor(props) {
@@ -108,7 +109,9 @@ class ProductManagementPage extends React.Component {
             this.setState({
                 productDetail: product,
                 productDialog: true,
-                addDialog: false
+                addDialog: false,
+                confirmDialog: false,
+                idstock: null
             });
 
         } catch (error) {
@@ -120,7 +123,9 @@ class ProductManagementPage extends React.Component {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-success p-mr-2" onClick={() => this.editProduct(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning ml-1" onClick={() => this.confirmDeleteProduct(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning ml-1" onClick={() => this.setState({ confirmDialog: true, idstock: rowData.stock[0].id })} />
+                <ConfirmDialog visible={this.state.confirmDialog} onHide={() => this.setState({ confirmDialog: false })} message="Are you sure you want to proceed?"
+                    header="Confirmation" icon="pi pi-exclamation-triangle" accept={() => this.confirmDeleteProduct(rowData.stock[0].id)} reject={() => this.toast.show({ severity: 'info', summary: 'Rejected', detail: 'Cancel delete product', life: 3000 })} />
             </React.Fragment>
         );
     }
@@ -155,6 +160,16 @@ class ProductManagementPage extends React.Component {
         let productDetail = { ...this.state.productDetail }
         productDetail.stock[`${property}`] = val;
         this.setState({ productDetail })
+    }
+
+    confirmDeleteProduct = async (idstock) => {
+        try {
+            let deleteProduct = await axios.delete(URL_API + `/product/delete/${idstock}`)
+            console.log(deleteProduct.data)
+            this.props.getProductAction(1)
+        } catch (error) {
+            console.log("error delete produk", error)
+        }
     }
     render() {
         let { productDetail, productDialog, addDialog } = this.state
@@ -208,6 +223,7 @@ class ProductManagementPage extends React.Component {
                     {/* DIALOG */}
                     <DialogProduct productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} />
                     <DialogAdd productDetail={productDetail} addDialog={addDialog} hide={() => this.setState({ addDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} toast={() => this.toast.show({ severity: 'success', summary: 'Success!', detail: 'Add Product success!', life: 3000 })} />
+
                 </main>
             </div>
         );

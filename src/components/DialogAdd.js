@@ -93,7 +93,7 @@ class DialogAdd extends React.Component {
             this.setState({ selectedCategory: '', selectedUnit: '' })
             this.props.hide()
             this.props.toast()
-            this.props.getProductAction()
+            this.props.getProductAction(1)
         } catch (error) {
             console.log("ERROR ADD DATA", error)
         }
