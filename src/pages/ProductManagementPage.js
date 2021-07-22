@@ -44,7 +44,7 @@ class ProductManagementPage extends React.Component {
 
     //COLUMN BODY
     bodyImage = (rowData) => {
-        return <img src={rowData.images[0] ? ((rowData.images[0].includes('http') ? `${rowData.images[0]}` : `${URL_API}/${rowData.images[0]}`)) : '/'} style={{ height: '100px' }} />
+        return <img src={rowData.images[0] ? ((rowData.images[0].includes('http') ? `${rowData.images[0]}` : `${URL_API}/${rowData.images[0]}`)) : '/'} style={{ height: '100px', width: '100px' }} />
     }
 
     bodyQty = (rowData) => {
