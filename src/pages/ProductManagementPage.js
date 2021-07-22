@@ -166,6 +166,7 @@ class ProductManagementPage extends React.Component {
         try {
             let deleteProduct = await axios.delete(URL_API + `/product/delete/${idstock}`)
             console.log(deleteProduct.data)
+            this.toast.show({ severity: 'success', summary: 'Success', detail: 'Delete product success', life: 3000 })
             this.props.getProductAction(1)
         } catch (error) {
             console.log("error delete produk", error)
