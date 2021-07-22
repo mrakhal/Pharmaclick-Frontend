@@ -137,6 +137,7 @@ class ProductManagementPage extends React.Component {
     }
     editProduct = async (product) => {
         try {
+            console.log(product.netto)
             let index = this.category.findIndex(item => item.name.toLocaleLowerCase() == product.category)
             let unitIndex = this.unit.findIndex(item => item.name.toLocaleLowerCase() == product.unit)
 
@@ -190,6 +191,8 @@ class ProductManagementPage extends React.Component {
         } else if(property == "unit"){
             this.setState({selectedUnit: e.value})
         } else {
+            console.log("INPUT CHANGE", property, e.target.value)
+            console.log(this.state.productDetail.netto)
             let val = e.target.value
             let productDetail = { ...this.state.productDetail }
             productDetail[`${property}`] = val;
@@ -200,7 +203,8 @@ class ProductManagementPage extends React.Component {
     stockChange = (e, property) => {
         const val = e.target.value
         let productDetail = { ...this.state.productDetail }
-        productDetail.stock[`${property}`] = val;
+        productDetail.stock[0][`${property}`] = val;
+        console.log(productDetail.stock)
         this.setState({ productDetail })
     }
 
@@ -266,7 +270,7 @@ class ProductManagementPage extends React.Component {
                     </div>
 
                     {/* DIALOG */}
-                    <DialogProduct category={selectedCategory} unit={selectedUnit} productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} />
+                    <DialogProduct category={selectedCategory} unit={selectedUnit} productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)}  toast={(a) => this.toast.show({ severity: 'success', summary: 'Success!', detail: a, life: 3000 })}/>
                     <DialogAdd productDetail={productDetail} addDialog={addDialog} hide={() => this.setState({ addDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} toast={() => this.toast.show({ severity: 'success', summary: 'Success!', detail: 'Add Product success!', life: 3000 })} />
 
                 </main>

@@ -35,7 +35,7 @@ export const keepLogin = (token) =>{
         try {
             const headers = {
                 headers: {
-                    'Authorization': `Beares ${token}`
+                    'Authorization': `Bearer ${token}`
                 }
             }
             let keep = await axios.get(URL_API + `/user/keep`, headers)

@@ -24,7 +24,8 @@ class DialogProduct extends React.Component {
             error: false,
             selectedCategory: '',
             selectedUnit: '',
-            fileUpload: ''
+            fileUpload: '',
+            loading: false
         }
 
         this.category = [
@@ -64,7 +65,7 @@ class DialogProduct extends React.Component {
     }
     saveChanges = async () => {
         try {
-            let { product_name, brand, stock, price, description, usage, dosage, indication, effect, unit, pack_price, category } = this.props.productDetail
+            let { idproduct, product_name, brand, stock, price, description, usage, dosage, indication, effect, unit, pack_price, category, netto } = this.props.productDetail
             let checkField = [product_name, brand, stock, price, description, usage, dosage, indication, effect]
             if (checkField.indexOf("") > -1) {
                 this.setState({ error: true })
@@ -74,13 +75,19 @@ class DialogProduct extends React.Component {
             } else {
                 // fumgsi edit ke API
                 let formData = new FormData()
-                let data = { product_name, brand, category, stock, description, usage, dosage, indication, effect, unit, pack_price }
-                formData.append('data', data)
+                let index = this.category.findIndex(item => item.name.toLowerCase() == category)
+                let idcategory = this.category[index].id
+
+                let data = { idproduct, product_name, brand, idcategory, stock, description, usage, dosage, indication, effect, netto, pack_price, unit }
+                formData.append('data', JSON.stringify(data))
                 formData.append('products', this.state.fileUpload)
-                
-                let edit = await axios.patch(URL_API + '/product/edit', { formData })
+
+                this.setState({loading: true})
+                let edit = await axios.patch(URL_API + '/product/edit', formData)
                 console.log(edit.data)
+                this.setState({fileUpload: '', loading: false})
                 this.props.getProductAction(1)
+                this.props.toast(edit.data.messages)
                 this.props.hide()
             }
 
@@ -89,14 +96,18 @@ class DialogProduct extends React.Component {
         }
     }
 
-
+    onBtnCancel = () =>{
+        this.setState({fileUpload: ''})
+        this.props.hide()
+    }
 
     render() {
         let { productDialog, productDetail, hide, stockChange, inputChange, category, unit } = this.props
+        
         const productDialogFooter = (
             <React.Fragment>
-                <Button label="Cancel" icon="pi pi-times" className="p-button-danger p-button-text" onClick={hide} />
-                <Button label="Save" icon="pi pi-check" className="p-button-success p-button-text" onClick={this.saveChanges} />
+                <Button label="Cancel" icon="pi pi-times" className="p-button-danger p-button-text" onClick={this.onBtnCancel} />
+                <Button label="Save" icon="pi pi-check" className="p-button-success p-button-text" onClick={this.saveChanges} loading={this.state.loading} />
             </React.Fragment>
         );
         return (
@@ -104,7 +115,7 @@ class DialogProduct extends React.Component {
                 <div className="d-flex flex-column justify-content-center align-items-center">
                     {
                         productDetail.images &&
-                        <img src={productDetail.images[0]} alt={productDetail.images[0]} style={{ width: '200px' }} />
+                        <img src={productDetail.images[0].includes('http') ? productDetail.images: (this.state.fileUpload ? URL.createObjectURL(this.state.fileUpload) : `${URL_API}/${productDetail.images[0]}`)} alt={productDetail.images[0]} style={{ width: '200px' }} />
                     }
                     <FileUpload auto mode="basic" name="products" accept="image/*" maxFileSize={1000000} className="mb-3"
                         onSelect={(e) => this.setState({ fileUpload: e.files[0] })} />
@@ -123,7 +134,7 @@ class DialogProduct extends React.Component {
                         <div className="d-flex" style={{ fontSize: '15px', width: '100%' }}>
                             <span style={{ width: '25%' }}>
                                 <label style={{ width: '25%' }}>Netto</label>
-                                <InputNumber inputId="minmax-buttons" value={productDetail.stock && productDetail.netto} onValueChange={(e) => stockChange(e, 'netto')} mode="decimal" showButtons min={0} max={100} />
+                                <InputNumber inputId="minmax-buttons" value={productDetail.netto} onValueChange={(e) => inputChange(e, 'netto')} mode="decimal" showButtons min={0} max={100} />
                             </span>
                             <span className="mx-3" style={{ width: '40%' }}>
                                 <label >Unit</label>
@@ -131,7 +142,7 @@ class DialogProduct extends React.Component {
                             </span>
                             <span style={{ width: '25%' }}>
                                 <label >Qty</label>
-                                <InputNumber inputId="minmax-buttons" value={productDetail.stock && productDetail.stock[0].qty} onValueChange={(e) => stockChange(e, 'netto')} mode="decimal" showButtons min={0} max={100} />
+                                <InputNumber inputId="minmax-buttons" value={productDetail.stock && productDetail.stock[0].qty} onValueChange={(e) => stockChange(e, 'qty')} mode="decimal" showButtons min={0} max={100} />
                             </span>
                         </div>
                     </div>
