@@ -18,16 +18,21 @@ class App extends React.Component {
     return (
       <>
 
-        {/* <Switch>
+        <Switch>
           <Route path={'/'} component={LandingPage} exact />
           <Route path={'/login'} component={LoginPage} />
           <Route path={'/verif'} component={VerificationPage} />
-        </Switch> */}
-        <SidebarComp />
-        <Switch>
-          <Route path={'/product-management'} component={ProductManagementPage} />
-          <Route path={'/dashboard'} component={DashboardPage} />
         </Switch>
+        {
+          this.props.role == "admin" &&
+          <>
+            <SidebarComp />
+            <Switch>
+              <Route path={'/dashboard'} component={DashboardPage} />
+              <Route path={'/product-management'} component={ProductManagementPage} />
+            </Switch>
+          </>
+        }
       </>
     );
   }
