@@ -34,8 +34,34 @@ class ProductManagementPage extends React.Component {
             productDialog: false,
             productDetail: [],
             addDialog: false,
-            notif: false
+            notif: false,
+            selectedUnit: {},
+            selectedCategory: {}
         }
+        this.category = [
+            { name: 'Covid', id: 1 },
+            { name: 'Mata', id: 2 },
+            { name: 'Flu dan Batuk', id: 3 },
+            { name: 'Vitamin dan Suplemen', id: 4 },
+            { name: 'Demam', id: 5 },
+            { name: 'Pencernaan', id: 6 },
+            { name: 'Hipertensi', id: 7 },
+            { name: 'Otot, tulang dan sendi', id: 8 },
+            { name: 'Kulit', id: 9 },
+            { name: 'P3K', id: 10 }
+        ]
+
+        this.unit = [
+            { name: 'ml' },
+            { name: 'L' },
+            { name: 'mg' },
+            { name: 'g' },
+            { name: 'lembar' },
+            { name: 'tablet' },
+            { name: 'kapsul' },
+            { name: 'roll' },
+            { name: 'botol' }
+        ]
     }
 
     componentDidMount() {
@@ -104,18 +130,28 @@ class ProductManagementPage extends React.Component {
         return (<Row>{rowData.indication.replace(/[+]/g, '\n')}</Row>)
     }
 
+    bodyCategory = (rowData) => {
+        return (<Row >
+            <span style={{ textTransform: 'capitalize' }}>{rowData.category}</span>
+        </Row>)
+    }
     editProduct = async (product) => {
         try {
+            let index = this.category.findIndex(item => item.name.toLocaleLowerCase() == product.category)
+            let unitIndex = this.unit.findIndex(item => item.name.toLocaleLowerCase() == product.unit)
+
             this.setState({
                 productDetail: product,
                 productDialog: true,
                 addDialog: false,
                 confirmDialog: false,
-                idstock: null
+                idstock: null, 
+                selectedCategory: this.category[index],
+                selectedUnit: this.unit[unitIndex]
             });
 
         } catch (error) {
-
+            console.log(error)
         }
     }
 
@@ -149,10 +185,16 @@ class ProductManagementPage extends React.Component {
     }
 
     inputChange = (e, property) => {
-        const val = e.target.value
-        let productDetail = { ...this.state.productDetail }
-        productDetail[`${property}`] = val;
-        this.setState({ productDetail })
+        if (property == "category") {
+            this.setState({selectedCategory: e.value})
+        } else if(property == "unit"){
+            this.setState({selectedUnit: e.value})
+        } else {
+            let val = e.target.value
+            let productDetail = { ...this.state.productDetail }
+            productDetail[`${property}`] = val;
+            this.setState({ productDetail })
+        }
     }
 
     stockChange = (e, property) => {
@@ -173,7 +215,7 @@ class ProductManagementPage extends React.Component {
         }
     }
     render() {
-        let { productDetail, productDialog, addDialog } = this.state
+        let { productDetail, productDialog, addDialog, selectedCategory, selectedUnit } = this.state
         let headerGroup = <ColumnGroup>
             <Row >
                 <Column header="Product" rowSpan={2} style={{ textAlign: 'center' }} />
@@ -181,6 +223,7 @@ class ProductManagementPage extends React.Component {
                 <Column header="Stock" colSpan={3} style={{ textAlign: 'center' }} />
                 <Column header="Price" rowSpan={2} style={{ textAlign: 'center' }} />
                 <Column header="Image" rowSpan={2} style={{ textAlign: 'center' }} />
+                <Column header="Category" rowSpan={2} style={{ textAlign: 'center' }} />
                 <Column header="Description" rowSpan={2} style={{ textAlign: 'center' }} />
                 <Column header="Side Effect" rowSpan={2} style={{ textAlign: 'center' }} />
                 <Column header="Usage" rowSpan={2} style={{ textAlign: 'center' }} />
@@ -211,6 +254,7 @@ class ProductManagementPage extends React.Component {
                                 <Column body={this.bodyType} headerStyle={{ width: '100px' }}></Column>
                                 <Column body={this.bodyPrice} headerStyle={{ width: '110px' }}></Column>
                                 <Column body={this.bodyImage} headerStyle={{ width: '150px' }}></Column>
+                                <Column body={this.bodyCategory} headerStyle={{ width: '150px' }}></Column>
                                 <Column body={this.bodyDescription} headerStyle={{ width: '500px' }}></Column>
                                 <Column body={this.bodyEffect} headerStyle={{ width: '300px' }}></Column>
                                 <Column body={this.bodyUsage} headerStyle={{ width: '150px' }}></Column>
@@ -222,7 +266,7 @@ class ProductManagementPage extends React.Component {
                     </div>
 
                     {/* DIALOG */}
-                    <DialogProduct productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} />
+                    <DialogProduct category={selectedCategory} unit={selectedUnit} productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} />
                     <DialogAdd productDetail={productDetail} addDialog={addDialog} hide={() => this.setState({ addDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} toast={() => this.toast.show({ severity: 'success', summary: 'Success!', detail: 'Add Product success!', life: 3000 })} />
 
                 </main>
