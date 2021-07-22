@@ -19,6 +19,19 @@ class DialogProduct extends React.Component {
             stockEdit: '',
             error: false
         }
+
+        this.category = [
+            { name: 'Covid', id: 1 },
+            { name: 'Mata', id: 2 },
+            { name: 'Flu dan Batuk', id: 3 },
+            { name: 'Vitamin dan Suplemen', id: 4 },
+            { name: 'Demam', id: 5 },
+            { name: 'Pencernaan', id: 6 },
+            { name: 'Hipertensi', id: 7 },
+            { name: 'Otot, tulang dan sendi', id: 8 },
+            { name: 'Kulit', id: 9 },
+            { name: 'Demam', id: 10 }
+        ];
     }
 
     componentDidMount() {
@@ -46,6 +59,7 @@ class DialogProduct extends React.Component {
         }
     }
 
+    
     
     render() {
         let { productDialog, productDetail, hide, stockChange, inputChange } = this.props

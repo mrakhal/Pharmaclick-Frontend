@@ -20,6 +20,8 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import '../components/SidebarComp.css'
 import DialogAdd from '../components/DialogAdd';
+import { Toast } from 'primereact/toast';
+import { URL_API } from '../Helper';
 
 class ProductManagementPage extends React.Component {
     constructor(props) {
@@ -30,7 +32,8 @@ class ProductManagementPage extends React.Component {
             costumers: [],
             productDialog: false,
             productDetail: [],
-            addDialog: false
+            addDialog: false,
+            notif: false
         }
     }
 
@@ -41,7 +44,7 @@ class ProductManagementPage extends React.Component {
 
     //COLUMN BODY
     bodyImage = (rowData) => {
-        return <img src={`${rowData.images[0]}`} style={{ height: '100px' }} />
+        return <img src={rowData.images[0] ? ((rowData.images[0].includes('http') ? `${rowData.images[0]}` : `${URL_API}/${rowData.images[0]}`)) : '/'} style={{ height: '100px' }} />
     }
 
     bodyQty = (rowData) => {
@@ -134,7 +137,7 @@ class ProductManagementPage extends React.Component {
     rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="New" icon="pi pi-plus" className="p-button-success mx-3" onClick={() => this.setState({addDialog: true})}/>
+                <Button label="New" icon="pi pi-plus" className="p-button-success mx-3" onClick={() => this.setState({ addDialog: true })} />
                 <Button label="Export" icon="pi pi-upload" className="p-button-danger" />
             </React.Fragment>
         )
@@ -179,6 +182,8 @@ class ProductManagementPage extends React.Component {
         return (
             <div class="main-content">
                 <main>
+                    {/* TOAST NOTIFICATION */}
+                    <Toast ref={(el) => this.toast = el} />
                     <Toolbar className="p-mb-4 mb-3" left={this.leftToolbarTemplate} right={this.rightToolbarTemplate} ></Toolbar>
                     <div className="datatable-style">
                         <div className="card">
@@ -202,7 +207,7 @@ class ProductManagementPage extends React.Component {
 
                     {/* DIALOG */}
                     <DialogProduct productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} />
-                    <DialogAdd productDetail={productDetail} addDialog={addDialog} hide={() => this.setState({ addDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)}/>
+                    <DialogAdd productDetail={productDetail} addDialog={addDialog} hide={() => this.setState({ addDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} toast={() => this.toast.show({ severity: 'success', summary: 'Success!', detail: 'Add Product success!', life: 3000 })} />
                 </main>
             </div>
         );
