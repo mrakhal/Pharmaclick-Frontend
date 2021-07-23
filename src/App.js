@@ -2,7 +2,7 @@ import "./App.css";
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import SidebarComp from './components/SidebarComp';
 import { URL_API } from './Helper';
 import DashboardPage from './pages/DashboardPage';
@@ -17,24 +17,27 @@ import VerificationPage from './pages/VerificationPage';
 import ProfilePage from "./pages/profilePage";
 import NavbarComp from "./components/navbarComp";
 import FooterComp from "./components/footerComp";
-import { getProducts, keepLogin, getImageProfileUser,getProductAction } from "./action";
+import { getProducts, keepLogin, getImageProfileUser, getProductAction } from "./action";
+
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+
+    };
   }
   componentDidMount() {
     this.props.getProducts();
     // this.props.getImageProfileUser(this.props.user.iduser);
     this.props.getProductAction(1)
     this.reLogin();
+    this.checkNavbar()
   }
 
   reLogin = async () => {
     try {
       let token = localStorage.getItem("tkn_id")
-      console.log("id token keep login", token)
       if (token) {
         this.props.keepLogin(token)
       }
@@ -44,38 +47,48 @@ class App extends React.Component {
     }
   }
 
-  // componentDidMount() {
-  //   this.props.getProductAction(1)
-  // }
+
+  checkNavbar = () => {
+    if (this.props.role == 'admin') {
+      this.setState({ navbar: <SidebarComp /> })
+    }
+  }
   render() {
     return (
       <>
-        <NavbarComp />
-        <Switch>
-          <Route path='/' component={LandingPage} exact />
-          <Route path={'/login'} component={LoginPage} />
-          <Route path={"/register"} component={RegisterPage} />
-          <Route path={'/verif'} component={VerificationPage} />
-          <Route path={'/product'} component={ProductPage} />
-          <Route path={'/'} component={PassResetPage} />
-          {
-            this.props.role == "admin" &&
+        {this.props.role == "user" ?
+          <>
+            <NavbarComp />
+            <Switch>
+              <Route path='/' component={LandingPage} exact />
+              <Route path={'/verif'} component={VerificationPage} />
+              <Route path={'/product'} component={ProductPage} />
+              <Route path={'/reset'} component={PassResetPage} />
+              <Route path={"/profile"} component={ProfilePage} />
+            </Switch>
+          </>
+          :
+          this.props.role == "admin" ?
             <>
               <SidebarComp />
               <Switch>
-                <Route path={'/dashboard'} component={DashboardPage} />
+                <Route path={'/login'} component={LoginPage} />
+                <Route path='/dashboard' component={DashboardPage} exact />
                 <Route path={'/product-management'} component={ProductManagementPage} />
               </Switch>
             </>
-          }
-          {this.props.role === "user" && (
+            :
             <>
-              <Route path={"/profile"} component={ProfilePage} />
+              <NavbarComp />
+              <Switch>
+                <Route path='/' component={LandingPage} exact />
+                <Route path={'/product'} component={ProductPage} />
+                <Route path={'/login'} component={LoginPage} />
+                <Route path={"/register"} component={RegisterPage} />
+              </Switch>
             </>
-          )}
-          <Route path="*" component={NotFoundPage} />
-        </Switch>
-        <FooterComp />
+
+        }
       </>
     );
   }

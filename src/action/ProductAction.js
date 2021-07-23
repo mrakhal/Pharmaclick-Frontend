@@ -5,7 +5,6 @@ export const getProductAction = (type) => {
   return async (dispatch) => {
     try {
       let product = await axios.get(URL_API + `/product/get/${type}`)
-      console.log("action-->", product.data)
       dispatch({
         type: GET_PRODUCT,
         payload: product.data
@@ -20,7 +19,7 @@ export const getProducts = () => {
   return async (dispatch) => {
     try {
       let res = await axios.get(URL_API + `/product/get-products`);
-      console.log("data barang actions:", res.data);
+      
       dispatch({
         type: "GET_DATA_PRODUCTS",
         payload: res.data,

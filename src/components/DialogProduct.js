@@ -56,7 +56,6 @@ class DialogProduct extends React.Component {
 
 
     printWarning = (trigger) => {
-        console.log(trigger)
         if (trigger) {
             return <small className="p-error">Required.</small>
         } else {
