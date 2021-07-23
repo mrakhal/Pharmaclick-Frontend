@@ -90,7 +90,7 @@ class DialogAdd extends React.Component {
 
             let res = await axios.post(URL_API + '/product/add', formData)
             console.log(res.data)
-            this.setState({ selectedCategory: '', selectedUnit: '' })
+            this.setState({ selectedCategory: '', selectedUnit: '', fileUpload: '' })
             this.props.hide()
             this.props.toast()
             this.props.getProductAction(1)

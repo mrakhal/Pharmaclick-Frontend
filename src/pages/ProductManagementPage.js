@@ -22,6 +22,7 @@ import DialogAdd from '../components/DialogAdd';
 import { Toast } from 'primereact/toast';
 import { URL_API } from '../Helper';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import HTTP from '../service/HTTP';
 
 class ProductManagementPage extends React.Component {
     constructor(props) {
@@ -211,7 +212,7 @@ class ProductManagementPage extends React.Component {
 
     confirmDeleteProduct = async (idstock) => {
         try {
-            let deleteProduct = await axios.delete(URL_API + `/product/delete/${idstock}`)
+            let deleteProduct = await HTTP.delete(`/product/delete/${idstock}`)
             console.log(deleteProduct.data)
             this.toast.show({ severity: 'success', summary: 'Success', detail: 'Delete product success', life: 3000 })
             this.props.getProductAction(1)
