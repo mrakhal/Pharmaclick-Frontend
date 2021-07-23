@@ -33,11 +33,11 @@ export const authLogout = () =>{
 export const keepLogin = (headers) =>{
     return async (dispatch) =>{
         try {
-            // const headers = {
-            //     headers: {
-            //         'Authorization': `Beares ${token}`
-            //     }
-            // }
+            const headers = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
             let keep = await axios.get(URL_API + `/user/keep`, headers)
             dispatch({
                 type: LOGIN_SUCCES,
