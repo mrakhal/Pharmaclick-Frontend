@@ -46,6 +46,7 @@ import Tilt from "react-vanilla-tilt";
 import "../assets/css/navigation.css";
 import axios from "axios";
 import { URL_API } from "../Helper";
+import { getProductAction } from "../action";
 
 var settings = {
   dots: true,
@@ -715,4 +716,4 @@ const mapStateToProps = ({ productReducer, authReducer }) => {
   };
 };
 
-export default connect(mapStateToProps)(LandingPage);
+export default connect(mapStateToProps, { getProductAction })(LandingPage);

@@ -1,10 +1,11 @@
 import { URL_API, GET_PRODUCT, GET_DATA_CITY } from "../Helper";
 import HTTP from "../services/http";
+import axios from "axios";
 
 export const getProductAction = (type) => {
   return async (dispatch) => {
     try {
-      let product = await HTTP.get(URL_API + `/product/get/${type}`);
+      let product = await axios.get(URL_API + `/product/get/${type}`);
       console.log("action-->", product.data);
       dispatch({
         type: GET_PRODUCT,
