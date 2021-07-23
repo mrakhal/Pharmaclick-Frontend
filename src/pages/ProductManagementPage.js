@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import '../components/SidebarComp.css'
+import '../assets/css/SidebarComp.css'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
@@ -12,13 +12,12 @@ import { FileUpload } from 'primereact/fileupload';
 import { Tag } from 'primereact/tag';
 import { connect } from 'react-redux';
 import { getProductAction } from '../action'
-import './ProductManagement.css'
+import '../assets/css/ProductManagement.css'
 import 'primeflex/primeflex.css';
 import { productReducer } from '../reducer/ProductReducer';
 import DialogProduct from '../components/DialogProduct';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import '../components/SidebarComp.css'
 import DialogAdd from '../components/DialogAdd';
 import { Toast } from 'primereact/toast';
 import { URL_API } from '../Helper';

@@ -2,7 +2,7 @@ import React from 'react';
 // PRIME REACT
 import { Sidebar } from 'primereact/sidebar';
 import { Button } from 'primereact/button';
-import './SidebarComp.css'
+import '../assets/css/SidebarComp.css'
 import { Link } from 'react-router-dom';
 import { SplitButton } from 'primereact/splitbutton';
 import { PanelMenu } from 'primereact/panelmenu';
