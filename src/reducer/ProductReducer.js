@@ -1,3 +1,5 @@
+import { GET_PRODUCT } from "../Helper";
+
 const INITIAL_STATE = {
   product_list: [],
   city_list: [],
@@ -5,8 +7,11 @@ const INITIAL_STATE = {
 
 export const productReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case "GET_DATA_PRODUCTS":
+    case GET_PRODUCT:
+      // console.log("reducer", action.payload)
       return { ...state, product_list: action.payload };
+    // case "GET_DATA_PRODUCTS":
+    //   return { ...state, product_list: action.payload };
     case "GET_DATA_CITY":
       return { ...state, city_list: action.payload };
     default:

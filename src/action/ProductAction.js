@@ -1,18 +1,17 @@
-import axios from "axios";
-// import { URL_API } from "../Helper";
+import { URL_API, GET_PRODUCT, GET_DATA_CITY } from "../Helper";
 import HTTP from "../services/http";
 
-export const getProducts = () => {
+export const getProductAction = (type) => {
   return async (dispatch) => {
     try {
-      let res = await HTTP.get(`/product/get-products`);
-      console.log("data barang actions:", res.data);
+      let product = await HTTP.get(URL_API + `/product/get/${type}`);
+      console.log("action-->", product.data);
       dispatch({
-        type: "GET_DATA_PRODUCTS",
-        payload: res.data,
+        type: GET_PRODUCT,
+        payload: product.data,
       });
     } catch (error) {
-      console.log(error);
+      console.log("ERROR GET PRODUCT", error);
     }
   };
 };
@@ -20,9 +19,9 @@ export const getProducts = () => {
 export const getCity = () => {
   return async (dispatch) => {
     try {
-      let res = await HTTP.get(`/product/get-city`);
+      let res = await HTTP.get(URL_API + `/product/get-city`);
       dispatch({
-        type: "GET_DATA_CITY",
+        type: GET_DATA_CITY,
         payload: res.data,
       });
     } catch (err) {

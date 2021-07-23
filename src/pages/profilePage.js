@@ -1,14 +1,32 @@
 import React from "react";
-import { Container, Row, Col } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardBody,
+  CardTitle,
+  CardSubtitle,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Modal,
+  ModalBody,
+} from "reactstrap";
 
-import { faUser, faKey } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHome,
+  faCamera,
+  faPlus,
+  faUser,
+  faKey,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "../../assets/css/profilePage.css";
-import Profile from "../../assets/images/profile.png";
-import ProfileComp from "./profileComp";
-import axios from "axios";
-import { URL_API } from "../../Helper";
-import { connect } from "react-redux";
+import "../assets/css/profilePage.css";
+import Profile from "../assets/images/profile.png";
+import ProfileComp from "../components/user/profileComp";
 
 class ProfilePage extends React.Component {
   constructor(props) {
@@ -34,40 +52,6 @@ class ProfilePage extends React.Component {
       };
     }
   }
-
-  // saveUserData = () => {
-  //   let formData = new FormData();
-  //   let data = {
-  //     iduser: this.props.user.iduser,
-  //     fullName: this.props.fullNameIn.value,
-  //     gender: this.props.genderIn.value,
-  //     email: this.emailIn.value,
-  //     phone_number: this.phoneNumberIn.value,
-  //     age: parseInt(this.ageIn.value),
-  //   };
-  //   formData.append("data", JSON.stringify(data));
-  //   formData.append("images", this.state.fileUpload);
-
-  //   axios
-  //     .patch(URL_API + `/user/patch-user`, formData)
-  //     .then((res) => {
-  //       this.getAnImages();
-  //       this.props.getImageProfileUser(this.props.user.iduser);
-  //       this.setState({
-  //         alert1: !this.state.alert1,
-  //         color1: "success",
-  //         message1: res.data.message,
-  //       });
-  //       setTimeout(() => {
-  //         this.setState({
-  //           alert1: !this.state.alert1,
-  //         });
-  //       }, 3000);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
 
   handleChange(event) {
     this.setState({
@@ -131,9 +115,7 @@ class ProfilePage extends React.Component {
           {/* IMAGE USER */}
           {this.state.indexActive === 1 ? (
             <>
-              <ProfileComp
-              // data={{ saveUserData: this.saveUserData.bind(this) }}
-              />
+              <ProfileComp />
             </>
           ) : (
             <></>
@@ -144,12 +126,4 @@ class ProfilePage extends React.Component {
   }
 }
 
-const mapStateToProps = ({ productReducer, authReducer }) => {
-  return {
-    user: authReducer,
-    city: productReducer.city_list,
-    profile: productReducer.image_profile,
-  };
-};
-
-export default connect(mapStateToProps)(ProfilePage);
+export default ProfilePage;

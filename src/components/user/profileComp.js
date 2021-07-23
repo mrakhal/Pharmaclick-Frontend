@@ -61,24 +61,14 @@ class ProfileComp extends React.Component {
     axios
       .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
       .then((res) => {
-        this.setState({ file: res.data.image_url });
+        if (res.data.image_url.length > 0) {
+          this.setState({ file: res.data.image_url });
+        }
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
-  // checkImageProfile = () => {
-  //   if (this.props.profile.message) {
-  //     return Profile;
-  //     // return this.state.file1;
-  //     // return this.setState({ file: Profile });
-  //   } else {
-  //     // return this.setState({ file: this.props.profile.image_url });
-  //     return this.props.profile.image_url;
-  //     // return this.state.file;
-  //   }
-  // };
 
   handleChange(e) {
     // eslint-disable-next-line) {
@@ -98,7 +88,7 @@ class ProfileComp extends React.Component {
     }
   }
 
-  saveUserData = () => {
+  onBtSave = () => {
     let formData = new FormData();
     let data = {
       iduser: this.props.user.iduser,
@@ -533,8 +523,6 @@ class ProfileComp extends React.Component {
   };
 
   render() {
-    console.log("get user", this.props.profile);
-    console.log("get all image", this.state.file);
     return (
       <>
         <Col xl="10 mt-5 pb-5">
@@ -633,11 +621,10 @@ class ProfileComp extends React.Component {
                       />
                     </label>
 
-                    <Input
+                    <input
                       id="file-input"
                       type="file"
                       onChange={this.handleChange}
-                      // defaultValue={this.props.profile.image_path}
                     />
                   </div>
                 </div>
@@ -771,7 +758,7 @@ class ProfileComp extends React.Component {
                         <Col md="12 mt-3 btn-profile text-center ">
                           <a
                             style={{ color: "white", fontWeight: "bold" }}
-                            onClick={this.saveUserData}
+                            onClick={this.onBtSave}
                           >
                             Save Changes
                           </a>
@@ -887,7 +874,7 @@ const mapStateToProps = ({ productReducer, authReducer }) => {
   return {
     user: authReducer,
     city: productReducer.city_list,
-    profile: authReducer.image_profile,
+    profile: productReducer.image_profile,
   };
 };
 

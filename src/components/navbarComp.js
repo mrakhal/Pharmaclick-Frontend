@@ -21,8 +21,8 @@ import Logo from "../assets/images/logo.png";
 import Profile from "../assets/images/profile.png";
 import { connect } from "react-redux";
 import { authLogout, getImageProfileUser } from "../action";
-// import axios from "axios";
-// import { URL_API } from "../Helper";
+import axios from "axios";
+import { URL_API } from "../Helper";
 
 class NavbarComp extends React.Component {
   constructor(props) {
@@ -59,9 +59,7 @@ class NavbarComp extends React.Component {
           fixed="top"
         >
           <NavbarBrand>
-            <NavLink href="/">
-              <img src={Logo} width="150px" alt="logo pharmaclick" />
-            </NavLink>
+            <img src={Logo} width="150px" alt="logo pharmaclick" />
           </NavbarBrand>
           <NavbarToggler
             onClick={() => {
@@ -71,26 +69,20 @@ class NavbarComp extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="m-auto " navbar>
               <NavItem>
-                <Link to="/" style={{ textDecoration: "none" }}>
-                  <NavLink href="/">
-                    <a href="/" className="menu-item">
-                      Home
-                    </a>
-                  </NavLink>
-                </Link>
-              </NavItem>
-              <NavItem>
                 <NavLink>
-                  <a href="/product" className="menu-item">
-                    Product
-                  </a>
+                  <Link to="/" style={{ textDecoration: "none" }}>
+                    <a className="menu-item">Home</a>
+                  </Link>
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink>
-                  <a href="/contact" className="menu-item">
-                    Contact
-                  </a>
+                  <a className="menu-item">Product</a>
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink>
+                  <a className="menu-item">Contact</a>
                 </NavLink>
               </NavItem>
             </Nav>
@@ -128,7 +120,7 @@ class NavbarComp extends React.Component {
                   </UncontrolledDropdown>
                 </NavItem>
                 <NavItem type="none" style={{ marginRight: "10px" }}>
-                  <a href="/">{this.props.user.fullname.split(" ")[0]}</a>
+                  <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
                 {/* <img
                   src={this.state.file}
