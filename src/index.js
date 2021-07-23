@@ -14,18 +14,23 @@ import { Reducers } from './reducer';
 import ReduxThunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-const globalStore = createStore(Reducers, {}, composeWithDevTools(applyMiddleware(ReduxThunk)))
+const globalStore = createStore(
+  Reducers,
+  {},
+  composeWithDevTools(applyMiddleware(ReduxThunk))
+);
 
 ReactDOM.render(
   <Provider store={globalStore}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </Provider>
-  ,
-  document.getElementById('root')
+  </Provider>,
+  document.getElementById("root")
 );
-
 
 reportWebVitals();

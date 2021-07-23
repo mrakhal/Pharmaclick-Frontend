@@ -1,5 +1,5 @@
-import axios from 'axios';
 import React from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import SidebarComp from './components/SidebarComp';
@@ -12,29 +12,29 @@ import PassResetPage from './pages/PassResetPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProductManagementPage from './pages/ProductManagementPage';
 import VerificationPage from './pages/VerificationPage';
-import { getProductAction, keepLogin } from './action'
+import ProfilePage from "./pages/profilePage";
+import NavbarComp from "./components/navbarComp";
+import FooterComp from "./components/footerComp";
+import { getProducts, keepLogin, getImageProfileUser,getProductAction } from "./action";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
+  }
+  componentDidMount() {
+    this.props.getProducts();
+    this.props.getImageProfileUser(this.props.user.iduser);
+    this.props.getProductAction()
+    this.reLogin();
   }
 
-  componentDidMount() {
-    this.props.getProductAction()
-    this.reLogin()
-  }
   reLogin = async () => {
     try {
       let token = localStorage.getItem("tkn_id")
       console.log("id token keep login", token)
       if (token) {
-        const headers = {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-        this.props.keepLogin(headers)
+        this.props.keepLogin(token)
       }
 
     } catch (error) {
@@ -45,10 +45,11 @@ class App extends React.Component {
   render() {
     return (
       <>
-
+        <NavbarComp />
         <Switch>
           <Route path='/' component={LandingPage} exact />
           <Route path={'/login'} component={LoginPage} />
+          <Route path={"/register"} component={RegisterPage} />
           <Route path={'/verif'} component={VerificationPage} />
           <Route path={'/'} component={PassResetPage} />
           {
@@ -61,8 +62,14 @@ class App extends React.Component {
               </Switch>
             </>
           }
+          {this.props.role === "user" && (
+            <>
+              <Route path={"/profile"} component={ProfilePage} />
+            </>
+          )}
           <Route path="*" component={NotFoundPage} />
         </Switch>
+        <FooterComp />
       </>
     );
   }
@@ -74,4 +81,4 @@ const mapStateToProps = ({ authReducer }) => {
   }
 }
 
-export default connect(mapStateToProps, { getProductAction, keepLogin })(App);
+export default connect(mapStateToProps, { getProductAction, keepLogin, getImageProfileUser, getProducts })(App);
