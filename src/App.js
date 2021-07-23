@@ -26,7 +26,7 @@ class App extends React.Component {
   }
   componentDidMount() {
     this.props.getProducts();
-    this.props.getImageProfileUser(this.props.user.iduser);
+    // this.props.getImageProfileUser(this.props.user.iduser);
     this.props.getProductAction(1)
     this.reLogin();
   }
