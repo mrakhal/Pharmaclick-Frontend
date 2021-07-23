@@ -13,7 +13,8 @@ import { Message } from 'primereact/message'
 import { Dropdown } from 'primereact/dropdown';
 import axios from 'axios';
 import { URL_API } from '../Helper';
-
+import { getProductAction } from '../action'
+import { connect } from 'react-redux';
 class DialogAdd extends React.Component {
     constructor(props) {
         super(props);
@@ -91,14 +92,15 @@ class DialogAdd extends React.Component {
             console.log(res.data)
             this.setState({ selectedCategory: '', selectedUnit: '' })
             this.props.hide()
-            this.props.toast()            
+            this.props.toast()
+            this.props.getProductAction()
         } catch (error) {
             console.log("ERROR ADD DATA", error)
         }
     }
 
-    onBtnClose = () =>{
-        this.setState({selectedCategory: '', selectedUnit: ''})
+    onBtnClose = () => {
+        this.setState({ selectedCategory: '', selectedUnit: '' })
         this.props.hide()
     }
     render() {
@@ -121,7 +123,7 @@ class DialogAdd extends React.Component {
                             <img src={this.state.fileUpload ? URL.createObjectURL(this.state.fileUpload) : 'https://image.flaticon.com/icons/png/512/1837/1837526.png'}
                                 style={{ height: this.state.fileUpload ? '110%' : '30px' }} />
                         </div>
-                        {!fileUpload && <small className="p-error" style={{fontSize: '10px'}}>Required.</small>}
+                        {!fileUpload && <small className="p-error" style={{ fontSize: '10px' }}>Required.</small>}
                     </div>
                     <FileUpload auto mode="basic" name="products" accept="image/*" maxFileSize={1000000} className="mb-3" onUpload={(e) => this.uploadImage(e)}
                         onSelect={(e) => this.setState({ fileUpload: e.files[0] })} />
@@ -140,31 +142,31 @@ class DialogAdd extends React.Component {
                     </div>
                     <div>
                         <label htmlFor="minmax-buttons" style={{ fontWeight: 'bold' }}>Stok</label>
-                        <div className="d-flex" style={{ fontSize: '15px' }}>
-                            <span>
+                        <div className="d-flex" >
+                            <span style={{ width: '25%' }}>
                                 <label >Netto</label>
                                 <InputNumber inputId="minmax-buttons" mode="decimal" showButtons min={1} max={100} onValueChange={(e) => this.setState({ netto: e.target.value })} value={this.state.netto} />
                                 {!netto && <small className="p-error">Required.</small>}
                             </span>
-                            <span className="mx-3">
+                            <span className="mx-3" style={{width: '40%'}}>
                                 <label >Unit</label>
                                 <Dropdown value={this.state.selectedUnit} options={this.unit} onChange={(e) => this.setState({ selectedUnit: e.value })} optionLabel="name" placeholder="Select a Unit" />
                                 {!selectedUnit && <small className="p-error">Required.</small>}
                             </span>
-                            <span>
+                            <span style={{width: '25%'}}>
                                 <label >Qty</label>
                                 <InputNumber inputId="minmax-buttons" mode="decimal" showButtons min={1} max={100} onValueChange={(e) => this.setState({ qty: e.target.value })} value={this.state.qty} />
                                 {!qty && <small className="p-error">Required.</small>}
                             </span>
                         </div>
                         <div className="d-flex my-3" style={{ fontSize: '15px' }}>
-                            <span>
-                                <label tyle={{ fontWeight: 'bold' }} >Category</label>
+                            <span style={{width: '50%'}}>
+                                <label style={{ fontWeight: 'bold' }} >Category</label>
                                 <Dropdown value={this.state.selectedCategory} options={this.category} onChange={(e) => this.setState({ selectedCategory: e.value })} optionLabel="name" placeholder="Select Category" />
                                 {!selectedCategory && <small className="p-error">Required.</small>}
                             </span>
-                            <span className="ml-2">
-                                <label tyle={{ fontWeight: 'bold' }}>Type</label>
+                            <span className="ml-2" style={{width: '50%'}}>
+                                <label style={{ fontWeight: 'bold' }}>Type</label>
                                 <InputText disabled value="pack" />
                             </span>
 
@@ -207,4 +209,4 @@ class DialogAdd extends React.Component {
     }
 }
 
-export default DialogAdd;
+export default connect(null, { getProductAction })(DialogAdd);

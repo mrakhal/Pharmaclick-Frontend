@@ -8,6 +8,8 @@ import { SplitButton } from 'primereact/splitbutton';
 import { PanelMenu } from 'primereact/panelmenu';
 import { NavLink } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
+import { connect } from 'react-redux';
+import { authLogout } from '../action'
 
 class SidebarComp extends React.Component {
     constructor(props) {
@@ -59,9 +61,9 @@ class SidebarComp extends React.Component {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/" style={{ textDecoration: 'none' }}>
+                                <Link to="/" style={{ textDecoration: 'none' }} onClick={this.props.authLogout}>
                                     <span className="ti-settings"></span>
-                                    <span>Account</span>
+                                    <span>Sign Out</span>
                                 </Link>
                             </li>
                         </ul>
@@ -92,4 +94,4 @@ class SidebarComp extends React.Component {
     }
 }
 
-export default SidebarComp;
+export default connect(null, { authLogout })(SidebarComp);
