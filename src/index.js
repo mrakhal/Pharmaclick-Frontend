@@ -14,9 +14,9 @@ import { Reducers } from './reducer';
 import ReduxThunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux';
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const globalStore = createStore(
   Reducers,

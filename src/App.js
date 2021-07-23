@@ -1,3 +1,4 @@
+import "./App.css";
 import React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -11,6 +12,7 @@ import LoginPage from './pages/LoginPage';
 import PassResetPage from './pages/PassResetPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProductManagementPage from './pages/ProductManagementPage';
+import ProductPage from './pages/ProductPage';
 import VerificationPage from './pages/VerificationPage';
 import ProfilePage from "./pages/profilePage";
 import NavbarComp from "./components/navbarComp";
@@ -42,6 +44,9 @@ class App extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.props.getProductAction(1)
+  }
   render() {
     return (
       <>
@@ -51,6 +56,7 @@ class App extends React.Component {
           <Route path={'/login'} component={LoginPage} />
           <Route path={"/register"} component={RegisterPage} />
           <Route path={'/verif'} component={VerificationPage} />
+          <Route path={'/product'} component={ProductPage} />
           <Route path={'/'} component={PassResetPage} />
           {
             this.props.role == "admin" &&
