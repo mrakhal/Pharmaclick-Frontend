@@ -15,7 +15,7 @@ class NotFoundPage extends React.Component {
         <div className="night">
           <div className="error">
             <p>
-              ERROR <br />
+              PAGE NOT FOUND
               <span>404</span>
             </p>
           </div>

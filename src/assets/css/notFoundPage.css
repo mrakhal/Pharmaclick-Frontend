@@ -5,7 +5,7 @@ body {
 }
 
 .night {
-  height: 90vh;
+  height: 100vh;
   width: 100%;
   border: 1px solid black;
   background: url("../../assets/images/bg-error.jpg");
@@ -16,23 +16,29 @@ body {
 }
 
 .error p {
-  color: whitesmoke;
+  color: #a55ba6;
+  font-weight: 900;
   text-align: center;
-  text-shadow: 3px 3px 0px #3b2c3f;
-  font-size: calc(15px + 10vmin);
+  text-shadow: 3px 3px 0px #665368;
+  font-size: calc(15px + 5vmin);
   height: 400px;
   width: 100%;
-  bottom: 30%;
+  bottom: 25%;
   display: block;
   position: absolute;
-  left: 0%;
 }
 
 .error span {
-  color: #3b2c3f;
-  text-align: center;
-  text-shadow: 3px 3px 0px #3b2c3f;
-  font-size: calc(15px + 10vmin);
+  left: 0%;
+  font-weight: 900;
+  position: absolute;
+  color: #392a3e;
+  height: 400px;
+  width: 100%;
+  bottom: -5%;
+  text-shadow: 5px 5px 0px #392a3e;
+  font-size: calc(40px + 44vmin);
+  z-index: 0;
 }
 
 .surface {
