@@ -50,7 +50,7 @@ class DialogAdd extends React.Component {
             { name: 'Hipertensi', id: 7 },
             { name: 'Otot, tulang dan sendi', id: 8 },
             { name: 'Kulit', id: 9 },
-            { name: 'Demam', id: 10 }
+            { name: 'P3K', id: 10 }
         ];
 
         this.unit = [
