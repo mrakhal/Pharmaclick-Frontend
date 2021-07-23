@@ -61,9 +61,7 @@ class App extends React.Component {
             <NavbarComp />
             <Switch>
               <Route path='/' component={LandingPage} exact />
-              <Route path={'/verif'} component={VerificationPage} />
               <Route path={'/product'} component={ProductPage} />
-              <Route path={'/reset'} component={PassResetPage} />
               <Route path={"/profile"} component={ProfilePage} />
             </Switch>
           </>
@@ -85,6 +83,8 @@ class App extends React.Component {
                 <Route path={'/product'} component={ProductPage} />
                 <Route path={'/login'} component={LoginPage} />
                 <Route path={"/register"} component={RegisterPage} />
+                <Route path={'/reset'} component={PassResetPage} />
+                <Route path={'/verif'} component={VerificationPage} />
               </Switch>
             </>
 

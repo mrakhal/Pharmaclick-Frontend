@@ -101,6 +101,8 @@ class LoginPage extends React.Component {
                 this.setState({ invalidForm: invalid, loading: false })
                 return null
             }
+
+            // console.log(this.state.resetEmail)
             let resendVerif = await axios.post(URL_API + `/user/re-verif`, { email: this.state.resetEmail })
 
             if (resendVerif.data) {
