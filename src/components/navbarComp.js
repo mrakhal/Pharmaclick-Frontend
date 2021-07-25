@@ -58,9 +58,11 @@ class NavbarComp extends React.Component {
           className="px-3  navi-item"
           fixed="top"
         >
-          <NavbarBrand>
-            <img src={Logo} width="150px" alt="logo pharmaclick" />
-          </NavbarBrand>
+          <Link to="/product" style={{ textDecoration: "none" }}>
+            <NavbarBrand>
+              <img src={Logo} width="150px" alt="logo pharmaclick" />
+            </NavbarBrand>
+          </Link>
           <NavbarToggler
             onClick={() => {
               this.setState({ isOpen: !this.state.isOpen });
@@ -69,16 +71,18 @@ class NavbarComp extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="m-auto " navbar>
               <NavItem>
-                <NavLink>
-                  <Link to="/" style={{ textDecoration: "none" }}>
+                <Link to="/" style={{ textDecoration: "none" }}>
+                  <NavLink>
                     <a className="menu-item">Home</a>
-                  </Link>
-                </NavLink>
+                  </NavLink>
+                </Link>
               </NavItem>
               <NavItem>
-                <NavLink>
-                  <a className="menu-item">Product</a>
-                </NavLink>
+                <Link to="/product" style={{ textDecoration: "none" }}>
+                  <NavLink>
+                    <a className="menu-item">Product</a>
+                  </NavLink>
+                </Link>
               </NavItem>
               <NavItem>
                 <NavLink>
