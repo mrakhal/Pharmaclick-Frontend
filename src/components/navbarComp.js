@@ -48,7 +48,6 @@ class NavbarComp extends React.Component {
   };
 
   render() {
-    console.log("cek", this.props.profile);
     return (
       <div>
         <Navbar
@@ -77,7 +76,7 @@ class NavbarComp extends React.Component {
               </NavItem>
               <NavItem>
                 <NavLink>
-                  <a className="menu-item">Product</a>
+                  <Link className="menu-item" to="/product">Product</Link>
                 </NavLink>
               </NavItem>
               <NavItem>

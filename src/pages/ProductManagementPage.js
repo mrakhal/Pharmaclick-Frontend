@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import '../components/SidebarComp.css'
+import '../assets/css/SidebarComp.css'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
@@ -12,17 +12,17 @@ import { FileUpload } from 'primereact/fileupload';
 import { Tag } from 'primereact/tag';
 import { connect } from 'react-redux';
 import { getProductAction } from '../action'
-import './ProductManagement.css'
+import '../assets/css/ProductManagement.css'
 import 'primeflex/primeflex.css';
 import { productReducer } from '../reducer/ProductReducer';
 import DialogProduct from '../components/DialogProduct';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import '../components/SidebarComp.css'
 import DialogAdd from '../components/DialogAdd';
 import { Toast } from 'primereact/toast';
 import { URL_API } from '../Helper';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import HTTP from '../service/HTTP';
 
 class ProductManagementPage extends React.Component {
     constructor(props) {
@@ -65,34 +65,45 @@ class ProductManagementPage extends React.Component {
     }
 
     componentDidMount() {
-
         this.props.getProductAction(1)
     }
 
+    componentWillUnmount() {
+        this.props.getProductAction(1)
+    }
     //COLUMN BODY
     bodyImage = (rowData) => {
-        return <img src={rowData.images[0] ? ((rowData.images[0].includes('http') ? `${rowData.images[0]}` : `${URL_API}/${rowData.images[0]}`)) : '/'} style={{ height: '100px', width: '100px' }} />
+        if(rowData.images){
+            return <img src={(rowData.images[0].includes('http') ? `${rowData.images[0]}` : `${URL_API}/${rowData.images[0]}`)} style={{ height: '100px', width: '100px' }} />
+        } else {
+            return <img src={'/'} alt="No image Available" style={{ height: '100px', width: '100px' }} />
+
+        }
     }
 
     bodyQty = (rowData) => {
-        return rowData.stock.map((item, index) => {
-            return (
-                <>
-                    <Row>{item.qty}</Row>
-                </>
-            )
-        })
+        if (rowData.stock) {
+            return rowData.stock.map((item, index) => {
+                return (
+                    <>
+                        <Row>{item.qty}</Row>
+                    </>
+                )
+            })
+        }
     }
 
     bodyType = (rowData) => {
-        return rowData.stock.map((item, index) => {
-            return (
-                <>
-                    <Row>{item.type}</Row>
-                </>
-            )
+        if (rowData.stock) {
+            return rowData.stock.map((item, index) => {
+                return (
+                    <>
+                        <Row>{item.type}</Row>
+                    </>
+                )
 
-        })
+            })
+        }
     }
 
     bodyNetto = (rowData) => {
@@ -137,7 +148,6 @@ class ProductManagementPage extends React.Component {
     }
     editProduct = async (product) => {
         try {
-            console.log(product.netto)
             let index = this.category.findIndex(item => item.name.toLocaleLowerCase() == product.category)
             let unitIndex = this.unit.findIndex(item => item.name.toLocaleLowerCase() == product.unit)
 
@@ -146,7 +156,7 @@ class ProductManagementPage extends React.Component {
                 productDialog: true,
                 addDialog: false,
                 confirmDialog: false,
-                idstock: null, 
+                idstock: null,
                 selectedCategory: this.category[index],
                 selectedUnit: this.unit[unitIndex]
             });
@@ -187,12 +197,10 @@ class ProductManagementPage extends React.Component {
 
     inputChange = (e, property) => {
         if (property == "category") {
-            this.setState({selectedCategory: e.value})
-        } else if(property == "unit"){
-            this.setState({selectedUnit: e.value})
+            this.setState({ selectedCategory: e.value })
+        } else if (property == "unit") {
+            this.setState({ selectedUnit: e.value })
         } else {
-            console.log("INPUT CHANGE", property, e.target.value)
-            console.log(this.state.productDetail.netto)
             let val = e.target.value
             let productDetail = { ...this.state.productDetail }
             productDetail[`${property}`] = val;
@@ -204,13 +212,12 @@ class ProductManagementPage extends React.Component {
         const val = e.target.value
         let productDetail = { ...this.state.productDetail }
         productDetail.stock[0][`${property}`] = val;
-        console.log(productDetail.stock)
         this.setState({ productDetail })
     }
 
     confirmDeleteProduct = async (idstock) => {
         try {
-            let deleteProduct = await axios.delete(URL_API + `/product/delete/${idstock}`)
+            let deleteProduct = await HTTP.delete(`/product/delete/${idstock}`)
             console.log(deleteProduct.data)
             this.toast.show({ severity: 'success', summary: 'Success', detail: 'Delete product success', life: 3000 })
             this.props.getProductAction(1)
@@ -270,7 +277,7 @@ class ProductManagementPage extends React.Component {
                     </div>
 
                     {/* DIALOG */}
-                    <DialogProduct category={selectedCategory} unit={selectedUnit} productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)}  toast={(a) => this.toast.show({ severity: 'success', summary: 'Success!', detail: a, life: 3000 })}/>
+                    <DialogProduct category={selectedCategory} unit={selectedUnit} productDetail={productDetail} productDialog={productDialog} hide={() => this.setState({ productDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} toast={(a) => this.toast.show({ severity: 'success', summary: 'Success!', detail: a, life: 3000 })} />
                     <DialogAdd productDetail={productDetail} addDialog={addDialog} hide={() => this.setState({ addDialog: false })} inputChange={(e, property) => { this.inputChange(e, property) }} stockChange={(e, property) => this.stockChange(e, property)} toast={() => this.toast.show({ severity: 'success', summary: 'Success!', detail: 'Add Product success!', life: 3000 })} />
 
                 </main>
