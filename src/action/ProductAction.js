@@ -1,5 +1,6 @@
+import { URL_API, GET_PRODUCT, GET_DATA_CITY } from "../Helper";
+import HTTP from "../services/http";
 import axios from "axios";
-import { URL_API, GET_PRODUCT } from "../Helper";
 
 export const getProductAction = (type) => {
   return async (dispatch) => {
@@ -25,7 +26,7 @@ export const getProducts = () => {
         payload: res.data,
       });
     } catch (error) {
-      console.log(error);
+      console.log("ERROR GET PRODUCT", error);
     }
   };
 };
@@ -33,27 +34,13 @@ export const getProducts = () => {
 export const getCity = () => {
   return async (dispatch) => {
     try {
-      let res = await axios.get(URL_API + `/product/get-city`);
+      let res = await HTTP.get(URL_API + `/product/get-city`);
       dispatch({
-        type: "GET_DATA_CITY",
+        type: GET_DATA_CITY,
         payload: res.data,
       });
     } catch (err) {
       console.log(err);
-    }
-  };
-};
-
-export const getImageProfileUser = (id) => {
-  return async (dispatch) => {
-    try {
-      let res = await axios.get(URL_API + `/user/get-image-user?iduser=${id}`);
-      dispatch({
-        type: "GET_PROFILE_IMAGE",
-        payload: res.data,
-      });
-    } catch (error) {
-      console.log("Get Image Profile Error", error);
     }
   };
 };

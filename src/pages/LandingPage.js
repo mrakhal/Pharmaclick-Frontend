@@ -46,6 +46,7 @@ import Tilt from "react-vanilla-tilt";
 import "../assets/css/navigation.css";
 import axios from "axios";
 import { URL_API } from "../Helper";
+import { getProductAction } from "../action";
 
 var settings = {
   dots: true,
@@ -235,56 +236,52 @@ class LandingPage extends React.Component {
                       {this.props.products.slice(0, 10).map((item) => {
                         return (
                           <>
-                            {item.type === "pack" && (
-                              <>
-                                <div>
-                                  <Card
+                            <div>
+                              <Card
+                                style={{
+                                  borderRadius: "10px",
+                                  border: "none",
+                                  margin: "5px",
+                                  height: "auto",
+                                  boxShadow:
+                                    "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                                }}
+                                className="card-popular"
+                              >
+                                <Link
+                                  to={`/product-detail?id=${item.id}`}
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "black",
+                                  }}
+                                >
+                                  <CardImg
+                                    width="100%"
+                                    src={item.images[0]}
+                                    alt="sanmol"
+                                    className="img-fluid p-2"
                                     style={{
-                                      borderRadius: "10px",
-                                      border: "none",
-                                      margin: "5px",
-                                      height: "auto",
-                                      boxShadow:
-                                        "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                                      borderRadius: "15px",
                                     }}
-                                    className="card-popular"
-                                  >
-                                    <Link
-                                      to={`/product-detail?id=${item.id}`}
-                                      style={{
-                                        textDecoration: "none",
-                                        color: "black",
-                                      }}
-                                    >
-                                      <CardImg
-                                        width="100%"
-                                        src={item.image_url}
-                                        alt="sanmol"
-                                        className="img-fluid p-2"
-                                        style={{
-                                          borderRadius: "15px",
-                                        }}
-                                      />
-                                      <CardBody>
-                                        <CardTitle className="text-muted title-products">
-                                          {item.product_name.length > 36 ? (
-                                            <>
-                                              {item.product_name.slice(0, 36) +
-                                                " ..."}
-                                            </>
-                                          ) : (
-                                            <>{item.product_name}</>
-                                          )}
-                                        </CardTitle>
-                                        <CardSubtitle className="mb-2 price-products">
-                                          Rp {item.pack_price}
-                                        </CardSubtitle>
-                                      </CardBody>
-                                    </Link>
-                                  </Card>
-                                </div>
-                              </>
-                            )}
+                                  />
+                                  <CardBody>
+                                    <CardTitle className="text-muted title-products">
+                                      {item.product_name.length > 36 ? (
+                                        <>
+                                          {item.product_name.slice(0, 36) +
+                                            " ..."}
+                                        </>
+                                      ) : (
+                                        <>{item.product_name}</>
+                                      )}
+                                    </CardTitle>
+                                    <CardSubtitle className="mb-2 price-products">
+                                      Rp {item.pack_price}
+                                    </CardSubtitle>
+                                  </CardBody>
+                                </Link>
+                              </Card>
+                            </div>
                           </>
                         );
                       })}
@@ -471,7 +468,7 @@ class LandingPage extends React.Component {
                               top
                               width="100%"
                               src={item.image_url}
-                              alt="sanmol"
+                              alt={item.product_name}
                               className="img-fluid p-2"
                               height="auto"
                               style={{ borderRadius: "15px" }}
@@ -719,4 +716,4 @@ const mapStateToProps = ({ productReducer, authReducer }) => {
   };
 };
 
-export default connect(mapStateToProps)(LandingPage);
+export default connect(mapStateToProps, { getProductAction })(LandingPage);

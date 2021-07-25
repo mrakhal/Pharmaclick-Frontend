@@ -1,5 +1,13 @@
 import axios from "axios";
-import { LOGIN_FAILED, LOGIN_SUCCES, LOGOUT, URL_API } from "../Helper";
+import {
+  LOGIN_FAILED,
+  LOGIN_SUCCES,
+  LOGOUT,
+  URL_API,
+  GET_PROFILE_IMAGE,
+  GET_DATA_ADDRESS,
+} from "../Helper";
+import HTTP from "../services/http";
 
 export const authLogin = (email, password) => {
   return async (dispatch) => {
@@ -36,13 +44,27 @@ export const authLogout = () => {
 export const getAddress = (iduser) => {
   return async (dispatch) => {
     try {
-      let res = await axios.get(URL_API + `/user/get-address?iduser=${iduser}`);
+      let res = await HTTP.get(URL_API + `/user/get-address?iduser=${iduser}`);
       dispatch({
-        type: "GET_DATA_ADDRESS",
+        type: GET_DATA_ADDRESS,
         payload: res.data,
       });
     } catch (err) {
       console.log(err);
+    }
+  };
+};
+
+export const getImageProfileUser = (id) => {
+  return async (dispatch) => {
+    try {
+      let res = await HTTP.get(`/user/get-image-user?iduser=${id}`);
+      dispatch({
+        type: GET_PROFILE_IMAGE,
+        payload: res.data,
+      });
+    } catch (error) {
+      console.log("Get Image Profile Error", error);
     }
   };
 };
