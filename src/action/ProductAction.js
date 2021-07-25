@@ -1,12 +1,11 @@
 import { URL_API, GET_PRODUCT, GET_DATA_CITY } from "../Helper";
-import HTTP from "../services/http";
+import HTTP from "../service/HTTP";
 import axios from "axios";
 
 export const getProductAction = (type) => {
   return async (dispatch) => {
     try {
-      let product = await axios.get(URL_API + `/product/get/${type}`);
-      console.log("action-->", product.data);
+      let product = await HTTP.get(`/product/get/${type}`);
       dispatch({
         type: GET_PRODUCT,
         payload: product.data,
@@ -17,10 +16,25 @@ export const getProductAction = (type) => {
   };
 };
 
+export const getProducts = () => {
+  return async (dispatch) => {
+    try {
+      let res = await HTTP.get(`/product/get-products`);
+
+      dispatch({
+        type: "GET_DATA_PRODUCTS",
+        payload: res.data,
+      });
+    } catch (error) {
+      console.log("ERROR GET PRODUCT", error);
+    }
+  };
+};
+
 export const getCity = () => {
   return async (dispatch) => {
     try {
-      let res = await HTTP.get(URL_API + `/product/get-city`);
+      let res = await HTTP.get(`/product/get-city`);
       dispatch({
         type: GET_DATA_CITY,
         payload: res.data,

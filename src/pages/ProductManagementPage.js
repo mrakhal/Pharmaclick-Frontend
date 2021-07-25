@@ -1,22 +1,28 @@
 import axios from "axios";
 import React from "react";
+import "../assets/css/SidebarComp.css";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ColumnGroup } from "primereact/columngroup";
 import { Row } from "primereact/row";
 import { Toolbar } from "primereact/toolbar";
 import { Button } from "primereact/button";
+import { FileUpload } from "primereact/fileupload";
 // import './ProductPack.css'
+import { Tag } from "primereact/tag";
 import { connect } from "react-redux";
 import { getProductAction } from "../action";
 import "../assets/css/ProductManagement.css";
 import "primeflex/primeflex.css";
+import { productReducer } from "../reducer/ProductReducer";
 import DialogProduct from "../components/DialogProduct";
-import "../assets/css/SidebarComp.css";
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
 import DialogAdd from "../components/DialogAdd";
 import { Toast } from "primereact/toast";
 import { URL_API } from "../Helper";
-import { ConfirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import HTTP from "../service/HTTP";
 
 class ProductManagementPage extends React.Component {
   constructor(props) {
@@ -62,21 +68,55 @@ class ProductManagementPage extends React.Component {
     this.props.getProductAction(1);
   }
 
+  componentWillUnmount() {
+    this.props.getProductAction(1);
+  }
   //COLUMN BODY
   bodyImage = (rowData) => {
-    return (
-      <img
-        src={
-          rowData.images[0]
-            ? rowData.images[0].includes("http")
+    if (rowData.images) {
+      return (
+        <img
+          src={
+            rowData.images[0].includes("http")
               ? `${rowData.images[0]}`
               : `${URL_API}/${rowData.images[0]}`
-            : "/"
-        }
-        style={{ height: "100px", width: "100px" }}
-        alt="product image"
-      />
-    );
+          }
+          style={{ height: "100px", width: "100px" }}
+        />
+      );
+    } else {
+      return (
+        <img
+          src={"/"}
+          alt="No image Available"
+          style={{ height: "100px", width: "100px" }}
+        />
+      );
+    }
+  };
+
+  bodyQty = (rowData) => {
+    if (rowData.stock) {
+      return rowData.stock.map((item, index) => {
+        return (
+          <>
+            <Row>{item.qty}</Row>
+          </>
+        );
+      });
+    }
+  };
+
+  bodyType = (rowData) => {
+    if (rowData.stock) {
+      return rowData.stock.map((item, index) => {
+        return (
+          <>
+            <Row>{item.type}</Row>
+          </>
+        );
+      });
+    }
   };
 
   bodyQty = (rowData) => {
@@ -111,24 +151,6 @@ class ProductManagementPage extends React.Component {
     );
   };
 
-  bodyDescription = (rowData) => {
-    return <Row>{rowData.description}</Row>;
-  };
-  bodyEffect = (rowData) => {
-    return (
-      <Row>{rowData.effect ? rowData.effect.replace(/[+]/g, "\n") : null}</Row>
-    );
-  };
-  bodyUsage = (rowData) => {
-    return <Row>{rowData.usage}</Row>;
-  };
-  bodyDosage = (rowData) => {
-    return <Row>{rowData.dosage}</Row>;
-  };
-  bodyIndication = (rowData) => {
-    return <Row>{rowData.indication.replace(/[+]/g, "\n")}</Row>;
-  };
-
   bodyCategory = (rowData) => {
     return (
       <Row>
@@ -138,13 +160,22 @@ class ProductManagementPage extends React.Component {
   };
   editProduct = async (product) => {
     try {
-      console.log(product.netto);
       let index = this.category.findIndex(
-        (item) => item.name.toLocaleLowerCase() === product.category
+        (item) => item.name.toLocaleLowerCase() == product.category
       );
       let unitIndex = this.unit.findIndex(
-        (item) => item.name.toLocaleLowerCase() === product.unit
+        (item) => item.name.toLocaleLowerCase() == product.unit
       );
+
+      this.setState({
+        productDetail: product,
+        productDialog: true,
+        addDialog: false,
+        confirmDialog: false,
+        idstock: null,
+        selectedCategory: this.category[index],
+        selectedUnit: this.unit[unitIndex],
+      });
 
       this.setState({
         productDetail: product,
@@ -223,13 +254,11 @@ class ProductManagementPage extends React.Component {
   };
 
   inputChange = (e, property) => {
-    if (property === "category") {
+    if (property == "category") {
       this.setState({ selectedCategory: e.value });
-    } else if (property === "unit") {
+    } else if (property == "unit") {
       this.setState({ selectedUnit: e.value });
     } else {
-      console.log("INPUT CHANGE", property, e.target.value);
-      console.log(this.state.productDetail.netto);
       let val = e.target.value;
       let productDetail = { ...this.state.productDetail };
       productDetail[`${property}`] = val;

@@ -50,7 +50,7 @@ class DialogAdd extends React.Component {
             { name: 'Hipertensi', id: 7 },
             { name: 'Otot, tulang dan sendi', id: 8 },
             { name: 'Kulit', id: 9 },
-            { name: 'Demam', id: 10 }
+            { name: 'P3K', id: 10 }
         ];
 
         this.unit = [
@@ -90,7 +90,7 @@ class DialogAdd extends React.Component {
 
             let res = await axios.post(URL_API + '/product/add', formData)
             console.log(res.data)
-            this.setState({ selectedCategory: '', selectedUnit: '' })
+            this.setState({ selectedCategory: '', selectedUnit: '', fileUpload: '' })
             this.props.hide()
             this.props.toast()
             this.props.getProductAction(1)
@@ -119,7 +119,7 @@ class DialogAdd extends React.Component {
 
                 <div className="d-flex flex-column justify-content-center align-items-center">
                     <div>
-                        <div style={{ width: '250px', height: '150px', border: '1px solid grey' }} className="d-flex align-items-center justify-content-center">
+                        <div style={{ width: '250px', height: '150px', border: this.state.fileUpload ? '1px solid white' : '1px solid grey' }} className="d-flex align-items-center justify-content-center">
                             <img src={this.state.fileUpload ? URL.createObjectURL(this.state.fileUpload) : 'https://image.flaticon.com/icons/png/512/1837/1837526.png'}
                                 style={{ height: this.state.fileUpload ? '110%' : '30px' }} />
                         </div>
