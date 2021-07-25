@@ -16,7 +16,7 @@ class VerificationPage extends React.Component {
 
     onBtnVerify = async () => {
         try {
-            let { otp } = this.state.otp
+            let { otp } = this.state
             const headers = {
                 headers: {
                     'Authorization': `Bearer ${this.props.location.pathname.split('/')[2]}`
