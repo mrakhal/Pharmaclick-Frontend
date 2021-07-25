@@ -9,12 +9,12 @@ const INTIAL_STATE = {
   email: "",
   role: "",
   status: "",
-  profile_image: "",
   cart: [],
   address: [],
   messages: "",
   response: "",
   phone_number: "",
+  image_profile: [],
 };
 
 export const authReducer = (state = INTIAL_STATE, action) => {
@@ -29,6 +29,8 @@ export const authReducer = (state = INTIAL_STATE, action) => {
       };
     case "GET_DATA_ADDRESS":
       return { ...state, address: action.payload };
+    case "GET_PROFILE_IMAGE":
+      return { ...state, image_profile: action.payload };
     case LOGOUT:
       return INTIAL_STATE;
     default:

@@ -1,25 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from 'primereact/button';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "primereact/button";
+import "../assets/css/notFoundPage.css";
+import Ambulance from "../assets/images/ambulance.png";
 
 class NotFoundPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-    render() {
-        return (
-            <div className="container" style={{ width: '100%', textAlign: 'center', height: '100vh', margin: '5% 10%' }}>
-                <h4>Oopsie!</h4>
-                <h1 style={{ fontSize: '5vw', fontWeight: 'bold' }}>404 Page Not Found</h1>
-                <img src="https://image.flaticon.com/icons/png/128/2748/2748792.png" className="m-3" /><br />
-                <h4>You're not in the radar!</h4>
-                <Link to="/">
-                    <Button icon="pi pi-arrow-left" iconPos="left" label="Back to Home" />
-                </Link>
-            </div>
-        );
-    }
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    return (
+      <body>
+        <div className="night">
+          <div className="error">
+            <p>
+              PAGE NOT FOUND
+              <span>404</span>
+            </p>
+          </div>
+          <div className="surface"></div>
+          <div className="car">
+            <img src={Ambulance} width="30%" />
+          </div>
+        </div>
+      </body>
+    );
+  }
 }
 
 export default NotFoundPage;

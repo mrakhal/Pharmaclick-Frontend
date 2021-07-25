@@ -31,17 +31,27 @@ class NavbarComp extends React.Component {
   }
 
   componentDidMount() {
-    // this.checkImage();
+    setTimeout(() => {
+      this.getAnImages();
+    }, 1500);
+
     // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
-  // checkImage = () => {
-  //   if (this.props.profile.message) {
-  //     return Profile;
-  //   } else {
-  //     return this.props.profile;
-  //   }
-  // };
+  getAnImages = () => {
+    axios
+      .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
+      .then((res) => {
+        if (res.data.image_url.length > 0) {
+          this.setState({ file: res.data.image_url });
+        } else {
+          this.setState({ file: Profile });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   btLogout = () => {
     this.props.authLogout();
@@ -57,9 +67,11 @@ class NavbarComp extends React.Component {
           className="px-3  navi-item"
           fixed="top"
         >
-          <NavbarBrand>
-            <img src={Logo} width="150px" alt="logo pharmaclick" />
-          </NavbarBrand>
+          <Link to="/product" style={{ textDecoration: "none" }}>
+            <NavbarBrand>
+              <img src={Logo} width="150px" alt="logo pharmaclick" />
+            </NavbarBrand>
+          </Link>
           <NavbarToggler
             onClick={() => {
               this.setState({ isOpen: !this.state.isOpen });
@@ -68,21 +80,25 @@ class NavbarComp extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="m-auto " navbar>
               <NavItem>
-                <NavLink>
-                  <Link to="/" style={{ textDecoration: "none" }}>
+                <Link to="/" style={{ textDecoration: "none" }}>
+                  <NavLink>
                     <a className="menu-item">Home</a>
+                  </NavLink>
+                </Link>
+              </NavItem>
+              <NavItem>
+                <NavLink>
+                  <Link className="menu-item" to="/product">
+                    Product
                   </Link>
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink>
-                  <Link className="menu-item" to="/product">Product</Link>
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink>
-                  <a className="menu-item">Contact</a>
-                </NavLink>
+                <Link to="/contact">
+                  <NavLink>
+                    <a className="menu-item">Contact</a>
+                  </NavLink>
+                </Link>
               </NavItem>
             </Nav>
             {this.props.user.role === "user" ? (
@@ -121,13 +137,13 @@ class NavbarComp extends React.Component {
                 <NavItem type="none" style={{ marginRight: "10px" }}>
                   <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
-                {/* <img
+                <img
                   src={this.state.file}
                   width="35px;"
                   height="35px;"
                   style={{ borderRadius: "50%" }}
                   alt="profile image"
-                /> */}
+                />
                 <UncontrolledDropdown>
                   <DropdownToggle nav caret></DropdownToggle>
                   <DropdownMenu right>

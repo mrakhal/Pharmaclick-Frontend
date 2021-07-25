@@ -194,6 +194,10 @@
   overflow: hidden;
 }
 
+.card-body {
+  display: block;
+}
+
 .card-medicine:hover {
   border: 1px solid rgb(26, 152, 255);
   transform: scale(1.05);
