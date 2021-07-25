@@ -19,7 +19,6 @@ class FooterComp extends React.Component {
         <div className="container pt-3 pb-1">
           <section className="mb-4">
             <div className="d-flex justify-content-evenly text-black">
-              <div>Pharmaclick</div>
               <div>
                 <a
                   className="btn btn-link btn-floating btn-lg text-dark m-1"
@@ -58,7 +57,6 @@ class FooterComp extends React.Component {
                   {/* <i className="fab fa-instagram"></i> */}
                 </a>
               </div>
-              <div>Copyright @2021</div>
             </div>
           </section>
         </div>

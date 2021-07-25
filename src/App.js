@@ -83,6 +83,7 @@ class App extends React.Component {
               <Route path="/" component={LandingPage} exact />
               <Route path={"/login"} component={LoginPage} />
               <Route path={"/register"} component={RegisterPage} />
+              <Route path={"/product"} component={ProductPage} />
               <Route path="*" component={NotFoundPage} />
             </Switch>
             <FooterComp />
