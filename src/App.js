@@ -18,6 +18,7 @@ import ProfilePage from "./pages/profilePage";
 import NavbarComp from "./components/navbarComp";
 import FooterComp from "./components/footerComp";
 import ContactPage from "./pages/ContactPage";
+import CartPage from "./pages/CartPage";
 import { keepLogin, getImageProfileUser, getProductAction } from "./action";
 
 class App extends React.Component {
@@ -28,7 +29,6 @@ class App extends React.Component {
   componentDidMount() {
     this.props.getProductAction(1);
     this.reLogin();
-    this.checkNavbar();
   }
 
   reLogin = async () => {
@@ -42,11 +42,6 @@ class App extends React.Component {
     }
   };
 
-  checkNavbar = () => {
-    if (this.props.role == "admin") {
-      this.setState({ navbar: <SidebarComp /> });
-    }
-  };
   render() {
     return (
       <>
@@ -59,8 +54,10 @@ class App extends React.Component {
               <Route path={"/product"} component={ProductPage} />
               <Route path={"/profile"} component={ProfilePage} />
               <Route path={"/contact"} component={ContactPage} />
+              <Route path={"/cart"} component={CartPage} />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
+            <FooterComp />
           </>
         ) : this.props.role == "admin" ? (
           <>
@@ -74,6 +71,7 @@ class App extends React.Component {
               />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
+            <FooterComp />
           </>
         ) : (
           <>
@@ -88,6 +86,7 @@ class App extends React.Component {
               <Route path={"/contact"} component={ContactPage} />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
+            <FooterComp />
           </>
         )}
       </>

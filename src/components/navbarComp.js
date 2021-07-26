@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {
+  Container,
+  Row,
+  Col,
   Collapse,
   Navbar,
   NavbarToggler,
@@ -35,6 +38,16 @@ class NavbarComp extends React.Component {
       this.getAnImages();
     }, 1500);
 
+    let list = document.querySelectorAll(`.menu-item`);
+    for (let i = 0; i < list.length; i++) {
+      list[i].onclick = function () {
+        let j = 0;
+        while (j < list.length) {
+          list[j++].className = "menu-item";
+        }
+        list[i].className = "menu-item active";
+      };
+    }
     // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
@@ -44,11 +57,10 @@ class NavbarComp extends React.Component {
       .then((res) => {
         if (res.data.image_url.length > 0) {
           this.setState({ file: res.data.image_url });
-        } else {
-          this.setState({ file: Profile });
         }
       })
       .catch((err) => {
+        this.setState({ file: Profile });
         console.log(err);
       });
   };
@@ -57,7 +69,45 @@ class NavbarComp extends React.Component {
     this.props.authLogout();
   };
 
+  printCart = () => {
+    return this.props.user.cart.length < 0 ? (
+      <DropdownItem>Cart is Empty</DropdownItem>
+    ) : (
+      this.props.user.cart.map((item, index) => {
+        return (
+          // <DropdownItem style={{ width: 400 }}>
+          <Container style={{ width: 300 }}>
+            <Row>
+              <Col md="4">
+                <img src={item.image_url} width="80%" />
+              </Col>
+              <Col md="8">
+                <p
+                  style={{
+                    marginBottom: 0,
+                    fontSize: "0.9em",
+                  }}
+                >
+                  <strong>{item.product_name}</strong>
+                </p>
+                <p style={{ marginBottom: 0, fontSize: "0.8em" }}>
+                  Qty : {item.qty}
+                </p>
+                <p style={{ marginBottom: 0, fontSize: "0.8em" }}>
+                  Rp. {item.price.toLocaleString()}
+                </p>
+              </Col>
+              <hr style={{ border: "2px solid #288F94", marginTop: "15px" }} />
+            </Row>
+          </Container>
+          // </DropdownItem>
+        );
+      })
+    );
+  };
+
   render() {
+    console.log("user", this.props.user);
     return (
       <div>
         <Navbar
@@ -82,14 +132,14 @@ class NavbarComp extends React.Component {
               <NavItem>
                 <Link to="/" style={{ textDecoration: "none" }}>
                   <NavLink>
-                    <a className="menu-item">Home</a>
+                    <a className="menu-item active">Home</a>
                   </NavLink>
                 </Link>
               </NavItem>
               <NavItem>
                 <NavLink>
-                  <Link className="menu-item" to="/product">
-                    Product
+                  <Link to="/product">
+                    <a className="menu-item">Products</a>
                   </Link>
                 </NavLink>
               </NavItem>
@@ -104,7 +154,7 @@ class NavbarComp extends React.Component {
             {this.props.user.role === "user" ? (
               <div className="d-flex justify-content-end align-items-center drop-menu">
                 <NavItem type="none">
-                  <UncontrolledDropdown nav inNavbar>
+                  <UncontrolledDropdown nav>
                     <DropdownToggle nav>
                       <NavLink href="#">
                         <FontAwesomeIcon icon={faShoppingCart} />
@@ -112,12 +162,12 @@ class NavbarComp extends React.Component {
                           class="badge bg-primary rounded-pill"
                           style={{ color: "white" }}
                         >
-                          {/* {this.props.cart.length} */}
+                          {this.props.user.cart.length}
                         </span>
                       </NavLink>
                     </DropdownToggle>
-                    <DropdownMenu right>
-                      isi print cart
+                    <DropdownMenu>
+                      {this.printCart()}
                       <DropdownItem divider />
                       <DropdownItem>
                         <Link
@@ -126,6 +176,7 @@ class NavbarComp extends React.Component {
                             fontSize: "calc(5px + 1vmin)",
                             textDecoration: "none",
                             color: "black",
+                            cursor: "pointer",
                           }}
                         >
                           Go To Cart
@@ -180,13 +231,13 @@ class NavbarComp extends React.Component {
                 <div className="d-flex regist">
                   <NavbarText className="mr-3">
                     <Link to="/login" style={{ textDecoration: "none" }}>
-                      <a>Login</a>
+                      <a className="menu-item">Login</a>
                     </Link>
                   </NavbarText>
                   &nbsp;
                   <NavbarText>
                     <Link to="/register" style={{ textDecoration: "none" }}>
-                      <a>Register</a>
+                      <a className="menu-item">Register</a>
                     </Link>
                   </NavbarText>
                   &nbsp;

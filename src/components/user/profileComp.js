@@ -101,25 +101,46 @@ class ProfileComp extends React.Component {
     formData.append("data", JSON.stringify(data));
     formData.append("images", this.state.fileUpload);
 
-    axios
-      .patch(URL_API + `/user/patch-user`, formData)
-      .then((res) => {
-        this.getAnImages();
-        this.props.getImageProfileUser(this.props.user.iduser);
-        this.setState({
-          alert1: !this.state.alert1,
-          color1: "success",
-          message1: res.data.message,
-        });
-        setTimeout(() => {
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("tkn_id")}`,
+      },
+    };
+    if (
+      this.state.fileUpload.type.split("/")[1] === "jpeg" ||
+      this.state.fileUpload.type.split("/")[1] === "jpg"
+    ) {
+      axios
+        .patch(URL_API + `/user/patch-user`, formData, headers)
+        .then((res) => {
+          this.getAnImages();
+          this.props.getImageProfileUser(this.props.user.iduser);
           this.setState({
             alert1: !this.state.alert1,
+            color1: "success",
+            message1: res.data.message,
           });
-        }, 3000);
-      })
-      .catch((err) => {
-        console.log(err);
+          setTimeout(() => {
+            this.setState({
+              alert1: !this.state.alert1,
+            });
+          }, 3000);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      this.setState({
+        alert1: !this.state.alert1,
+        color1: "danger",
+        message1: "image must .jpg/.jpeg",
       });
+      setTimeout(() => {
+        this.setState({
+          alert1: !this.state.alert1,
+        });
+      }, 3000);
+    }
   };
 
   onBtnEditAddress = () => {
@@ -624,6 +645,7 @@ class ProfileComp extends React.Component {
                     <input
                       id="file-input"
                       type="file"
+                      accept="image/jpg, image/jpeg"
                       onChange={this.handleChange}
                     />
                   </div>
