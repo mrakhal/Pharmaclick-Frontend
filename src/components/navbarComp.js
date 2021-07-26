@@ -44,14 +44,14 @@ class NavbarComp extends React.Component {
       .then((res) => {
         if (res.data.image_url.length > 0) {
           this.setState({ file: res.data.image_url });
-        } else {
-          this.setState({ file: Profile });
         }
       })
       .catch((err) => {
+        this.setState({ file: Profile });
         console.log(err);
       });
   };
+
 
   btLogout = () => {
     this.props.authLogout();
