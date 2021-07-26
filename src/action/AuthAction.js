@@ -7,7 +7,7 @@ import {
   GET_PROFILE_IMAGE,
   GET_DATA_ADDRESS,
 } from "../Helper";
-import HTTP from "../services/http";
+import HTTP from "../service/HTTP";
 
 export const authLogin = (email, password) => {
   return async (dispatch) => {
@@ -44,7 +44,7 @@ export const authLogout = () => {
 export const getAddress = (iduser) => {
   return async (dispatch) => {
     try {
-      let res = await HTTP.get(URL_API + `/user/get-address?iduser=${iduser}`);
+      let res = await HTTP.get(`/user/get-address?iduser=${iduser}`);
       dispatch({
         type: GET_DATA_ADDRESS,
         payload: res.data,
