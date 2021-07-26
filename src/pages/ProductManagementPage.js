@@ -295,7 +295,7 @@ class ProductManagementPage extends React.Component {
   confirmDeleteProduct = async (idstock) => {
     try {
       let deleteProduct = await axios.delete(
-        URL_API + `/product/delete/${idstock}`
+        URL_API + `/product/${idstock}`
       );
       console.log(deleteProduct.data);
       this.toast.show({

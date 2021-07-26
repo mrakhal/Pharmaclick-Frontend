@@ -96,124 +96,49 @@ var settings = {
   ],
 };
 
-var product = [
-  {
-    nama: "sanmol",
-    img: 'Product1',
-    harga: 50000,
-  },
-  {
-    nama: "Paracetamol",
-    img: 'Product2',
-    harga: 45000,
-  },
-  {
-    nama: "Pamol",
-    img: 'Product3',
-    harga: 15000,
-  },
-  {
-    nama: "Interpec",
-    img: 'Product5',
-    harga: 70000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 35000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 25000,
-  },
-  {
-    nama: "sanmol",
-    img: 'Product1',
-    harga: 50000,
-  },
-  {
-    nama: "Paracetamol",
-    img: 'Product2',
-    harga: 45000,
-  },
-  {
-    nama: "Pamol",
-    img: 'Product3',
-    harga: 15000,
-  },
-  {
-    nama: "Interpec",
-    img: 'Product5',
-    harga: 70000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 35000,
-  },
-  {
-    nama: "Alcoplus",
-    img: '',
-    harga: 25000,
-  },
-  {
-    nama: "sanmol",
-    img: 'Product1',
-    harga: 50000,
-  },
-  {
-    nama: "Paracetamol",
-    img: 'Product2',
-    harga: 45000,
-  },
-  {
-    nama: "Pamol",
-    img: 'Product3',
-    harga: 15000,
-  },
-  {
-    nama: "Interpec",
-    img: 'Product',
-    harga: 70000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 35000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 25000,
-  },
-];
 
 var category = [
   {
     nama: "Covid",
-    img: 'Product6',
+    id: 1,
   },
   {
     nama: "Mata",
-    img: 'Product6',
+    id: 2,
   },
   {
-    nama: "Batuk",
-    img: 'Product6',
+    nama: "Flu dan Batuk",
+    id: 3,
   },
   {
-    nama: "Flu",
-    img: 'Product6',
+    nama: "Vitamnin dan Suplemen",
+    id: 4,
   },
   {
     nama: "Demam",
-    img: 'Product6',
+    id: 5,
   },
   {
-    nama: "Asma",
-    img: ' Product6',
+    nama: "Pencernaan",
+    id: 6,
   },
+  {
+    nama: 'Hipertensi',
+    id: 7
+  },
+  {
+    nama: 'Otot, tulang dan sendi',
+    id: 8
+  },
+  {
+    nama: 'Kulit',
+    id: 9
+  },
+  {
+    nama: "P3K",
+    id: 10
+  }
+
 ];
 
 class ProductPage extends React.Component {
@@ -225,22 +150,25 @@ class ProductPage extends React.Component {
       currentPage: 1,
       todosPerPage: 16,
       modal: false,
-      modalProtection: false
+      modalProtection: false,
+      selectedCategory: null,
+      search: '',
+      check: false
     };
     this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
-    let list = document.querySelectorAll(`.list`);
-    for (let i = 0; i < list.length; i++) {
-      list[i].onclick = function () {
-        let j = 0;
-        while (j < list.length) {
-          list[j++].className = "list";
-        }
-        list[i].className = "list active";
-      };
-    }
+    // let list = document.querySelectorAll(`.list`);
+    // for (let i = 0; i < list.length; i++) {
+    //   list[i].onclick = function () {
+    //     let j = 0;
+    //     while (j < list.length) {
+    //       list[j++].className = "list";
+    //     }
+    //     list[i].className = "list active";
+    //   };
+    // }
     this.props.getProductAction(1)
   }
 
@@ -250,6 +178,22 @@ class ProductPage extends React.Component {
     });
   }
 
+  handleCategory = (categoryName, id) => {
+    console.log(categoryName)
+    if (id) {
+      this.setState({ check: true, selectedCategory: categoryName.value })
+      this.props.getProductAction(1, `?idcategory=${id}`)
+    } else {
+      this.setState({ check: false })
+      this.props.getProductAction(1)
+    }
+  }
+
+  handleSearch = () => {
+    this.setState({ search: this.inSearch.value })
+    this.props.getProductAction(1, `?product_name=%${this.state.search}%`)
+
+  }
   printFilterAll = () => {
     return (
       <>
@@ -271,15 +215,19 @@ class ProductPage extends React.Component {
               <Col md="12 mt-3" className="category-title">
                 <Form>
                   <FormGroup row>
-                    <Label for="checkbox2" xl={12}>
-                      Category
-                    </Label>
+                    <div style={{ width: '13%', display: 'flex' }}>
+                      <Label for="checkbox2" xl={12}>
+                        Category
+                      </Label>
+                      <Button outline color="secondary" size="sm" onClick={() => this.handleCategory(null, 0)}>Reset</Button>
+                    </div>
+
                     <Col xl={{ size: 12 }}>
-                      {category.map((item) => {
+                      {category.map((item, index) => {
                         return (
                           <FormGroup check>
-                            <Label check>
-                              <Input type="radio" name="radio2" />
+                            <Label check >
+                              <Input onClick={() => this.setState({ check: true })} type="radio" name="radio2" value={item.nama} onChange={(e) => this.handleCategory(e.target, index + 1)} />
                               {item.nama}
                             </Label>
                           </FormGroup>
@@ -288,6 +236,7 @@ class ProductPage extends React.Component {
                     </Col>
                   </FormGroup>
                 </Form>
+
               </Col>
 
               <Col md="2" className="category-title">
@@ -346,6 +295,8 @@ class ProductPage extends React.Component {
                           <option>-</option>
                           <option>Highest Price</option>
                           <option>Lowest Price</option>
+                          <option>A-Z</option>
+                          <option>Z-A</option>
                         </Input>
                       </FormGroup>
                     </Col>
@@ -364,7 +315,7 @@ class ProductPage extends React.Component {
   };
 
   printFilter = () => {
-    // MOBILE VIEW
+    // MOBILE VIEW --> filter untuk mobile view
     return (
       <>
         <Modal
@@ -482,8 +433,10 @@ class ProductPage extends React.Component {
                                   style={{ fontSize: "13px" }}
                                 >
                                   <option>-</option>
-                                  <option>Harga Tertinggi</option>
-                                  <option>Harga Terendah</option>
+                                  <option>Highest Price</option>
+                                  <option>Lowest Price</option>
+                                  <option>A-Z</option>
+                                  <option>Z-A</option>
                                 </Input>
                               </FormGroup>
                             </Col>
@@ -522,7 +475,7 @@ class ProductPage extends React.Component {
 
     // Logic for displaying page numbers
     const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(product.length / todosPerPage); i++) {
+    for (let i = 1; i <= Math.ceil(this.props.product.length / todosPerPage); i++) {
       pageNumbers.push(i);
     }
     return (
@@ -604,10 +557,13 @@ class ProductPage extends React.Component {
                   <div>
                     <div class="input-group">
                       <div class="form-outline">
-                        <input
+                        <Input
                           type="search"
                           id="form1"
                           class="form-control p-1"
+                          value={this.state.search}
+                          innerRef={el => this.inSearch = el}
+                          onChange={(e) => this.handleSearch(e.value)}
                         />
                       </div>
                       <Button
@@ -684,7 +640,7 @@ class ProductPage extends React.Component {
                           {item.product_name}
                         </CardTitle>
                         <CardSubtitle className="mb-2 price-products">
-                          Rp {item.pack_price}
+                          Rp. {item.pack_price.toLocaleString()}
                         </CardSubtitle>
                       </CardBody>
                     </Card>
