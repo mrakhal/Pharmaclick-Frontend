@@ -151,6 +151,7 @@ class ProductManagementPage extends React.Component {
     );
   };
 
+
   bodyCategory = (rowData) => {
     return (
       <Row>
@@ -158,6 +159,23 @@ class ProductManagementPage extends React.Component {
       </Row>
     );
   };
+
+  bodyDescription = (rowData) => {
+    return (<Row>{rowData.description}</Row>)
+  }
+  bodyEffect = (rowData) => {
+    return (<Row>{rowData.effect ? rowData.effect.replace(/[+]/g, '\n') : null}</Row>)
+  }
+  bodyUsage = (rowData) => {
+    return (<Row>{rowData.usage}</Row>)
+  }
+  bodyDosage = (rowData) => {
+    return (<Row>{rowData.dosage}</Row>)
+  }
+  bodyIndication = (rowData) => {
+    return (<Row>{rowData.indication.replace(/[+]/g, '\n')}</Row>)
+  }
+
   editProduct = async (product) => {
     try {
       let index = this.category.findIndex(
