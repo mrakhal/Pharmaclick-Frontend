@@ -15,7 +15,7 @@ class HTTP {
     //   ...headers,
     //   Authorization: `Bearer ${localStorage.getItem("tkn_id")}`,
     // };
-    console.log("BROOO", URL_API + url)
+   
     return axios.patch(URL_API + url, body, headers);
   };
 
