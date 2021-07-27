@@ -29,18 +29,16 @@ import {
   faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
-import "../assets/css/productPage.css"
+import "../assets/css/productPage.css";
 // import "../assets/css/navogation.css"
 import { Carousel } from "react-responsive-carousel";
-import BannerProduct from "../assets/images/bannerProduct.gif"
+import BannerProduct from "../assets/images/bannerProduct.gif";
 import { connect } from "react-redux";
-import { getProductAction } from '../action'
+import { getProductAction, keepLogin } from "../action";
 import { Link } from "react-router-dom";
-// import Product1 from "../assets/images/product1.jpg";
-// import Product2 from "../assets/images/product2.jpg";
-// import Product3 from "../assets/images/product3.jpg";
-// import Product5 from "../assets/images/product5.jpg";
-// import Product6 from "../assets/images/product6.jpg";
+import HTTP from "../service/HTTP";
+import axios from "axios";
+import { URL_API } from "../Helper";
 
 var settings = {
   dots: true,
@@ -96,123 +94,30 @@ var settings = {
   ],
 };
 
-var product = [
-  {
-    nama: "sanmol",
-    img: 'Product1',
-    harga: 50000,
-  },
-  {
-    nama: "Paracetamol",
-    img: 'Product2',
-    harga: 45000,
-  },
-  {
-    nama: "Pamol",
-    img: 'Product3',
-    harga: 15000,
-  },
-  {
-    nama: "Interpec",
-    img: 'Product5',
-    harga: 70000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 35000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 25000,
-  },
-  {
-    nama: "sanmol",
-    img: 'Product1',
-    harga: 50000,
-  },
-  {
-    nama: "Paracetamol",
-    img: 'Product2',
-    harga: 45000,
-  },
-  {
-    nama: "Pamol",
-    img: 'Product3',
-    harga: 15000,
-  },
-  {
-    nama: "Interpec",
-    img: 'Product5',
-    harga: 70000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 35000,
-  },
-  {
-    nama: "Alcoplus",
-    img: '',
-    harga: 25000,
-  },
-  {
-    nama: "sanmol",
-    img: 'Product1',
-    harga: 50000,
-  },
-  {
-    nama: "Paracetamol",
-    img: 'Product2',
-    harga: 45000,
-  },
-  {
-    nama: "Pamol",
-    img: 'Product3',
-    harga: 15000,
-  },
-  {
-    nama: "Interpec",
-    img: 'Product',
-    harga: 70000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 35000,
-  },
-  {
-    nama: "Alcoplus",
-    img: 'Product6',
-    harga: 25000,
-  },
-];
-
 var category = [
   {
     nama: "Covid",
-    img: 'Product6',
+    img: "Product6",
   },
   {
     nama: "Mata",
-    img: 'Product6',
+    img: "Product6",
   },
   {
     nama: "Batuk",
-    img: 'Product6',
+    img: "Product6",
   },
   {
     nama: "Flu",
-    img: 'Product6',
+    img: "Product6",
   },
   {
     nama: "Demam",
-    img: 'Product6',
+    img: "Product6",
   },
   {
     nama: "Asma",
-    img: ' Product6',
+    img: " Product6",
   },
 ];
 
@@ -225,7 +130,7 @@ class ProductPage extends React.Component {
       currentPage: 1,
       todosPerPage: 16,
       modal: false,
-      modalProtection: false
+      modalProtection: false,
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -241,7 +146,7 @@ class ProductPage extends React.Component {
         list[i].className = "list active";
       };
     }
-    this.props.getProductAction(1)
+    this.props.getProductAction(1);
   }
 
   handleClick(event) {
@@ -505,26 +410,57 @@ class ProductPage extends React.Component {
     );
   };
 
-  onAddCart = () => {
+  onAddCart = (id, netto, price_pack, name) => {
     if (!this.props.iduser) {
-      this.setState({ modalProtection: !this.modalProtection })
-
+      this.setState({ modalProtection: !this.modalProtection });
     } else {
+      let iduser = this.props.iduser;
+      let product_name = name;
+      let idproduct = id;
+      let qty = 1;
+      let total_netto = qty * netto;
+      let price = parseInt(price_pack);
+
       // fungsi add to cart
+      axios
+        .post(URL_API + `/product/add-to-cart`, {
+          iduser: iduser,
+          idproduct: idproduct,
+          qty: qty,
+          total_netto: total_netto,
+          price: price,
+          product_name: product_name,
+        })
+        .then((res) => {
+          let token = localStorage.getItem("tkn_id");
+          this.props.keepLogin(token);
+          alert(`${res.data}`);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-  }
+  };
   render() {
     const { currentPage, todosPerPage } = this.state;
     // Logic for displaying todos
     const indexOfLastTodo = currentPage * todosPerPage;
     const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-    const currentTodos = this.props.product.slice(indexOfFirstTodo, indexOfLastTodo);
+    const currentTodos = this.props.product.slice(
+      indexOfFirstTodo,
+      indexOfLastTodo
+    );
 
     // Logic for displaying page numbers
     const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(product.length / todosPerPage); i++) {
+    for (
+      let i = 1;
+      i <= Math.ceil(this.props.product.length / todosPerPage);
+      i++
+    ) {
       pageNumbers.push(i);
     }
+    console.log("currentTodos", currentTodos);
     return (
       <Container fluid className="mt-5">
         <Row>
@@ -666,7 +602,14 @@ class ProductPage extends React.Component {
                           <FontAwesomeIcon
                             icon={faShoppingCart}
                             className="icon-product"
-                            onClick={this.onAddCart}
+                            onClick={() => {
+                              this.onAddCart(
+                                item.idproduct,
+                                item.netto,
+                                item.pack_price,
+                                item.product_name
+                              );
+                            }}
                           />
                           <span>Add to cart</span>
                         </li>
@@ -681,7 +624,11 @@ class ProductPage extends React.Component {
                           className="img-fluid "
                         />
                         <CardTitle className="title-products p-0">
-                          {item.product_name}
+                          {item.product_name.length > 36 ? (
+                            <>{item.product_name.slice(0, 30) + " ..."}</>
+                          ) : (
+                            <>{item.product_name}</>
+                          )}
                         </CardTitle>
                         <CardSubtitle className="mb-2 price-products">
                           Rp {item.pack_price}
@@ -724,16 +671,35 @@ class ProductPage extends React.Component {
           </Col>
         </Row>
 
-        <Modal isOpen={this.state.modalProtection} toggle={() => this.setState({ modalProtection: !this.state.modalProtection })}>
+        <Modal
+          isOpen={this.state.modalProtection}
+          toggle={() =>
+            this.setState({ modalProtection: !this.state.modalProtection })
+          }
+        >
           <ModalHeader>Cannot do transaction!</ModalHeader>
-          <ModalBody>
-            To continue transaction please login!
-          </ModalBody>
+          <ModalBody>To continue transaction please login!</ModalBody>
           <ModalFooter>
             <Link to="/login">
-              <Button color="primary" onClick={() => this.setState({ modalProtection: !this.state.modalProtection })}>Login</Button>{' '}
+              <Button
+                color="primary"
+                onClick={() =>
+                  this.setState({
+                    modalProtection: !this.state.modalProtection,
+                  })
+                }
+              >
+                Login
+              </Button>{" "}
             </Link>
-            <Button color="secondary" onClick={() => this.setState({ modalProtection: !this.state.modalProtection })}>Cancel</Button>
+            <Button
+              color="secondary"
+              onClick={() =>
+                this.setState({ modalProtection: !this.state.modalProtection })
+              }
+            >
+              Cancel
+            </Button>
           </ModalFooter>
         </Modal>
       </Container>
@@ -743,7 +709,10 @@ class ProductPage extends React.Component {
 
 const mapStateToProps = ({ productReducer, authReducer }) => {
   return {
-    product: productReducer.product_list, iduser: authReducer.id
-  }
-}
-export default connect(mapStateToProps, { getProductAction })(ProductPage);
+    product: productReducer.product_list,
+    iduser: authReducer.iduser,
+  };
+};
+export default connect(mapStateToProps, { getProductAction, keepLogin })(
+  ProductPage
+);
