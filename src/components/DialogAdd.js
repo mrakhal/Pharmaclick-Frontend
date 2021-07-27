@@ -15,6 +15,7 @@ import axios from 'axios';
 import { URL_API } from '../Helper';
 import { getProductAction } from '../action'
 import { connect } from 'react-redux';
+import HTTP from '../service/HTTP';
 class DialogAdd extends React.Component {
     constructor(props) {
         super(props);
@@ -88,7 +89,8 @@ class DialogAdd extends React.Component {
             formData.append('data', JSON.stringify(data))
             formData.append('products', fileUpload)
 
-            let res = await axios.post(URL_API + '/product',  formData )
+            // let res = await axios.post(URL_API + '/product',  formData )
+            let res = await HTTP.post('/product', formData)
             console.log(res.data)
             this.setState({ selectedCategory: '', selectedUnit: '', fileUpload: '', stock })
             this.props.hide()

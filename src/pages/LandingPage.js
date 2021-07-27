@@ -172,6 +172,7 @@ class LandingPage extends React.Component {
 
   componentDidMount() {
     this.onBtnFilterCategory();
+    // this.getProductAction(1)
   }
 
   onBtnBrowse = (more) => {
@@ -179,27 +180,27 @@ class LandingPage extends React.Component {
   };
 
   onBtnFilterCategory = (mata) => {
-    if (mata === undefined) {
-      mata = "demam";
-      axios
-        .get(URL_API + `/product/get-products?name=${mata}`)
-        .then((res) => {
-          console.log("data", res.data);
-          this.setState({ filter: res.data });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      axios
-        .get(URL_API + `/product/get-products?name=${mata}`)
-        .then((res) => {
-          this.setState({ filter: res.data });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    // if (mata === undefined) {
+    //   mata = "demam";
+    //   axios
+    //     .get(URL_API + `/product?product_name=${mata}`)
+    //     .then((res) => {
+    //       console.log("data", res.data);
+    //       this.setState({ filter: res.data });
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // } else {
+    //   axios
+    //     .get(URL_API + `/product/get-products?name=${mata}`)
+    //     .then((res) => {
+    //       this.setState({ filter: res.data });
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // }
   };
 
   render() {
@@ -257,7 +258,7 @@ class LandingPage extends React.Component {
                                 >
                                   <CardImg
                                     width="100%"
-                                    src={item.images[0]}
+                                    src={item.image_url}
                                     alt="sanmol"
                                     className="img-fluid p-2"
                                     style={{

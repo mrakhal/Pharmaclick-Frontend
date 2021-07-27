@@ -181,18 +181,54 @@ class ProductPage extends React.Component {
   handleCategory = (categoryName, id) => {
     console.log(categoryName)
     if (id) {
-      this.setState({ check: true, selectedCategory: categoryName.value })
-      this.props.getProductAction(1, `?idcategory=${id}`)
+      this.setState({ check: true, selectedCategory: categoryName.value, categoryId: id })
+      // this.props.getProductAction(1, `?idcategory=${id}`)
     } else {
       this.setState({ check: false })
-      this.props.getProductAction(1)
+      // this.props.getProductAction(1)
     }
+
   }
 
   handleSearch = () => {
     this.setState({ search: this.inSearch.value })
     this.props.getProductAction(1, `?product_name=%${this.state.search}%`)
 
+  }
+
+  
+
+  onBtnSubmit = () => {
+    let { categoryId } = this.state
+    console.log(categoryId, this.inputSort.value, this.inMin.value)
+    console.log("input sort value:", this.inputSort.value)
+    console.log("input sort value boolean:", Boolean(this.inputSort.value))
+
+    let indicator = [categoryId, this.inputSort.value, this.inMax.value]
+    if (!this.inMin.value) {
+      this.inMin.value = 0
+    }
+    let query = [`idcategory=${categoryId}`, `sort=${this.inputSort.value}`, `pack_price=${this.inMin.value}[and]${this.inMax.value}`]
+    let mainQuery = []
+
+    indicator.forEach((item, index) => {
+      if (item) {
+        mainQuery.push(query[index])
+      }
+    })
+
+    console.log("mainquery", mainQuery.join('&'))
+
+    this.props.getProductAction(1, `?${mainQuery.join('&')}`)
+  }
+
+  onBtnReset = () => {
+    this.handleCategory(null, 0)
+    this.inputSort.value = ""
+    this.inMax.value = null
+    this.inMin.value = null
+    this.props.getProductAction(1)
+    
   }
   printFilterAll = () => {
     return (
@@ -219,7 +255,7 @@ class ProductPage extends React.Component {
                       <Label for="checkbox2" xl={12}>
                         Category
                       </Label>
-                      <Button outline color="secondary" size="sm" onClick={() => this.handleCategory(null, 0)}>Reset</Button>
+                      <Button outline color="secondary" size="sm" onClick={this.onBtnReset}>Reset</Button>
                     </div>
 
                     <Col xl={{ size: 12 }}>
@@ -255,6 +291,7 @@ class ProductPage extends React.Component {
                             placeholder="Minimum"
                             className="p-1"
                             style={{ fontSize: "13px" }}
+                            innerRef={e => this.inMin = e}
                           />
                         </div>
                         <div>
@@ -267,6 +304,7 @@ class ProductPage extends React.Component {
                             placeholder="Maximum "
                             className="p-1"
                             style={{ fontSize: "13px" }}
+                            innerRef={e => this.inMax = e}
                           />
                         </div>
                       </div>
@@ -291,12 +329,14 @@ class ProductPage extends React.Component {
                           name="select"
                           id="exampleSelect"
                           style={{ fontSize: "13px" }}
+                          innerRef={e => this.inputSort = e}
+                          onChange={this.handleSort}
                         >
-                          <option>-</option>
-                          <option>Highest Price</option>
-                          <option>Lowest Price</option>
-                          <option>A-Z</option>
-                          <option>Z-A</option>
+                          <option value="">-</option>
+                          <option value='pack_price:desc'>Highest Price</option>
+                          <option value='pack_price:asc'>Lowest Price</option>
+                          <option value='product_name:asc'>A-Z</option>
+                          <option value='product_name:desc'>Z-A</option>
                         </Input>
                       </FormGroup>
                     </Col>
@@ -305,7 +345,7 @@ class ProductPage extends React.Component {
               </Col>
 
               <Col md="12 submit mt-3">
-                <a style={{ color: "white" }}>Submit</a>
+                <a style={{ color: "white", cursor: 'pointer' }} onClick={this.onBtnSubmit}>Submit</a>
               </Col>
             </Row>
           </Container>
@@ -445,7 +485,7 @@ class ProductPage extends React.Component {
                       </Col>
 
                       <Col md="12 submit mt-3">
-                        <a style={{ color: "white" }}>Submit</a>
+                        <a style={{ color: "white" }} onClick={this.onBtnSubmit}>Submit</a>
                       </Col>
                     </Row>
                   </Container>
@@ -632,8 +672,8 @@ class ProductPage extends React.Component {
                           top
                           width="100%"
                           height="auto"
-                          src={item.images[0]}
-                          alt="sanmol"
+                          src={item.images}
+                          alt={item.product_name}
                           className="img-fluid "
                         />
                         <CardTitle className="title-products p-0">
