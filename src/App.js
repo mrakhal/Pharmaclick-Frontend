@@ -19,6 +19,7 @@ import NavbarComp from "./components/navbarComp";
 import FooterComp from "./components/footerComp";
 import ContactPage from "./pages/ContactPage";
 import { keepLogin, getImageProfileUser, getProductAction } from "./action";
+import ProductDetailPage from "./pages/ProductDetailPage";
 
 class App extends React.Component {
   constructor(props) {
@@ -59,6 +60,7 @@ class App extends React.Component {
               <Route path={"/product"} component={ProductPage} />
               <Route path={"/profile"} component={ProfilePage} />
               <Route path={"/contact"} component={ContactPage} />
+              <Route path={"/detail"} component={ProductDetailPage} />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
           </>
@@ -86,6 +88,7 @@ class App extends React.Component {
               <Route path={"/reset"} component={PassResetPage} />
               <Route path={"/verif"} component={VerificationPage} />
               <Route path={"/contact"} component={ContactPage} />
+              <Route path={"/detail"} component={ProductDetailPage} />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
           </>
