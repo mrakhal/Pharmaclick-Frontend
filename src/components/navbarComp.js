@@ -189,13 +189,13 @@ class NavbarComp extends React.Component {
                 <NavItem type="none" style={{ marginRight: "10px" }}>
                   <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
-                <img
+                {/* <img
                   src={this.state.file}
                   width="35px;"
                   height="35px;"
                   style={{ borderRadius: "50%" }}
                   alt="profile image"
-                />
+                /> */}
                 <UncontrolledDropdown>
                   <DropdownToggle nav caret></DropdownToggle>
                   <DropdownMenu right>
