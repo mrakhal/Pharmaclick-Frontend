@@ -31,27 +31,26 @@ class NavbarComp extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.getAnImages();
-    }, 1500);
-
+    // setTimeout(() => {
+    //   this.getAnImages();
+    // }, 1500);
     // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
-  getAnImages = () => {
-    axios
-      .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
-      .then((res) => {
-        if (res.data.image_url.length > 0) {
-          this.setState({ file: res.data.image_url });
-        } else {
-          this.setState({ file: Profile });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // getAnImages = () => {
+  //   axios
+  //     .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
+  //     .then((res) => {
+  //       if (res.data.image_url.length > 0) {
+  //         this.setState({ file: res.data.image_url });
+  //       } else {
+  //         this.setState({ file: Profile });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   btLogout = () => {
     this.props.authLogout();
@@ -137,13 +136,13 @@ class NavbarComp extends React.Component {
                 <NavItem type="none" style={{ marginRight: "10px" }}>
                   <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
-                <img
+                {/* <img
                   src={this.state.file}
                   width="35px;"
                   height="35px;"
                   style={{ borderRadius: "50%" }}
                   alt="profile image"
-                />
+                /> */}
                 <UncontrolledDropdown>
                   <DropdownToggle nav caret></DropdownToggle>
                   <DropdownMenu right>
