@@ -49,8 +49,8 @@ class ProductDetailPage extends React.Component {
       if (this.state.value < this.state.detail.stock[0].qty) {
         this.state.value += 1
         this.setState({ value: this.state.value })
-        let res = await HTTP.patch('/product/increment', {iduser: this.props.iduser, qty: this.state.value, idproduct: this.state.detail.idproduct})
-        console.log(res.data)
+        // let res = await HTTP.patch('/product/increment', {iduser: this.props.iduser, qty: this.state.value, idproduct: this.state.detail.idproduct})
+        // console.log(res.data)
       } else {
         this.toast.show({ severity: 'warn', summary: 'Warning', detail: 'Product Out of Stock', life: 3000 });
       }
@@ -64,8 +64,8 @@ class ProductDetailPage extends React.Component {
       if (this.state.value > 1) {
         this.state.value -= 1
         this.setState({ value: this.state.value })
-        let res = await HTTP.patch('/product/decrement', {iduser: this.props.iduser, qty: this.state.value, idproduct: this.state.detail.idproduct})
-          console.log(res.data)
+        // let res = await HTTP.patch('/product/decrement', {iduser: this.props.iduser, qty: this.state.value, idproduct: this.state.detail.idproduct})
+          // console.log(res.data)
       }
 
     } catch (error) {
