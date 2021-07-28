@@ -15,6 +15,9 @@ import {
   Popover,
   PopoverHeader,
   PopoverBody,
+  Toast,
+  ToastHeader,
+  ToastBody,
 } from "reactstrap";
 import { connect } from "react-redux";
 import { keepLogin, getCity, getAddress } from "../action";
@@ -43,6 +46,8 @@ class CartPage extends React.Component {
       shippingCost: 0,
       activeFormAddress: false,
       alertAddress: false,
+      alertSuccessOpen: false,
+      openAlertForm: false,
     };
   }
 
@@ -136,16 +141,6 @@ class CartPage extends React.Component {
       0
     );
   };
-
-  // addressSelected = () => {
-  //   return this.props.user.address.map((item, idx) => {
-  //     if (item.set_default === 1) {
-  //       return this.setState({
-  //         selectedAddress: item,
-  //       });
-  //     }
-  //   });
-  // };
 
   getAddressDefault = () => {
     HTTP.get(`/user/get-address?set_default=${1}`)
@@ -434,6 +429,7 @@ class CartPage extends React.Component {
                       type="text"
                       name="recipient"
                       id="recipient"
+                      innerRef={(e) => (this.recipientForm = e)}
                       placeholder="Enter recipient name"
                     />
                   </FormGroup>
@@ -445,6 +441,7 @@ class CartPage extends React.Component {
                       type="number"
                       name="postalCode"
                       id="postalCode"
+                      innerRef={(e) => (this.postalCodeForm = e)}
                       placeholder="Enter your postal coded"
                     />
                   </FormGroup>
@@ -458,6 +455,7 @@ class CartPage extends React.Component {
                       type="select"
                       name="select"
                       className="form-inputan"
+                      innerRef={(e) => (this.cityForm = e)}
                       id="city"
                       // innerRef={(e) => (this.originIn = e)}
                       // onChange={this.shippingCost}
@@ -480,6 +478,7 @@ class CartPage extends React.Component {
                       type="textarea"
                       name="aaddress"
                       id="aaddress"
+                      innerRef={(e) => (this.addressForm = e)}
                       placeholder="Enter your address"
                     />
                   </FormGroup>
@@ -675,6 +674,7 @@ class CartPage extends React.Component {
 
   checkoutTransactions = () => {
     // let formData = new FormData();
+    let token = localStorage.getItem("tkn_id");
     let idProductAll = [];
     this.props.user.cart.forEach((item, idx) => {
       idProductAll.push({
@@ -685,31 +685,105 @@ class CartPage extends React.Component {
       });
     });
     let data = {
-      idstatus: 4,
+      id_transaction_status: 4,
       idproduct: idProductAll,
       invoice: `PRM#CLICK${new Date().valueOf()}`,
       id_city_origin: this.state.selectedAddress.id_city_origin,
       id_city_destination: 22,
+      recipient: this.state.selectedAddress.recipient,
+      postal_code: this.state.selectedAddress.postal_code,
       address: this.state.selectedAddress.address,
       shipping_cost: this.state.shippingCost,
       total_price: this.cekPrice(),
-      note: "waw",
+      note: this.noteIn.value,
       idtype: 1,
-      qty: "w",
     };
     const headers = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
-    axios
-      .post(URL_API + `/transaction/checkout`, data, headers)
-      .then((res) => {
-        alert("sukses");
-      })
-      .catch((err) => {
-        console.log(err);
+    if (data.shippingCost < 1) {
+      this.setState({
+        alertSuccessOpen: !this.state.alertSuccessOpen,
+        color: "danger",
+        alertMessage: "Choose Shipping Services",
       });
+    } else {
+      axios
+        .post(URL_API + `/transaction/checkout`, data, headers)
+        .then((res) => {
+          this.props.keepLogin(token);
+          this.setState({
+            alertSuccessOpen: !this.state.alertSuccessOpen,
+            color: "success",
+            alertMessage: res.data.message,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  checkoutFormTransactions = () => {
+    // let formData = new FormData();
+
+    let token = localStorage.getItem("tkn_id");
+    let idProductAll = [];
+    this.props.user.cart.forEach((item, idx) => {
+      idProductAll.push({
+        idproduct: item.idproduct,
+        qty_product: item.qty,
+        netto: item.netto,
+        total_netto: item.total_netto,
+      });
+    });
+    let data = {
+      id_transaction_status: 4,
+      idproduct: idProductAll,
+      invoice: `PRM#CLICK${new Date().valueOf()}`,
+      id_city_origin: this.state.selectedAddress.id_city_origin,
+      id_city_destination: 22,
+      recipient: this.recipientForm.value,
+      postal_code: parseInt(this.postalCodeForm.value),
+      address: this.addressForm.value,
+      shipping_cost: this.state.shippingCost,
+      total_price: this.cekPrice(),
+      note: this.noteIn.value,
+      idtype: 1,
+    };
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    if (
+      data.recipient === "" ||
+      this.postalCodeForm.value === "" ||
+      data.address === "" ||
+      data.shippingCost < 1
+    ) {
+      this.setState({
+        openAlertForm: !this.state.openAlertForm,
+        color: "danger",
+        alertMessage: "Please fill out all field.",
+      });
+    } else {
+      axios
+        .post(URL_API + `/transaction/checkout`, data, headers)
+        .then((res) => {
+          this.props.keepLogin(token);
+          this.setState({
+            alertSuccessOpen: !this.state.alertSuccessOpen,
+            color: "success",
+            alertMessage: res.data.message,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   render() {
@@ -742,6 +816,14 @@ class CartPage extends React.Component {
                     </Row>
                   </Container>
                 </Col>
+                <Col md="12">
+                  <Alert
+                    isOpen={this.state.openAlertForm}
+                    color={this.state.color}
+                  >
+                    {this.state.alertMessage}
+                  </Alert>
+                </Col>
               </Row>
             </Container>
 
@@ -763,7 +845,7 @@ class CartPage extends React.Component {
                             <a>2</a>
                           </Col>
                           <Col md="10 pt-3">
-                            <p>SHIPPING METHOD</p>
+                            <p>SHIPPING SERVICES</p>
                           </Col>
                         </Row>
                       </Container>
@@ -784,6 +866,7 @@ class CartPage extends React.Component {
                                 type="select"
                                 name="select"
                                 id="exampleSelect"
+                                required="true"
                               >
                                 {this.state.dataShippingCost.map(
                                   (item, idx) => {
@@ -837,14 +920,26 @@ class CartPage extends React.Component {
                   </Row>
                 </Container>
                 <div class="btn-transaction mt-5">
-                  <center>
-                    <a
-                      onClick={() => {
-                        this.checkoutTransactions();
-                      }}
-                    >
-                      Checkout
-                    </a>
+                  <Alert
+                    isOpen={this.state.alertSuccessOpen}
+                    color={this.state.color}
+                  >
+                    {this.state.alertMessage}
+                  </Alert>
+                  <center className="mt-4">
+                    {this.props.user.cart.length > 0 ? (
+                      <>
+                        <a
+                          onClick={() => {
+                            this.checkoutTransactions();
+                          }}
+                        >
+                          Checkout
+                        </a>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </center>
                 </div>
               </>
@@ -862,19 +957,99 @@ class CartPage extends React.Component {
                             <a>2</a>
                           </Col>
                           <Col md="10">
-                            <p>PAYMENT METHOD</p>
+                            <p>SHIPPING SERVICES</p>
                           </Col>
                         </Row>
                       </Container>
                     </Col>
                     {/* FORM PAYMENT */}
-                    {this.printFormPayment()}
+                    {/* {this.printFormPayment()} */}
+
+                    {/* COURIER */}
+                    <Container>
+                      <Row className="form-shipping mt-3">
+                        <Col md="12">
+                          <Container>
+                            <Row>
+                              <Col md="6">
+                                <FormGroup>
+                                  <Label for="exampleSelect">Expedition</Label>
+                                  <Input
+                                    type="select"
+                                    name="select"
+                                    id="exampleSelect"
+                                    innerRef={(e) => (this.shippingIn = e)}
+                                  >
+                                    <option value="JNE">JNE</option>
+                                    )}
+                                  </Input>
+                                </FormGroup>
+                              </Col>
+                              <Col md="6">
+                                <FormGroup>
+                                  <Label for="exampleSelect">Service</Label>
+                                  <Input
+                                    type="select"
+                                    name="select"
+                                    id="exampleSelect"
+                                    innerRef={(e) =>
+                                      (this.serviceShippigIn = e)
+                                    }
+                                    onChange={this.onChange}
+                                  >
+                                    <option value={0}>Choose Service</option>
+                                    {this.state.dataShippingCost.map(
+                                      (item, idx) => {
+                                        console.log("ITEM", item.cost);
+                                        return (
+                                          <>
+                                            {item.cost.cost.map((val, idx) => {
+                                              return (
+                                                <>
+                                                  <option value={val.value}>
+                                                    {item.cost.service} (
+                                                    {item.cost.description})
+                                                  </option>
+                                                </>
+                                              );
+                                            })}
+                                          </>
+                                        );
+                                      }
+                                    )}
+                                  </Input>
+                                </FormGroup>
+                              </Col>
+                              <Col md="6"></Col>
+                            </Row>
+                          </Container>
+                        </Col>
+                      </Row>
+                    </Container>
                     {/* END FORM PAYMENT */}
                   </Row>
                 </Container>
-                <div class="btn-transaction mt-5">
-                  <center>
-                    <a>Checkout</a>
+                <div class="btn-transaction mt-3">
+                  <Alert
+                    isOpen={this.state.alertSuccessOpen}
+                    color={this.state.color}
+                  >
+                    {this.state.alertMessage}
+                  </Alert>
+                  <center className="mt-4">
+                    {this.props.user.cart.length > 0 ? (
+                      <>
+                        <a
+                          onClick={() => {
+                            this.checkoutFormTransactions();
+                          }}
+                        >
+                          Checkout
+                        </a>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </center>
                 </div>
               </>
@@ -898,7 +1073,7 @@ class CartPage extends React.Component {
                 <Container fluid>
                   <Row>
                     <Col md="12 ml-3">
-                      <h6>Your Order</h6>
+                      <h6>Your Cart</h6>
                       {this.printAlert()}
                     </Col>
                     {this.props.user.cart.length > 0 ? (
@@ -974,7 +1149,15 @@ class CartPage extends React.Component {
                             </>
                           );
                         })}
-                        <Container className="price-summary-order">
+                        <Col md="12">
+                          <Label>Note</Label>
+                          <Input
+                            type="text"
+                            placeholder="Remind Seller"
+                            innerRef={(e) => (this.noteIn = e)}
+                          />
+                        </Col>
+                        <Container className="price-summary-order mt-3">
                           <Row>
                             <Col md="12">
                               Shipping Cost : {this.state.shippingCost}{" "}
