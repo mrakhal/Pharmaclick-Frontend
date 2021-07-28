@@ -32,7 +32,7 @@ import { getProductAction } from '../action'
 import { Dialog } from 'primereact/dialog';
 import { Rating } from 'primereact/rating';
 import { Accordion, AccordionTab } from 'primereact/accordion';
-import 'primereact/resources/themes/mdc-light-indigo/theme.css'
+// import 'primereact/resources/themes/mdc-light-indigo/theme.css'
 
 class ProductDetailPage extends React.Component {
   constructor(props) {
