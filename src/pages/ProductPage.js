@@ -141,6 +141,8 @@ var category = [
 
 ];
 
+let defaultSearchFilter = { idCategory: null, sortBy: '', minRange: 0, maxRange: '', text: '' }
+
 class ProductPage extends React.Component {
   constructor(props) {
     super(props);
@@ -151,9 +153,8 @@ class ProductPage extends React.Component {
       todosPerPage: 16,
       modal: false,
       modalProtection: false,
-      selectedCategory: null,
       search: '',
-      check: false
+      searchFilter: { ...defaultSearchFilter }
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -178,17 +179,8 @@ class ProductPage extends React.Component {
     });
   }
 
-  handleCategory = (categoryName, id) => {
-    console.log(categoryName)
-    if (id) {
-      this.setState({ check: true, selectedCategory: categoryName.value, categoryId: id })
-      // this.props.getProductAction(1, `?idcategory=${id}`)
-    } else {
-      this.setState({ check: false })
-      // this.props.getProductAction(1)
-    }
 
-  }
+
 
   handleSearch = () => {
     this.setState({ search: this.inSearch.value })
@@ -199,36 +191,40 @@ class ProductPage extends React.Component {
 
 
   onBtnSubmit = () => {
-    let { categoryId } = this.state
-    console.log(categoryId, this.inputSort.value, this.inMin.value)
-    console.log("input sort value:", this.inputSort.value)
-    console.log("input sort value boolean:", Boolean(this.inputSort.value))
+    // value input ==> simpan di state
+    let { idCategory, sortBy, minRange, maxRange } = this.state.searchFilter
 
-    let indicator = [categoryId, this.inputSort.value, this.inMax.value]
-    if (!this.inMin.value) {
-      this.inMin.value = 0
+    let query = []
+
+    if (idCategory) query.push(`idcategory=${idCategory}`)
+    if(sortBy) query.push(`sort=${sortBy}`)
+    if(maxRange){
+      if(!minRange) minRange = 0
+      query.push(`pack_price=${minRange}[and]${maxRange}`)
     }
-    let query = [`idcategory=${categoryId}`, `sort=${this.inputSort.value}`, `pack_price=${this.inMin.value}[and]${this.inMax.value}`]
-    let mainQuery = []
 
-    indicator.forEach((item, index) => {
-      if (item) {
-        mainQuery.push(query[index])
-      }
-    })
-
-    console.log("mainquery", mainQuery.join('&'))
-
-    this.props.getProductAction(1, `?${mainQuery.join('&')}`)
+    this.props.getProductAction(1, `?${query.join('&')}`)
   }
 
   onBtnReset = () => {
-    this.handleCategory(null, 0)
-    this.inputSort.value = ""
-    this.inMax.value = null
-    this.inMin.value = null
+    this.setState({
+      searchFilter: {
+        ...defaultSearchFilter
+      }
+    })
     this.props.getProductAction(1)
 
+  }
+
+
+
+  setSearchFilter = (key, value) => {
+    this.setState({
+      searchFilter: {
+        ...this.state.searchFilter,
+        [key]: value
+      }
+    })
   }
   printFilterAll = () => {
     return (
@@ -263,7 +259,7 @@ class ProductPage extends React.Component {
                         return (
                           <FormGroup check>
                             <Label check >
-                              <Input onClick={() => this.setState({ check: true })} type="radio" name="radio2" value={item.nama} onChange={(e) => this.handleCategory(e.target, index + 1)} />
+                              <Input checked={item.id == this.state.searchFilter.idCategory} type="radio" name="radio2" value={item.nama} onChange={() => this.setSearchFilter('idCategory', item.id)} />
                               {item.nama}
                             </Label>
                           </FormGroup>
@@ -286,12 +282,14 @@ class ProductPage extends React.Component {
                       <div className="d-flex justify-content-center align-items-center">
                         <div>
                           <Input
-                            type="text"
+                            type="number"
                             name="min"
                             placeholder="Minimum"
                             className="p-1"
                             style={{ fontSize: "13px" }}
-                            innerRef={e => this.inMin = e}
+                            value={this.state.searchFilter.minRange}
+
+                            onChange={(e) => this.setSearchFilter('minRange', e.target.value)}
                           />
                         </div>
                         <div>
@@ -299,12 +297,13 @@ class ProductPage extends React.Component {
                         </div>
                         <div>
                           <Input
-                            type="text"
+                            type="number"
                             name="maks"
                             placeholder="Maximum "
                             className="p-1"
                             style={{ fontSize: "13px" }}
-                            innerRef={e => this.inMax = e}
+                            value={this.state.searchFilter.maxRange}
+                            onChange={(e) => this.setSearchFilter('maxRange', e.target.value)}
                           />
                         </div>
                       </div>
@@ -329,14 +328,13 @@ class ProductPage extends React.Component {
                           name="select"
                           id="exampleSelect"
                           style={{ fontSize: "13px" }}
-                          innerRef={e => this.inputSort = e}
-                          onChange={this.handleSort}
+                          onChange={(e) => this.setSearchFilter('sortBy', e.target.value)}
                         >
-                          <option value="">-</option>
-                          <option value='pack_price:desc'>Highest Price</option>
-                          <option value='pack_price:asc'>Lowest Price</option>
-                          <option value='product_name:asc'>A-Z</option>
-                          <option value='product_name:desc'>Z-A</option>
+                          <option value="" selected={this.state.searchFilter.sortBy == ""}>-</option>
+                          <option value='pack_price:desc' selected={this.state.searchFilter.sortBy == "pack_price:desc"}>Highest Price</option>
+                          <option value='pack_price:asc' selected={this.state.searchFilter.sortBy == 'pack_price:asc'} >Lowest Price</option>
+                          <option value='product_name:asc' selected={this.state.searchFilter.sortBy == 'product_name:asc'}>A-Z</option>
+                          <option value='product_name:desc' selected={this.state.searchFilter.sortBy == 'product_name:desc'}>Z-A</option>
                         </Input>
                       </FormGroup>
                     </Col>

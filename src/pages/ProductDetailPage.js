@@ -30,6 +30,9 @@ import { Toast } from 'primereact/toast';
 import HTTP from "../service/HTTP";
 import { getProductAction } from '../action'
 import { Dialog } from 'primereact/dialog';
+import { Rating } from 'primereact/rating';
+import { Accordion, AccordionTab } from 'primereact/accordion';
+import 'primereact/resources/themes/mdc-light-indigo/theme.css'
 
 class ProductDetailPage extends React.Component {
   constructor(props) {
@@ -40,7 +43,9 @@ class ProductDetailPage extends React.Component {
       more: 0,
       iduser: 4,
       other: [],
-      visible: false
+      visible: false,
+      review: [],
+      activeIndex: 0
     };
   }
 
@@ -65,19 +70,26 @@ class ProductDetailPage extends React.Component {
         this.state.value -= 1
         this.setState({ value: this.state.value })
         // let res = await HTTP.patch('/product/decrement', {iduser: this.props.iduser, qty: this.state.value, idproduct: this.state.detail.idproduct})
-          // console.log(res.data)
+        // console.log(res.data)
       }
 
     } catch (error) {
-      console.log("error decrement", error)      
+      console.log("error decrement", error)
     }
   }
   componentDidMount() {
     this.detailProduct();
-    // this.getReview();
+    this.getReview();
   }
 
-
+  getReview = async () => {
+    try {
+      let res = await HTTP.get(`/product/review${this.props.location.search}`)
+      this.setState({ review: res.data })
+    } catch (error) {
+      console.log("error get review", error)
+    }
+  }
   detailProduct = async () => {
     try {
       await this.props.getProductAction(1)
@@ -101,7 +113,7 @@ class ProductDetailPage extends React.Component {
 
   onBtnAddCart = async () => {
     try {
-      let {detail, value} = this.state
+      let { detail, value } = this.state
       if (!this.props.iduser) {
         this.setState({ visible: true })
         return null
@@ -109,13 +121,26 @@ class ProductDetailPage extends React.Component {
       // fungsi add to cart
       let price = value * detail.pack_price
       let total_netto = value * detail.netto
-      let res = await HTTP.post('/product/add-to-cart', {iduser: this.props.iduser, idproduct: detail.idproduct, total_netto, qty: value, price, product_name: detail.product_name})
+      let res = await HTTP.post('/product/add-to-cart', { iduser: this.props.iduser, idproduct: detail.idproduct, total_netto, qty: value, price, product_name: detail.product_name })
       console.log(res.data)
       this.toast.show({ severity: 'success', summary: 'Success add to cart', detail: res.data, life: 3000 });
     } catch (error) {
       console.log("error add to cart", error)
     }
 
+  }
+
+  printReview = () => {
+    return this.state.review.map((item, index) => {
+      return (
+        <div>
+            <span>Reviewed by : {item.fullname}</span>
+            <Rating value={parseInt(item.rating)} cancel={false} disabled />
+          <p>{item.review}</p>
+          <hr />
+        </div>
+      )
+    })
   }
   render() {
     console.log("detail", this.state.detail);
@@ -195,7 +220,7 @@ class ProductDetailPage extends React.Component {
                   </a>
                   <Dialog header="Warning" visible={this.state.visible} onHide={() => this.setState({ visible: false })} style={{ width: '30%' }}>
                     <p>Please login to proceed!</p>
-                    <div style={{float: 'right'}}>
+                    <div style={{ float: 'right' }}>
                       <Link to="/login" style={{ textDecoration: 'none', color: 'black' }}>
                         <Button color="primary">Login</Button>
                       </Link>
@@ -300,6 +325,12 @@ class ProductDetailPage extends React.Component {
                     {this.state.detail.brand}
                   </p>
                   <hr />
+                  <Accordion activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} style={{width: '99%'}}>
+                    <AccordionTab header={<React.Fragment><span style={{fontWeight: 'bold', fontSize: '20px'}}>Product Reviews</span></React.Fragment>}>
+                      {this.printReview()}
+                    </AccordionTab>
+                  </Accordion>
+
                 </Col>
               </Row>
             </Container>
@@ -353,6 +384,7 @@ class ProductDetailPage extends React.Component {
             })}
           </Col>
         </Row>
+
       </Container>
     );
   }
