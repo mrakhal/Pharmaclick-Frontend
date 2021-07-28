@@ -44,12 +44,19 @@ class ProductDetailPage extends React.Component {
     };
   }
 
-  onBtnAdd = () => {
-    if (this.state.value < this.state.detail.stock[0].qty) {
-      this.state.value += 1
-      this.setState({ value: this.state.value })
-    } else {
-      this.toast.show({ severity: 'warn', summary: 'Warning', detail: 'Product Out of Stock', life: 3000 });
+  onBtnAdd = async () => {
+    try {
+      if (this.state.value < this.state.detail.stock[0].qty) {
+        this.state.value += 1
+        this.setState({ value: this.state.value })
+        let res = await HTTP.patch('/product/increment', {iduser: this.props.iduser, qty: this.state.value, idproduct: this.state.detail.idproduct})
+        console.log(res.data)
+        this.getProductAction(1)
+      } else {
+        this.toast.show({ severity: 'warn', summary: 'Warning', detail: 'Product Out of Stock', life: 3000 });
+      }
+    } catch (error) {
+      console.log("error incremennt", error)
     }
   }
 
@@ -93,6 +100,7 @@ class ProductDetailPage extends React.Component {
     }
     // fungsi add to cart
     alert("bisa beli guys")
+
   }
   render() {
     console.log("detail", this.state.detail);
