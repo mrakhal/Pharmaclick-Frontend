@@ -248,7 +248,7 @@ class RegisterPage extends React.Component {
                   />
                   {email ? (
                     email.match(/(\.com|\.co|\.id)/gi) &&
-                    email.includes("@") ? (
+                      email.includes("@") ? (
                       <small style={{ fontSize: "10px", color: "green" }}>
                         Email valid!
                       </small>
@@ -311,8 +311,8 @@ class RegisterPage extends React.Component {
                     toggleMask
                     className="p-password-meter-info-sm"
                     inputStyle={{
-                      border: password
-                        ? password.match(regex)
+                      border: confPassword 
+                        ? password == confPassword 
                           ? "1px solid black"
                           : "1px solid red"
                         : "1px solid black",

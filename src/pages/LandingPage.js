@@ -103,39 +103,6 @@ var settings = {
   ],
 };
 
-var product = [
-  {
-    nama: "sanmol",
-    img: Product1,
-    harga: 50000,
-  },
-  {
-    nama: "Paracetamol",
-    img: Product2,
-    harga: 45000,
-  },
-  {
-    nama: "Pamol",
-    img: Product3,
-    harga: 15000,
-  },
-  {
-    nama: "Interpec",
-    img: Product5,
-    harga: 70000,
-  },
-  {
-    nama: "Alcoplus",
-    img: Product6,
-    harga: 35000,
-  },
-  {
-    nama: "Alcoplus",
-    img: Product6,
-    harga: 25000,
-  },
-];
-
 var category = [
   {
     nama: "Covid",
@@ -172,6 +139,7 @@ class LandingPage extends React.Component {
 
   componentDidMount() {
     this.onBtnFilterCategory();
+    // this.getProductAction(1)
   }
 
   onBtnBrowse = (more) => {
@@ -179,27 +147,27 @@ class LandingPage extends React.Component {
   };
 
   onBtnFilterCategory = (mata) => {
-    if (mata === undefined) {
-      mata = "demam";
-      axios
-        .get(URL_API + `/product/get-products?name=${mata}`)
-        .then((res) => {
-          console.log("data", res.data);
-          this.setState({ filter: res.data });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      axios
-        .get(URL_API + `/product/get-products?name=${mata}`)
-        .then((res) => {
-          this.setState({ filter: res.data });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    // if (mata === undefined) {
+    //   mata = "demam";
+    //   axios
+    //     .get(URL_API + `/product?product_name=${mata}`)
+    //     .then((res) => {
+    //       console.log("data", res.data);
+    //       this.setState({ filter: res.data });
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // } else {
+    //   axios
+    //     .get(URL_API + `/product/get-products?name=${mata}`)
+    //     .then((res) => {
+    //       this.setState({ filter: res.data });
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // }
   };
 
   render() {
@@ -257,7 +225,7 @@ class LandingPage extends React.Component {
                                 >
                                   <CardImg
                                     width="100%"
-                                    src={item.images[0]}
+                                    src={item.image_url}
                                     alt="sanmol"
                                     className="img-fluid p-2"
                                     style={{
@@ -302,7 +270,7 @@ class LandingPage extends React.Component {
                       className="card-service"
                     >
                       <Container>
-                        <Row className="btn-getstarted">
+                        <Row>
                           <Col md="5" id="bottom-content">
                             <CardBody>
                               <CardTitle
@@ -322,6 +290,7 @@ class LandingPage extends React.Component {
                                   textDecoration: "none",
                                   color: "black",
                                 }}
+                                className="btn-getstarted"
                               >
                                 <a className="btn-getstarted">Get Started</a>
                               </Link>
@@ -350,7 +319,7 @@ class LandingPage extends React.Component {
                       className="card-service1"
                     >
                       <Container>
-                        <Row className="btn-getstarted">
+                        <Row>
                           <Col md="5" id="bottom-content">
                             <CardBody>
                               <CardTitle
@@ -369,6 +338,7 @@ class LandingPage extends React.Component {
                                   textDecoration: "none",
                                   color: "black",
                                 }}
+                                className="btn-getstarted"
                               >
                                 <a className="btn-getstarted">Order Now</a>
                               </Link>
@@ -491,7 +461,7 @@ class LandingPage extends React.Component {
                             </ul>
                             <CardBody className="btn-getstarted">
                               <CardTitle className="title-products">
-                                {item.product_name.length > 30 ? (
+                                {item.product_name.length > 36 ? (
                                   <>{item.product_name.slice(0, 30) + " ..."}</>
                                 ) : (
                                   <>{item.product_name}</>
