@@ -2,10 +2,10 @@ import { URL_API, GET_PRODUCT, GET_DATA_CITY } from "../Helper";
 import HTTP from "../service/HTTP";
 import axios from "axios";
 
-export const getProductAction = (type) => {
+export const getProductAction = (type, query = "") => {
   return async (dispatch) => {
     try {
-      let product = await HTTP.get(`/product/get/${type}`);
+      let product = await HTTP.get(`/product/${type}${query}`);
       dispatch({
         type: GET_PRODUCT,
         payload: product.data,
