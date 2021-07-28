@@ -60,7 +60,6 @@ class ProfilePage extends React.Component {
   }
 
   render() {
-    console.log("address", this.props.address);
     return (
       <Container className="mt-5">
         <Row>
