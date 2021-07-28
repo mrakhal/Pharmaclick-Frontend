@@ -194,7 +194,7 @@ class ProductPage extends React.Component {
 
   }
 
-  
+
 
   onBtnSubmit = () => {
     let { categoryId } = this.state
@@ -226,7 +226,7 @@ class ProductPage extends React.Component {
     this.inMax.value = null
     this.inMin.value = null
     this.props.getProductAction(1)
-    
+
   }
   printFilterAll = () => {
     return (
@@ -699,26 +699,24 @@ class ProductPage extends React.Component {
                           <span>Add to cart</span>
                         </li>
                       </ul>
-                      <CardBody className="p-2 d-flex flex-column">
-                        <img
-                          top
-                          width="100%"
-                          height="auto"
-                          src={item.images}
-                          alt={item.product_name}
-                          className="img-fluid "
-                        />
-                        <CardTitle className="title-products p-0">
-                          {item.product_name.length > 36 ? (
-                            <>{item.product_name.slice(0, 30) + " ..."}</>
-                          ) : (
-                            <>{item.product_name}</>
-                          )}
-                        </CardTitle>
-                        <CardSubtitle className="mb-2 price-products">
-                          Rp. {item.pack_price.toLocaleString()}
-                        </CardSubtitle>
-                      </CardBody>
+                      <Link to={`/detail?product=${item.product_name.replace(/\s/g, "-")}-${item.idproduct}`} style={{ textDecoration: 'none', color: 'black' }}>
+                        <CardBody className="p-2 d-flex flex-column">
+                          <img
+                            top
+                            width="100%"
+                            height="auto"
+                            src={item.images}
+                            alt={item.product_name}
+                            className="img-fluid "
+                          />
+                          <CardTitle className="title-products p-0">
+                            {item.product_name}
+                          </CardTitle>
+                          <CardSubtitle className="mb-2 price-products">
+                            Rp. {item.pack_price.toLocaleString()}
+                          </CardSubtitle>
+                        </CardBody>
+                      </Link>
                     </Card>
                   </Col>
                 ))}
