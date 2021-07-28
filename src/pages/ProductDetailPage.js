@@ -51,7 +51,6 @@ class ProductDetailPage extends React.Component {
         this.setState({ value: this.state.value })
         let res = await HTTP.patch('/product/increment', {iduser: this.props.iduser, qty: this.state.value, idproduct: this.state.detail.idproduct})
         console.log(res.data)
-        this.getProductAction(1)
       } else {
         this.toast.show({ severity: 'warn', summary: 'Warning', detail: 'Product Out of Stock', life: 3000 });
       }
@@ -60,10 +59,17 @@ class ProductDetailPage extends React.Component {
     }
   }
 
-  onBtnMin = () => {
-    if (this.state.value > 1) {
-      this.state.value -= 1
-      this.setState({ value: this.state.value })
+  onBtnMin = async () => {
+    try {
+      if (this.state.value > 1) {
+        this.state.value -= 1
+        this.setState({ value: this.state.value })
+        let res = await HTTP.patch('/product/decrement', {iduser: this.props.iduser, qty: this.state.value, idproduct: this.state.detail.idproduct})
+          console.log(res.data)
+      }
+
+    } catch (error) {
+      console.log("error decrement", error)      
     }
   }
   componentDidMount() {
@@ -93,13 +99,22 @@ class ProductDetailPage extends React.Component {
     this.detailProduct()
   }
 
-  onBtnAddCart = () => {
-    if (!this.props.iduser) {
-      this.setState({ visible: true })
-      return null
+  onBtnAddCart = async () => {
+    try {
+      let {detail, value} = this.state
+      if (!this.props.iduser) {
+        this.setState({ visible: true })
+        return null
+      }
+      // fungsi add to cart
+      let price = value * detail.pack_price
+      let total_netto = value * detail.netto
+      let res = await HTTP.post('/product/add-to-cart', {iduser: this.props.iduser, idproduct: detail.idproduct, total_netto, qty: value, price, product_name: detail.product_name})
+      console.log(res.data)
+      this.toast.show({ severity: 'success', summary: 'Success add to cart', detail: res.data, life: 3000 });
+    } catch (error) {
+      console.log("error add to cart", error)
     }
-    // fungsi add to cart
-    alert("bisa beli guys")
 
   }
   render() {
