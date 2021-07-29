@@ -141,7 +141,7 @@ var category = [
 
 ];
 
-let defaultSearchFilter = { idCategory: null, sortBy: '', minRange: 0, maxRange: '', text: '' }
+let defaultSearchFilter = { idCategory: null, sortBy: '', minRange: 0, maxRange: '' }
 
 class ProductPage extends React.Component {
   constructor(props) {
@@ -160,16 +160,6 @@ class ProductPage extends React.Component {
   }
 
   componentDidMount() {
-    // let list = document.querySelectorAll(`.list`);
-    // for (let i = 0; i < list.length; i++) {
-    //   list[i].onclick = function () {
-    //     let j = 0;
-    //     while (j < list.length) {
-    //       list[j++].className = "list";
-    //     }
-    //     list[i].className = "list active";
-    //   };
-    // }
     this.props.getProductAction(1)
   }
 
@@ -179,16 +169,13 @@ class ProductPage extends React.Component {
     });
   }
 
-
-
-
-  handleSearch = () => {
-    this.setState({ search: this.inSearch.value })
-    this.props.getProductAction(1, `?product_name=%${this.state.search}%`)
-
+  handleSearch = (search) => {
+    this.setState({ search })
   }
 
-
+  onBtnSearch = () => {
+    this.props.getProductAction(1, `?product_name=%${this.state.search}%`)
+  }
 
   onBtnSubmit = () => {
     // value input ==> simpan di state
@@ -197,9 +184,9 @@ class ProductPage extends React.Component {
     let query = []
 
     if (idCategory) query.push(`idcategory=${idCategory}`)
-    if(sortBy) query.push(`sort=${sortBy}`)
-    if(maxRange){
-      if(!minRange) minRange = 0
+    if (sortBy) query.push(`sort=${sortBy}`)
+    if (maxRange) {
+      if (!minRange) minRange = 0
       query.push(`pack_price=${minRange}[and]${maxRange}`)
     }
 
@@ -210,7 +197,8 @@ class ProductPage extends React.Component {
     this.setState({
       searchFilter: {
         ...defaultSearchFilter
-      }
+      },
+      search: ''
     })
     this.props.getProductAction(1)
 
@@ -398,15 +386,19 @@ class ProductPage extends React.Component {
                       <Col md="12 mt-3" className="category-title">
                         <Form>
                           <FormGroup row>
-                            <Label for="checkbox2" xl={12}>
-                              Category
-                            </Label>
+                            <div style={{ width: '13%', display: 'flex' }}>
+                              <Label for="checkbox2" xl={12}>
+                                Category
+                              </Label>
+                              <Button outline color="secondary" size="sm" onClick={this.onBtnReset}>Reset</Button>
+                            </div>
+
                             <Col xl={{ size: 12 }}>
-                              {category.map((item) => {
+                              {category.map((item, index) => {
                                 return (
                                   <FormGroup check>
-                                    <Label check>
-                                      <Input type="radio" name="radio2" />
+                                    <Label check >
+                                      <Input checked={item.id == this.state.searchFilter.idCategory} type="radio" name="radio2" value={item.nama} onChange={() => this.setSearchFilter('idCategory', item.id)} />
                                       {item.nama}
                                     </Label>
                                   </FormGroup>
@@ -433,6 +425,8 @@ class ProductPage extends React.Component {
                                     placeholder="Minimum"
                                     className="p-1"
                                     style={{ fontSize: "calc(5px + 1vmin)" }}
+                                    value={this.state.searchFilter.minRange}
+                                    onChange={(e) => this.setSearchFilter('minRange', e.target.value)}
                                   />
                                 </div>
                                 <div>
@@ -445,6 +439,8 @@ class ProductPage extends React.Component {
                                     placeholder="Maksimum "
                                     className="p-1"
                                     style={{ fontSize: "calc(5px + 1vmin)" }}
+                                    value={this.state.searchFilter.maxRange}
+                                    onChange={(e) => this.setSearchFilter('maxRange', e.target.value)}
                                   />
                                 </div>
                               </div>
@@ -469,12 +465,13 @@ class ProductPage extends React.Component {
                                   name="select"
                                   id="exampleSelect"
                                   style={{ fontSize: "13px" }}
+                                  onChange={(e) => this.setSearchFilter('sortBy', e.target.value)}
                                 >
-                                  <option>-</option>
-                                  <option>Highest Price</option>
-                                  <option>Lowest Price</option>
-                                  <option>A-Z</option>
-                                  <option>Z-A</option>
+                                  <option value="" selected={this.state.searchFilter.sortBy == ""}>-</option>
+                                  <option value='pack_price:desc' selected={this.state.searchFilter.sortBy == "pack_price:desc"}>Highest Price</option>
+                                  <option value='pack_price:asc' selected={this.state.searchFilter.sortBy == 'pack_price:asc'} >Lowest Price</option>
+                                  <option value='product_name:asc' selected={this.state.searchFilter.sortBy == 'product_name:asc'}>A-Z</option>
+                                  <option value='product_name:desc' selected={this.state.searchFilter.sortBy == 'product_name:desc'}>Z-A</option>
                                 </Input>
                               </FormGroup>
                             </Col>
@@ -600,13 +597,13 @@ class ProductPage extends React.Component {
                           id="form1"
                           class="form-control p-1"
                           value={this.state.search}
-                          innerRef={el => this.inSearch = el}
-                          onChange={(e) => this.handleSearch(e.value)}
+                          onChange={(e) => this.handleSearch(e.target.value)}
                         />
                       </div>
                       <Button
                         color="primary "
                         style={{ paddingInline: "12px", paddingBlock: "0px" }}
+                        onClick={this.onBtnSearch}
                       >
                         <FontAwesomeIcon icon={faSearch} />
                       </Button>
