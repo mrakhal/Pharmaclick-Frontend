@@ -94,7 +94,6 @@ var settings = {
   ],
 };
 
-
 var category = [
   {
     nama: "Covid",
@@ -121,22 +120,21 @@ var category = [
     id: 6,
   },
   {
-    nama: 'Hipertensi',
-    id: 7
+    nama: "Hipertensi",
+    id: 7,
   },
   {
-    nama: 'Otot, tulang dan sendi',
-    id: 8
+    nama: "Otot, tulang dan sendi",
+    id: 8,
   },
   {
-    nama: 'Kulit',
-    id: 9
+    nama: "Kulit",
+    id: 9,
   },
   {
     nama: "P3K",
-    id: 10
-  }
-
+    id: 10,
+  },
 ];
 
 class ProductPage extends React.Component {
@@ -150,8 +148,8 @@ class ProductPage extends React.Component {
       modal: false,
       modalProtection: false,
       selectedCategory: null,
-      search: '',
-      check: false
+      search: "",
+      check: false,
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -167,7 +165,7 @@ class ProductPage extends React.Component {
     //     list[i].className = "list active";
     //   };
     // }
-    this.props.getProductAction(1)
+    this.props.getProductAction(1);
   }
 
   handleClick(event) {
@@ -177,57 +175,60 @@ class ProductPage extends React.Component {
   }
 
   handleCategory = (categoryName, id) => {
-    console.log(categoryName)
+    console.log(categoryName);
     if (id) {
-      this.setState({ check: true, selectedCategory: categoryName.value, categoryId: id })
+      this.setState({
+        check: true,
+        selectedCategory: categoryName.value,
+        categoryId: id,
+      });
       // this.props.getProductAction(1, `?idcategory=${id}`)
     } else {
-      this.setState({ check: false })
+      this.setState({ check: false });
       // this.props.getProductAction(1)
     }
-
-  }
+  };
 
   handleSearch = () => {
-    this.setState({ search: this.inSearch.value })
-    this.props.getProductAction(1, `?product_name=%${this.state.search}%`)
-
-  }
-
-
+    this.setState({ search: this.inSearch.value });
+    this.props.getProductAction(1, `?product_name=%${this.state.search}%`);
+  };
 
   onBtnSubmit = () => {
-    let { categoryId } = this.state
-    console.log(categoryId, this.inputSort.value, this.inMin.value)
-    console.log("input sort value:", this.inputSort.value)
-    console.log("input sort value boolean:", Boolean(this.inputSort.value))
+    let { categoryId } = this.state;
+    console.log(categoryId, this.inputSort.value, this.inMin.value);
+    console.log("input sort value:", this.inputSort.value);
+    console.log("input sort value boolean:", Boolean(this.inputSort.value));
 
-    let indicator = [categoryId, this.inputSort.value, this.inMax.value]
+    let indicator = [categoryId, this.inputSort.value, this.inMax.value];
     if (!this.inMin.value) {
-      this.inMin.value = 0
+      this.inMin.value = 0;
     }
-    let query = [`idcategory=${categoryId}`, `sort=${this.inputSort.value}`, `pack_price=${this.inMin.value}[and]${this.inMax.value}`]
-    let mainQuery = []
+    let query = [
+      `idcategory=${categoryId}`,
+      `sort=${this.inputSort.value}`,
+      `pack_price=${this.inMin.value}[and]${this.inMax.value}`,
+    ];
+    let mainQuery = [];
 
     indicator.forEach((item, index) => {
       if (item) {
-        mainQuery.push(query[index])
+        mainQuery.push(query[index]);
       }
-    })
+    });
 
-    console.log("mainquery", mainQuery.join('&'))
+    console.log("mainquery", mainQuery.join("&"));
 
-    this.props.getProductAction(1, `?${mainQuery.join('&')}`)
-  }
+    this.props.getProductAction(1, `?${mainQuery.join("&")}`);
+  };
 
   onBtnReset = () => {
-    this.handleCategory(null, 0)
-    this.inputSort.value = ""
-    this.inMax.value = null
-    this.inMin.value = null
-    this.props.getProductAction(1)
-
-  }
+    this.handleCategory(null, 0);
+    this.inputSort.value = "";
+    this.inMax.value = null;
+    this.inMin.value = null;
+    this.props.getProductAction(1);
+  };
   printFilterAll = () => {
     return (
       <>
@@ -249,19 +250,34 @@ class ProductPage extends React.Component {
               <Col md="12 mt-3" className="category-title">
                 <Form>
                   <FormGroup row>
-                    <div style={{ width: '13%', display: 'flex' }}>
+                    <div style={{ width: "13%", display: "flex" }}>
                       <Label for="checkbox2" xl={12}>
                         Category
                       </Label>
-                      <Button outline color="secondary" size="sm" onClick={this.onBtnReset}>Reset</Button>
+                      <Button
+                        outline
+                        color="secondary"
+                        size="sm"
+                        onClick={this.onBtnReset}
+                      >
+                        Reset
+                      </Button>
                     </div>
 
                     <Col xl={{ size: 12 }}>
                       {category.map((item, index) => {
                         return (
                           <FormGroup check>
-                            <Label check >
-                              <Input onClick={() => this.setState({ check: true })} type="radio" name="radio2" value={item.nama} onChange={(e) => this.handleCategory(e.target, index + 1)} />
+                            <Label check>
+                              <Input
+                                onClick={() => this.setState({ check: true })}
+                                type="radio"
+                                name="radio2"
+                                value={item.nama}
+                                onChange={(e) =>
+                                  this.handleCategory(e.target, index + 1)
+                                }
+                              />
                               {item.nama}
                             </Label>
                           </FormGroup>
@@ -270,7 +286,6 @@ class ProductPage extends React.Component {
                     </Col>
                   </FormGroup>
                 </Form>
-
               </Col>
 
               <Col md="2" className="category-title">
@@ -289,7 +304,7 @@ class ProductPage extends React.Component {
                             placeholder="Minimum"
                             className="p-1"
                             style={{ fontSize: "13px" }}
-                            innerRef={e => this.inMin = e}
+                            innerRef={(e) => (this.inMin = e)}
                           />
                         </div>
                         <div>
@@ -302,7 +317,7 @@ class ProductPage extends React.Component {
                             placeholder="Maximum "
                             className="p-1"
                             style={{ fontSize: "13px" }}
-                            innerRef={e => this.inMax = e}
+                            innerRef={(e) => (this.inMax = e)}
                           />
                         </div>
                       </div>
@@ -327,14 +342,14 @@ class ProductPage extends React.Component {
                           name="select"
                           id="exampleSelect"
                           style={{ fontSize: "13px" }}
-                          innerRef={e => this.inputSort = e}
+                          innerRef={(e) => (this.inputSort = e)}
                           onChange={this.handleSort}
                         >
                           <option value="">-</option>
-                          <option value='pack_price:desc'>Highest Price</option>
-                          <option value='pack_price:asc'>Lowest Price</option>
-                          <option value='product_name:asc'>A-Z</option>
-                          <option value='product_name:desc'>Z-A</option>
+                          <option value="pack_price:desc">Highest Price</option>
+                          <option value="pack_price:asc">Lowest Price</option>
+                          <option value="product_name:asc">A-Z</option>
+                          <option value="product_name:desc">Z-A</option>
                         </Input>
                       </FormGroup>
                     </Col>
@@ -343,7 +358,12 @@ class ProductPage extends React.Component {
               </Col>
 
               <Col md="12 submit mt-3">
-                <a style={{ color: "white", cursor: 'pointer' }} onClick={this.onBtnSubmit}>Submit</a>
+                <a
+                  style={{ color: "white", cursor: "pointer" }}
+                  onClick={this.onBtnSubmit}
+                >
+                  Submit
+                </a>
               </Col>
             </Row>
           </Container>
@@ -483,7 +503,12 @@ class ProductPage extends React.Component {
                       </Col>
 
                       <Col md="12 submit mt-3">
-                        <a style={{ color: "white" }} onClick={this.onBtnSubmit}>Submit</a>
+                        <a
+                          style={{ color: "white" }}
+                          onClick={this.onBtnSubmit}
+                        >
+                          Submit
+                        </a>
                       </Col>
                     </Row>
                   </Container>
@@ -539,10 +564,14 @@ class ProductPage extends React.Component {
 
     // Logic for displaying page numbers
     const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(this.props.product.length / todosPerPage); i++) {
+    for (
+      let i = 1;
+      i <= Math.ceil(this.props.product.length / todosPerPage);
+      i++
+    ) {
       pageNumbers.push(i);
     }
-    console.log("currentTodos", currentTodos);
+    // console.log("currentTodos", currentTodos);
     return (
       <Container fluid className="mt-5">
         <Row>
@@ -627,7 +656,7 @@ class ProductPage extends React.Component {
                           id="form1"
                           class="form-control p-1"
                           value={this.state.search}
-                          innerRef={el => this.inSearch = el}
+                          innerRef={(el) => (this.inSearch = el)}
                           onChange={(e) => this.handleSearch(e.value)}
                         />
                       </div>
@@ -699,7 +728,13 @@ class ProductPage extends React.Component {
                           <span>Add to cart</span>
                         </li>
                       </ul>
-                      <Link to={`/detail?product=${item.product_name.replace(/\s/g, "-")}-${item.idproduct}`} style={{ textDecoration: 'none', color: 'black' }}>
+                      <Link
+                        to={`/detail?product=${item.product_name.replace(
+                          /\s/g,
+                          "-"
+                        )}-${item.idproduct}`}
+                        style={{ textDecoration: "none", color: "black" }}
+                      >
                         <CardBody className="p-2 d-flex flex-column">
                           <img
                             top

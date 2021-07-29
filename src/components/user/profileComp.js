@@ -99,48 +99,40 @@ class ProfileComp extends React.Component {
       age: parseInt(this.ageIn.value),
     };
     formData.append("data", JSON.stringify(data));
-    formData.append("images", this.state.fileUpload);
-
+    console.log("fileupload", this.state.fileUpload);
+    if (this.state.fileUpload !== null) {
+      if (
+        this.state.fileUpload.type.split("/")[1] === "jpeg" ||
+        this.state.fileUpload.type.split("/")[1] === "jpg"
+      ) {
+        formData.append("images", this.state.fileUpload);
+      }
+    }
+    let token = localStorage.getItem("tkn_id");
     const headers = {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("tkn_id")}`,
+        Authorization: `Bearer ${token}`,
       },
     };
-    if (
-      this.state.fileUpload.type.split("/")[1] === "jpeg" ||
-      this.state.fileUpload.type.split("/")[1] === "jpg"
-    ) {
-      axios
-        .patch(URL_API + `/user/patch-user`, formData, headers)
-        .then((res) => {
-          this.getAnImages();
-          this.props.getImageProfileUser(this.props.user.iduser);
-          this.setState({
-            alert1: !this.state.alert1,
-            color1: "success",
-            message1: res.data.message,
-          });
-          setTimeout(() => {
-            this.setState({
-              alert1: !this.state.alert1,
-            });
-          }, 3000);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      this.setState({
-        alert1: !this.state.alert1,
-        color1: "danger",
-        message1: "image must .jpg/.jpeg",
-      });
-      setTimeout(() => {
+    axios
+      .patch(URL_API + `/user/patch-user`, formData, headers)
+      .then((res) => {
+        this.getAnImages();
+        this.props.getImageProfileUser(this.props.user.iduser);
         this.setState({
           alert1: !this.state.alert1,
+          color1: "success",
+          message1: res.data.message,
         });
-      }, 3000);
-    }
+        setTimeout(() => {
+          this.setState({
+            alert1: !this.state.alert1,
+          });
+        }, 3000);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   onBtnEditAddress = () => {

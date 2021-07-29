@@ -34,9 +34,9 @@ class NavbarComp extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.getAnImages();
-    }, 1500);
+    // setTimeout(() => {
+    //   this.getAnImages();
+    // }, 1500);
 
     let list = document.querySelectorAll(`.menu-item`);
     for (let i = 0; i < list.length; i++) {
@@ -51,20 +51,19 @@ class NavbarComp extends React.Component {
     // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
-  getAnImages = () => {
-    axios
-      .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
-      .then((res) => {
-        if (res.data.image_url.length > 0) {
-          this.setState({ file: res.data.image_url });
-        }
-      })
-      .catch((err) => {
-        this.setState({ file: Profile });
-        console.log(err);
-      });
-  };
-
+  // getAnImages = () => {
+  //   axios
+  //     .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
+  //     .then((res) => {
+  //       if (res.data.image_url.length > 0) {
+  //         this.setState({ file: res.data.image_url });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       this.setState({ file: Profile });
+  //       console.log(err);
+  //     });
+  // };
 
   btLogout = () => {
     this.props.authLogout();
@@ -108,7 +107,6 @@ class NavbarComp extends React.Component {
   };
 
   render() {
-    console.log("user", this.props.user);
     return (
       <div>
         <Navbar
