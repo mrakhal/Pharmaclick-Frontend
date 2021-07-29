@@ -2,7 +2,7 @@ import axios from "axios";
 import { URL_API, headers } from "../Helper";
 
 class HTTP {
-  get = (url) => {
+  get = (url, body) => {
 
     return axios.get(URL_API + url, headers);
   };
