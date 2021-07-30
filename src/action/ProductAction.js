@@ -34,7 +34,7 @@ export const getProducts = () => {
 export const getCity = () => {
   return async (dispatch) => {
     try {
-      let res = await HTTP.get(`/product/get-city`);
+      let res = await HTTP.get(`/user/get-city`);
       dispatch({
         type: GET_DATA_CITY,
         payload: res.data,

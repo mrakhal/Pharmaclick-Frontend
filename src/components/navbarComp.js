@@ -25,6 +25,7 @@ import Profile from "../assets/images/profile.png";
 import { connect } from "react-redux";
 import { authLogout, getImageProfileUser } from "../action";
 import axios from "axios";
+import CartEmpty from "../assets/images/emptyCart.jpg";
 import { URL_API } from "../Helper";
 
 class NavbarComp extends React.Component {
@@ -69,6 +70,10 @@ class NavbarComp extends React.Component {
     this.props.authLogout();
   };
 
+  cekQtyCart = () => {
+    return this.props.user.cart.reduce((a, v) => (a = a + v.qty), 0);
+  };
+
   printCart = () => {
     return this.props.user.cart.length < 0 ? (
       <DropdownItem>Cart is Empty</DropdownItem>
@@ -97,7 +102,7 @@ class NavbarComp extends React.Component {
                   Rp. {item.price.toLocaleString()}
                 </p>
               </Col>
-              <hr style={{ border: "2px solid #288F94", marginTop: "15px" }} />
+              {/* <hr style={{ border: "2px solid #288F94", marginTop: "15px" }} /> */}
             </Row>
           </Container>
           // </DropdownItem>
@@ -149,6 +154,13 @@ class NavbarComp extends React.Component {
                   </NavLink>
                 </Link>
               </NavItem>
+              <NavItem>
+                <Link to="/custom">
+                  <NavLink>
+                    <a className="menu-item">Custom Order</a>
+                  </NavLink>
+                </Link>
+              </NavItem>
             </Nav>
             {this.props.user.role === "user" ? (
               <div className="d-flex justify-content-end align-items-center drop-menu">
@@ -161,26 +173,52 @@ class NavbarComp extends React.Component {
                           class="badge bg-primary rounded-pill"
                           style={{ color: "white" }}
                         >
-                          {this.props.user.cart.length}
+                          {this.cekQtyCart()}
                         </span>
                       </NavLink>
                     </DropdownToggle>
                     <DropdownMenu>
-                      {this.printCart()}
-                      <DropdownItem divider />
-                      <DropdownItem>
-                        <Link
-                          to="/cart"
-                          style={{
-                            fontSize: "calc(5px + 1vmin)",
-                            textDecoration: "none",
-                            color: "black",
-                            cursor: "pointer",
-                          }}
-                        >
-                          Go To Cart
-                        </Link>
-                      </DropdownItem>
+                      {this.props.user.cart.length > 0 ? (
+                        <>
+                          {this.printCart()}
+                          <DropdownItem divider />
+                          <DropdownItem>
+                            <Link
+                              to="/cart"
+                              style={{
+                                fontSize: "calc(5px + 1vmin)",
+                                textDecoration: "none",
+                                color: "black",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Go To Cart
+                            </Link>
+                          </DropdownItem>
+                        </>
+                      ) : (
+                        <>
+                          <Container>
+                            <Row>
+                              <center>
+                                <Col md="12">
+                                  <img
+                                    src={CartEmpty}
+                                    alt="cart empty"
+                                    width="50%"
+                                  />
+                                </Col>
+                                <Col
+                                  md="12 mt-2"
+                                  style={{ fontWeight: 900, fontSize: "0.8em" }}
+                                >
+                                  Your Cart is Empty
+                                </Col>
+                              </center>
+                            </Row>
+                          </Container>
+                        </>
+                      )}
                     </DropdownMenu>
                   </UncontrolledDropdown>
                 </NavItem>
@@ -201,7 +239,13 @@ class NavbarComp extends React.Component {
                       <DropdownItem>Edit Profile</DropdownItem>
                     </Link>
                     <DropdownItem>Change Password</DropdownItem>
-                    <DropdownItem onClick={this.btLogout}>Logout</DropdownItem>
+                    <Link
+                      to="/"
+                      style={{ textDecoration: "none" }}
+                      onClick={this.btLogout}
+                    >
+                      <DropdownItem>Logout</DropdownItem>
+                    </Link>
                   </DropdownMenu>
                 </UncontrolledDropdown>
               </div>
