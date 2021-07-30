@@ -21,6 +21,7 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import "../assets/css/TransactionPage.css";
 import { URL_API } from "../Helper";
 import axios from "axios";
+import { connect } from "react-redux";
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -162,7 +163,7 @@ class TransactionPage extends React.Component {
 
   getTransactionHistory = () => {
     if (this.statusTrans.value) {
-      let value = `?id_transaction_status=${this.statusTrans.value}`;
+      let value = `?id_transaction_status=${this.statusTrans.value}&iduser=${this.props.iduser}`;
 
       HTTP.get(`/user/sort-transactions${value}`)
         .then((res) => {
@@ -176,7 +177,7 @@ class TransactionPage extends React.Component {
     } else {
       let value = ``;
 
-      HTTP.get(`/user/sort-transactions${value}`)
+      HTTP.get(`/user/sort-transactions${value}&iduser=${this.props.iduser}`)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
@@ -410,4 +411,9 @@ class TransactionPage extends React.Component {
   }
 }
 
-export default TransactionPage;
+const mapStateToProps = ({ authReducer }) => {
+  return {
+    ...authReducer
+  }
+}
+export default connect(mapStateToProps)(TransactionPage);

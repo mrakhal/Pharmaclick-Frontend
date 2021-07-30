@@ -21,6 +21,7 @@ import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/CartPage";
 import { keepLogin, getImageProfileUser, getProductAction } from "./action";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import TransactionPage from "./pages/TransactionPage";
 
 class App extends React.Component {
   constructor(props) {
