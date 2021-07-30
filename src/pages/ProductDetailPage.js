@@ -119,9 +119,17 @@ class ProductDetailPage extends React.Component {
         return null
       }
       // fungsi add to cart
-      let price = value * detail.pack_price
+      let price = parseInt(detail.pack_price)
       let total_netto = value * detail.netto
-      let res = await HTTP.post('/product/add-to-cart', { iduser: this.props.iduser, idproduct: detail.idproduct, total_netto, qty: value, price, product_name: detail.product_name })
+      let res = await HTTP.post('/product/add-to-cart',
+        {
+          iduser: this.props.iduser,
+          idproduct: detail.idproduct,
+          total_netto,
+          qty: value,
+          price,
+          product_name: detail.product_name
+        })
       console.log(res.data)
       this.toast.show({ severity: 'success', summary: 'Success add to cart', detail: res.data, life: 3000 });
     } catch (error) {
@@ -134,8 +142,8 @@ class ProductDetailPage extends React.Component {
     return this.state.review.map((item, index) => {
       return (
         <div>
-            <span>Reviewed by : {item.fullname}</span>
-            <Rating value={parseInt(item.rating)} cancel={false} disabled />
+          <span>Reviewed by : {item.fullname}</span>
+          <Rating value={parseInt(item.rating)} cancel={false} disabled />
           <p>{item.review}</p>
           <hr />
         </div>
@@ -325,8 +333,8 @@ class ProductDetailPage extends React.Component {
                     {this.state.detail.brand}
                   </p>
                   <hr />
-                  <Accordion activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} style={{width: '99%'}}>
-                    <AccordionTab header={<React.Fragment><span style={{fontWeight: 'bold', fontSize: '20px'}}>Product Reviews</span></React.Fragment>}>
+                  <Accordion activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })} style={{ width: '99%' }}>
+                    <AccordionTab header={<React.Fragment><span style={{ fontWeight: 'bold', fontSize: '20px' }}>Product Reviews</span></React.Fragment>}>
                       {this.printReview()}
                     </AccordionTab>
                   </Accordion>

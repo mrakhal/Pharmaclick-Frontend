@@ -163,7 +163,7 @@ class TransactionPage extends React.Component {
 
   getTransactionHistory = () => {
     if (this.statusTrans.value) {
-      let value = `?id_transaction_status=${this.statusTrans.value}&iduser=${this.props.iduser}`;
+      let value = `?id_transaction_status=${this.statusTrans.value}`;
 
       HTTP.get(`/user/sort-transactions${value}`)
         .then((res) => {
@@ -177,7 +177,7 @@ class TransactionPage extends React.Component {
     } else {
       let value = ``;
 
-      HTTP.get(`/user/sort-transactions${value}&iduser=${this.props.iduser}`)
+      HTTP.get(`/user/sort-transactions${value}`)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
