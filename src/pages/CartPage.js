@@ -561,17 +561,19 @@ class CartPage extends React.Component {
     );
   };
 
-  onBtnIncrement = async (qtyIn, idproductIn, iduserIn, priceIn) => {
+  onBtnIncrement = async (qtyIn, idproductIn, iduserIn, priceIn, nettoIn) => {
     try {
       let qty = parseInt(qtyIn);
       let idproduct = idproductIn;
       let iduser = iduserIn;
       let price = parseInt(priceIn);
+      let netto = parseInt(nettoIn);
       let res = await HTTP.patch(`/product/increment`, {
         qty: qty,
         idproduct: idproduct,
         iduser: iduser,
         price: price,
+        netto: netto,
       });
       if (res.data) {
         this.props.keepLogin(token);
@@ -587,16 +589,18 @@ class CartPage extends React.Component {
     }
   };
 
-  onBtnDecrement = (qtyIn, idproductIn, iduserIn, priceIn) => {
+  onBtnDecrement = (qtyIn, idproductIn, iduserIn, priceIn, nettoIn) => {
     let qty = parseInt(qtyIn);
     let idproduct = idproductIn;
     let iduser = iduserIn;
     let price = parseInt(priceIn);
+    let netto = parseInt(nettoIn);
     HTTP.patch(`/product/decrement`, {
       qty: qty,
       idproduct: idproduct,
       iduser: iduser,
       price: price,
+      netto: netto,
     })
       .then((res) => {
         this.props.keepLogin(token);
@@ -679,6 +683,7 @@ class CartPage extends React.Component {
     this.props.user.cart.forEach((item, idx) => {
       idProductAll.push({
         idproduct: item.idproduct,
+        product_name: item.product_name,
         qty_product: item.qty,
         netto: item.netto,
         total_netto: item.total_netto,
@@ -714,11 +719,19 @@ class CartPage extends React.Component {
         .post(URL_API + `/transaction/checkout`, data, headers)
         .then((res) => {
           this.props.keepLogin(token);
-          this.setState({
-            alertSuccessOpen: !this.state.alertSuccessOpen,
-            color: "success",
-            alertMessage: res.data.message,
-          });
+          if (res.data.message.includes("not enough stock")) {
+            this.setState({
+              alertSuccessOpen: !this.state.alertSuccessOpen,
+              color: "danger",
+              alertMessage: res.data.message,
+            });
+          } else {
+            this.setState({
+              alertSuccessOpen: !this.state.alertSuccessOpen,
+              color: "success",
+              alertMessage: res.data.message,
+            });
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -1097,7 +1110,8 @@ class CartPage extends React.Component {
                                           item.qty,
                                           item.idproduct,
                                           item.iduser,
-                                          item.price
+                                          item.price,
+                                          item.netto
                                         );
                                       }}
                                     >
@@ -1120,7 +1134,8 @@ class CartPage extends React.Component {
                                           item.qty,
                                           item.idproduct,
                                           item.iduser,
-                                          item.price
+                                          item.price,
+                                          item.netto
                                         );
                                         this.setState({ popoverOpen: false });
                                       }}
