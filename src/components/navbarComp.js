@@ -37,7 +37,7 @@ class NavbarComp extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       this.getAnImages();
-    }, 1500);
+    }, 800);
 
     let list = document.querySelectorAll(`.menu-item`);
     for (let i = 0; i < list.length; i++) {
@@ -52,8 +52,8 @@ class NavbarComp extends React.Component {
     // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
-  getAnImages = () => {
-    axios
+  getAnImages =  () => {
+     axios
       .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
       .then((res) => {
         if (res.data.image_url.length > 0) {
@@ -65,7 +65,6 @@ class NavbarComp extends React.Component {
         console.log(err);
       });
   };
-
 
   btLogout = () => {
     this.props.authLogout();
@@ -155,6 +154,13 @@ class NavbarComp extends React.Component {
                   </NavLink>
                 </Link>
               </NavItem>
+              <NavItem>
+                <Link to="/custom">
+                  <NavLink>
+                    <a className="menu-item">Custom Order</a>
+                  </NavLink>
+                </Link>
+              </NavItem>
             </Nav>
             {this.props.user.role === "user" ? (
               <div className="d-flex justify-content-end align-items-center drop-menu">
@@ -219,13 +225,13 @@ class NavbarComp extends React.Component {
                 <NavItem type="none" style={{ marginRight: "10px" }}>
                   <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
-                {/* <img
+                <img
                   src={this.state.file}
                   width="35px;"
                   height="35px;"
                   style={{ borderRadius: "50%" }}
                   alt="profile image"
-                /> */}
+                />
                 <UncontrolledDropdown>
                   <DropdownToggle nav caret></DropdownToggle>
                   <DropdownMenu right>

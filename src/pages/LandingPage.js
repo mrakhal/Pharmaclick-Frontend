@@ -138,41 +138,31 @@ class LandingPage extends React.Component {
   }
 
   componentDidMount() {
-    this.onBtnFilterCategory();
-    // this.getProductAction(1)
+    setTimeout(() => {
+      this.onBtnFilterCategory()
+    }, 800);
+    
   }
 
   onBtnBrowse = (more) => {
     return this.state.filter.slice(0, more);
   };
 
-  onBtnFilterCategory = (mata) => {
-    // if (mata === undefined) {
-    //   mata = "demam";
-    //   axios
-    //     .get(URL_API + `/product?product_name=${mata}`)
-    //     .then((res) => {
-    //       console.log("data", res.data);
-    //       this.setState({ filter: res.data });
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // } else {
-    //   axios
-    //     .get(URL_API + `/product/get-products?name=${mata}`)
-    //     .then((res) => {
-    //       this.setState({ filter: res.data });
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // }
+  onBtnFilterCategory = (val) => {
+    if (val === undefined) {
+      val = "demam";
+      let result = this.props.products.filter(word => word.category === val);
+      return this.setState({filter:result})
+    } else {
+      let result = this.props.products.filter(word => word.category === val);
+      return this.setState({filter:result})
+    }
   };
 
   render() {
     console.log("products", this.props.products);
     console.log("user", this.props.user);
+    console.log("filter", this.state.filter);
     return (
       <Container fluid className="p-0">
         <Row>
@@ -217,7 +207,7 @@ class LandingPage extends React.Component {
                                 className="card-popular"
                               >
                                 <Link
-                                  to={`/product-detail?id=${item.id}`}
+                                  to={`/detail?product=${item.product_name.replace(/\s/g,"-")}-${item.idproduct}`}
                                   style={{
                                     textDecoration: "none",
                                     color: "black",
@@ -225,7 +215,7 @@ class LandingPage extends React.Component {
                                 >
                                   <CardImg
                                     width="100%"
-                                    src={item.image_url}
+                                    src={item.images[0]}
                                     alt="sanmol"
                                     className="img-fluid p-2"
                                     style={{
@@ -416,7 +406,7 @@ class LandingPage extends React.Component {
             <Row className=" mt-4">
               {this.onBtnBrowse(this.state.more).map((item) => (
                 <>
-                  {item.type === "pack" && (
+                  {item.stock[0].type === "pack" && (
                     <>
                       <Col xl="2" lg="2" md="3" sm="4" xs="4">
                         <Card
@@ -431,13 +421,13 @@ class LandingPage extends React.Component {
                           className="card-medicine"
                         >
                           <Link
-                            to={`/product-detail?idproduct=${item.idproduct}`}
+                            to={`/detail?product=${item.product_name.replace(/\s/g,"-")}-${item.idproduct}`}
                             style={{ textDecoration: "none", color: "black" }}
                           >
                             <img
                               top
                               width="100%"
-                              src={item.image_url}
+                              src={item.images[0]}
                               alt={item.product_name}
                               className="img-fluid p-2"
                               height="auto"
