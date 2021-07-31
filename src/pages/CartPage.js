@@ -613,7 +613,7 @@ class CartPage extends React.Component {
   onBtnDelete = (idproductIn) => {
     // let iduser = this.props.user.iduser;
     HTTP.delete(
-      `/product/delete?idproduct=${idproductIn}&iduser=${this.props.user.iduser}`
+      `/transaction/delete?idproduct=${idproductIn}&iduser=${this.props.user.iduser}`
     )
       .then((res) => {
         // alert(res.data.message);

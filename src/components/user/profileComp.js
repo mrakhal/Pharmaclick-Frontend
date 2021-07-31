@@ -115,9 +115,7 @@ class ProfileComp extends React.Component {
         this.state.fileUpload.type.split("/")[1] === "jpg"
       ) {
         formData.append("images", this.state.fileUpload);
-      }
-    }
-    const headers = {
+        const headers = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -145,6 +143,20 @@ class ProfileComp extends React.Component {
       .catch((err) => {
         console.log(err);
       });
+      }else{
+      this.setState({
+          alert1: !this.state.alert1,
+          color1: "danger",
+          message1: "Image extension must .jpg or .jpeg",
+        });
+        setTimeout(() => {
+          this.setState({
+            alert1: !this.state.alert1,
+          });
+        }, 3000);
+    }
+    }
+  
     // } else {
     //   this.setState({
     //     alert1: !this.state.alert1,
