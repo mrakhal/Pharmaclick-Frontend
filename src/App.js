@@ -19,6 +19,7 @@ import NavbarComp from "./components/navbarComp";
 import FooterComp from "./components/footerComp";
 import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/CartPage";
+import CustomOrderPage from "./pages/CustomOrderPage";
 import { keepLogin, getImageProfileUser, getProductAction } from "./action";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import TransactionPage from "./pages/TransactionPage";
@@ -58,6 +59,7 @@ class App extends React.Component {
               <Route path={"/contact"} component={ContactPage} />
               <Route path={"/cart"} component={CartPage} />
               <Route path={"/detail"} component={ProductDetailPage} />
+              <Route path={"/custom"} component={CustomOrderPage} />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
             <FooterComp />
@@ -89,6 +91,7 @@ class App extends React.Component {
               <Route path={"/contact"} component={ContactPage} />
               <Route path={"/detail"} component={ProductDetailPage} />
               <Route path={"*"} component={NotFoundPage} />
+              <Route path={"/custom"} component={CustomOrderPage} />
             </Switch>
             <FooterComp />
           </>

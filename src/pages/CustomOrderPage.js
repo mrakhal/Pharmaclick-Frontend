@@ -22,16 +22,17 @@ import {
 import { connect } from "react-redux";
 import { keepLogin, getCity, getAddress } from "../action";
 import "../assets/css/CartPage.css";
-import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faPlus, faCamera } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HTTP from "../service/HTTP";
 import CartEmpty from "../assets/images/emptyCart.jpg";
 import axios from "axios";
 import { URL_API } from "../Helper";
+import Perscription from "../assets/images/perscription.jpg";
 
 let token = localStorage.getItem("tkn_id");
 
-class CartPage extends React.Component {
+class CustomOrderPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,17 +49,39 @@ class CartPage extends React.Component {
       alertAddress: false,
       alertSuccessOpen: false,
       openAlertForm: false,
+      file: Perscription,
+      fileUpload: null,
     };
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
     this.props.getCity();
     this.getAddressDefault();
+
     setTimeout(() => {
       this.shippingCost();
     }, 1500);
     this.cekPrice();
     // this.props.getAddress(this.props.user.iduser);
+  }
+
+  handleChange(e) {
+    // eslint-disable-next-line) {
+    if (e.target.files[0]) {
+      // var reader = new FileReader();
+      this.setState({
+        fileName: e.target.files[0].name,
+        fileUpload: e.target.files[0],
+        file: URL.createObjectURL(e.target.files[0]),
+      });
+    } else {
+      this.setState({
+        fileName: "Select file",
+        fileUpload: null,
+        file: this.state.file,
+      });
+    }
   }
 
   onBtnSetDefault = (idaddressIn) => {
@@ -561,69 +584,6 @@ class CartPage extends React.Component {
     );
   };
 
-  onBtnIncrement = async (qtyIn, idproductIn, iduserIn, priceIn, nettoIn) => {
-    try {
-      let qty = parseInt(qtyIn);
-      let idproduct = idproductIn;
-      let iduser = iduserIn;
-      let price = parseInt(priceIn);
-      let netto = parseInt(nettoIn);
-      let res = await HTTP.patch(`/product/increment`, {
-        qty: qty,
-        idproduct: idproduct,
-        iduser: iduser,
-        price: price,
-        netto: netto,
-      });
-      if (res.data) {
-        this.props.keepLogin(token);
-        if (res.data.message) {
-          this.setState({
-            popoverOpen: !this.state.popoverOpen,
-            popoverMessage: res.data.message,
-          });
-        }
-      }
-    } catch (error) {
-      console.log("Increment Error", error);
-    }
-  };
-
-  onBtnDecrement = (qtyIn, idproductIn, iduserIn, priceIn, nettoIn) => {
-    let qty = parseInt(qtyIn);
-    let idproduct = idproductIn;
-    let iduser = iduserIn;
-    let price = parseInt(priceIn);
-    let netto = parseInt(nettoIn);
-    HTTP.patch(`/product/decrement`, {
-      qty: qty,
-      idproduct: idproduct,
-      iduser: iduser,
-      price: price,
-      netto: netto,
-    })
-      .then((res) => {
-        this.props.keepLogin(token);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  onBtnDelete = (idproductIn) => {
-    // let iduser = this.props.user.iduser;
-    HTTP.delete(
-      `/transaction/delete?idproduct=${idproductIn}&iduser=${this.props.user.iduser}`
-    )
-      .then((res) => {
-        // alert(res.data.message);
-        this.props.keepLogin(token);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   onChange = (e) => {
     this.shippingCost();
     return this.setState({ shippingCost: this.serviceShippigIn.value });
@@ -676,62 +636,45 @@ class CartPage extends React.Component {
     );
   };
 
-  checkoutTransactions = () => {
-    // let formData = new FormData();
+  checkoutPerscription = () => {
+    let formData = new FormData();
     let token = localStorage.getItem("tkn_id");
-    let idProductAll = [];
-    this.props.user.cart.forEach((item, idx) => {
-      idProductAll.push({
-        idproduct: item.idproduct,
-        product_name: item.product_name,
-        qty_product: item.qty,
-        netto: item.netto,
-        total_netto: item.total_netto,
-      });
-    });
     let data = {
       id_transaction_status: 4,
-      idproduct: idProductAll,
       invoice: `PRM#CLICK${new Date().valueOf()}`,
       id_city_origin: this.state.selectedAddress.id_city_origin,
       id_city_destination: 22,
       recipient: this.state.selectedAddress.recipient,
       postal_code: this.state.selectedAddress.postal_code,
       address: this.state.selectedAddress.address,
-      shipping_cost: this.state.shippingCost,
-      total_price: this.cekPrice(),
+      shipping_cost: 0,
+      total_price: 0,
       note: this.noteIn.value,
-      idtype: 1,
+      idtype: 2,
     };
+    formData.append("data", JSON.stringify(data));
+    formData.append("images", this.state.fileUpload);
     const headers = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
-    if (data.shippingCost < 1) {
+    if (this.state.file === Perscription) {
       this.setState({
         alertSuccessOpen: !this.state.alertSuccessOpen,
         color: "danger",
-        alertMessage: "Choose Shipping Services",
+        alertMessage: "You Must Upload Image Perscription",
       });
     } else {
       axios
-        .post(URL_API + `/transaction/checkout`, data, headers)
+        .post(URL_API + `/transaction/checkout-perscription`, formData, headers)
         .then((res) => {
           this.props.keepLogin(token);
-          if (res.data.message.includes("not enough stock")) {
-            this.setState({
-              alertSuccessOpen: !this.state.alertSuccessOpen,
-              color: "danger",
-              alertMessage: res.data.message,
-            });
-          } else {
-            this.setState({
-              alertSuccessOpen: !this.state.alertSuccessOpen,
-              color: "success",
-              alertMessage: res.data.message,
-            });
-          }
+          this.setState({
+            alertSuccessOpen: !this.state.alertSuccessOpen,
+            color: "success",
+            alertMessage: res.data.message,
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -739,32 +682,26 @@ class CartPage extends React.Component {
     }
   };
 
-  checkoutFormTransactions = () => {
-    // let formData = new FormData();
+  checkoutFormPerscription = () => {
+    let formData = new FormData();
+    let token = localStorage.getItem("tkn_id");
 
-    let idProductAll = [];
-    this.props.user.cart.forEach((item, idx) => {
-      idProductAll.push({
-        idproduct: item.idproduct,
-        qty_product: item.qty,
-        netto: item.netto,
-        total_netto: item.total_netto,
-      });
-    });
     let data = {
       id_transaction_status: 4,
-      idproduct: idProductAll,
       invoice: `PRM#CLICK${new Date().valueOf()}`,
       id_city_origin: this.state.selectedAddress.id_city_origin,
       id_city_destination: 22,
       recipient: this.recipientForm.value,
       postal_code: parseInt(this.postalCodeForm.value),
       address: this.addressForm.value,
-      shipping_cost: this.state.shippingCost,
+      shipping_cost: 0,
       total_price: this.cekPrice(),
       note: this.noteIn.value,
-      idtype: 1,
+      idtype: 2,
     };
+
+    formData.append("data", JSON.stringify(data));
+    formData.append("images", this.state.fileUpload);
     const headers = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -774,16 +711,16 @@ class CartPage extends React.Component {
       data.recipient === "" ||
       this.postalCodeForm.value === "" ||
       data.address === "" ||
-      data.shippingCost < 1
+      this.state.file === Perscription
     ) {
       this.setState({
         openAlertForm: !this.state.openAlertForm,
         color: "danger",
-        alertMessage: "Please fill out all field.",
+        alertMessage: "Please fill all field.",
       });
     } else {
       axios
-        .post(URL_API + `/transaction/checkout`, data, headers)
+        .post(URL_API + `/transaction/checkout-perscription`, formData, headers)
         .then((res) => {
           this.props.keepLogin(token);
           this.setState({
@@ -939,19 +876,13 @@ class CartPage extends React.Component {
                     {this.state.alertMessage}
                   </Alert>
                   <center className="mt-4">
-                    {this.props.user.cart.length > 0 ? (
-                      <>
-                        <a
-                          onClick={() => {
-                            this.checkoutTransactions();
-                          }}
-                        >
-                          Checkout
-                        </a>
-                      </>
-                    ) : (
-                      <></>
-                    )}
+                    <a
+                      onClick={() => {
+                        this.checkoutPerscription();
+                      }}
+                    >
+                      Checkout
+                    </a>
                   </center>
                 </div>
               </>
@@ -1049,160 +980,74 @@ class CartPage extends React.Component {
                     {this.state.alertMessage}
                   </Alert>
                   <center className="mt-4">
-                    {this.props.user.cart.length > 0 ? (
-                      <>
-                        <a
-                          onClick={() => {
-                            this.checkoutFormTransactions();
-                          }}
-                        >
-                          Checkout
-                        </a>
-                      </>
-                    ) : (
-                      <></>
-                    )}
+                    <a
+                      onClick={() => {
+                        this.checkoutFormPerscription();
+                      }}
+                    >
+                      Checkout
+                    </a>
                   </center>
                 </div>
               </>
             )}
-
-            {/* <Container className="transaction-order py-5">
-              <Row>
-                <Col md="2">w</Col>
-                <Col md="8">w</Col>
-                <Col md="2">
-                  <Button outline color="primary">
-                    CHANGE
-                  </Button>
-                </Col>
-              </Row>
-            </Container> */}
           </Col>
           <Col md="4 mt-3">
             <Card className="row-order">
               <CardBody>
                 <Container fluid>
                   <Row>
-                    <Col md="12 ml-3">
-                      <h6>Your Cart</h6>
-                      {this.printAlert()}
-                    </Col>
-                    {this.props.user.cart.length > 0 ? (
-                      <>
-                        {this.props.user.cart.map((item) => {
-                          return (
-                            <>
-                              <Col md="4 mt-3">
-                                <img src={item.image_url} width="100%" />
-                              </Col>
-                              <Col md="8 mt-3">
-                                <strong>{item.product_name}</strong>
-                                <div className="d-flex cart-order align-items-center justify-content-between">
-                                  <div className="d-flex">
-                                    {this.printPopover()}
-                                    <Button
-                                      outline
-                                      color="primary"
-                                      id="Popover1"
-                                      onClick={() => {
-                                        this.onBtnIncrement(
-                                          item.qty,
-                                          item.idproduct,
-                                          item.iduser,
-                                          item.price,
-                                          item.netto
-                                        );
-                                      }}
-                                    >
-                                      +
-                                    </Button>
-                                    <Input
-                                      type="text"
-                                      value={item.qty}
-                                      style={{
-                                        width: "60px",
-                                        textAlign: "center",
-                                      }}
-                                      disabled
-                                    />
-                                    <Button
-                                      outline
-                                      color="danger"
-                                      onClick={() => {
-                                        this.onBtnDecrement(
-                                          item.qty,
-                                          item.idproduct,
-                                          item.iduser,
-                                          item.price,
-                                          item.netto
-                                        );
-                                        this.setState({ popoverOpen: false });
-                                      }}
-                                    >
-                                      -
-                                    </Button>
-                                  </div>
-                                  <div>
-                                    <div className="delete-order pl-4">
-                                      <a
-                                        onClick={() => {
-                                          this.onBtnDelete(item.idproduct);
-                                        }}
-                                      >
-                                        <FontAwesomeIcon icon={faTimes} />
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="price-order">
-                                  <p>Rp {item.price.toLocaleString()}</p>
-                                </div>
-                              </Col>
-                              <hr className="divide-order" />
-                            </>
-                          );
-                        })}
-                        <Col md="12">
-                          <Label>Note</Label>
-                          <Input
-                            type="text"
-                            placeholder="Remind Seller"
-                            innerRef={(e) => (this.noteIn = e)}
-                          />
-                        </Col>
-                        <Container className="price-summary-order mt-3">
-                          <Row>
-                            <Col md="12">
-                              Shipping Cost : {this.state.shippingCost}{" "}
-                            </Col>
-                            <Col md="12">
-                              Total Price : Rp {this.cekPrice()}
-                            </Col>
-                          </Row>
-                        </Container>
-                      </>
-                    ) : (
+                    <Col md="12 ml-3" className="title-address">
                       <Container>
                         <Row>
-                          <center>
-                            <Col md="12">
-                              <img
-                                src={CartEmpty}
-                                alt="cart empty"
-                                width="50%"
-                              />
-                            </Col>
-                            <Col
-                              md="12 mt-2"
-                              style={{ fontWeight: 900, fontSize: "1.2em" }}
-                            >
-                              Your Cart is Empty
-                            </Col>
-                          </center>
+                          <Col md="2 d-flex align-items-center ">
+                            <a>3</a>
+                          </Col>
+                          <Col md="8 pt-2 d-flex align-items-center">
+                            <h6 style={{ fontWeight: "900" }}>
+                              UPLOAD PERSCRIPTION
+                            </h6>
+                          </Col>
                         </Row>
                       </Container>
-                    )}
+                    </Col>
+                    <Col md="12 mt-2">
+                      {" "}
+                      <img src={this.state.file} width="100%" />
+                      <Col md="12">
+                        <Label>Note</Label>
+                        <Input
+                          type="text"
+                          placeholder="Remind Seller"
+                          innerRef={(e) => (this.noteIn = e)}
+                        />
+                      </Col>
+                      <center>
+                        <div className="image-upload">
+                          <label for="file-input">
+                            <div className="btn-getstarted mt-3">
+                              <a>
+                                <span>
+                                  <FontAwesomeIcon
+                                    className="pt-2"
+                                    icon={faCamera}
+                                    style={{ color: "white" }}
+                                  />
+                                </span>{" "}
+                                UPLOAD
+                              </a>
+                            </div>
+                          </label>
+
+                          <input
+                            id="file-input"
+                            type="file"
+                            max-files="2000"
+                            onChange={this.handleChange}
+                          />
+                        </div>
+                      </center>
+                    </Col>
 
                     {/* PRICE AND SHIPPING COST */}
                   </Row>
@@ -1224,5 +1069,5 @@ const mapStateToProps = ({ productReducer, authReducer }) => {
 };
 
 export default connect(mapStateToProps, { keepLogin, getCity, getAddress })(
-  CartPage
+  CustomOrderPage
 );

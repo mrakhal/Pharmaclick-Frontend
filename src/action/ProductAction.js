@@ -16,25 +16,25 @@ export const getProductAction = (type, query = "") => {
   };
 };
 
-export const getProducts = () => {
-  return async (dispatch) => {
-    try {
-      let res = await HTTP.get(`/product/get-products`);
+// export const getProducts = () => {
+//   return async (dispatch) => {
+//     try {
+//       let res = await HTTP.get(`/product/get-products`);
 
-      dispatch({
-        type: "GET_DATA_PRODUCTS",
-        payload: res.data,
-      });
-    } catch (error) {
-      console.log("ERROR GET PRODUCT", error);
-    }
-  };
-};
+//       dispatch({
+//         type: "GET_DATA_PRODUCTS",
+//         payload: res.data,
+//       });
+//     } catch (error) {
+//       console.log("ERROR GET PRODUCT", error);
+//     }
+//   };
+// };
 
 export const getCity = () => {
   return async (dispatch) => {
     try {
-      let res = await HTTP.get(`/product/get-city`);
+      let res = await HTTP.get(`/user/get-city`);
       dispatch({
         type: GET_DATA_CITY,
         payload: res.data,

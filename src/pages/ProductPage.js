@@ -94,7 +94,6 @@ var settings = {
   ],
 };
 
-
 var category = [
   {
     nama: "Covid",
@@ -121,25 +120,29 @@ var category = [
     id: 6,
   },
   {
-    nama: 'Hipertensi',
-    id: 7
+    nama: "Hipertensi",
+    id: 7,
   },
   {
-    nama: 'Otot, tulang dan sendi',
-    id: 8
+    nama: "Otot, tulang dan sendi",
+    id: 8,
   },
   {
-    nama: 'Kulit',
-    id: 9
+    nama: "Kulit",
+    id: 9,
   },
   {
     nama: "P3K",
-    id: 10
-  }
-
+    id: 10,
+  },
 ];
 
-let defaultSearchFilter = { idCategory: null, sortBy: '', minRange: 0, maxRange: '' }
+let defaultSearchFilter = {
+  idCategory: null,
+  sortBy: "",
+  minRange: 0,
+  maxRange: "",
+};
 
 class ProductPage extends React.Component {
   constructor(props) {
@@ -151,14 +154,22 @@ class ProductPage extends React.Component {
       todosPerPage: 16,
       modal: false,
       modalProtection: false,
-      search: '',
-      searchFilter: { ...defaultSearchFilter }
+      searchFilter: [],
     };
-    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
-    this.props.getProductAction(1)
+    // let list = document.querySelectorAll(`.list`);
+    // for (let i = 0; i < list.length; i++) {
+    //   list[i].onclick = function () {
+    //     let j = 0;
+    //     while (j < list.length) {
+    //       list[j++].className = "list";
+    //     }
+    //     list[i].className = "list active";
+    //   };
+    // }
+    this.props.getProductAction(1);
   }
 
   handleClick(event) {
@@ -168,50 +179,47 @@ class ProductPage extends React.Component {
   }
 
   handleSearch = (search) => {
-    this.setState({ search })
-  }
+    this.setState({ search });
+  };
 
   onBtnSearch = () => {
-    this.props.getProductAction(1, `?product_name=%${this.state.search}%`)
-  }
+    this.props.getProductAction(1, `?product_name=%${this.state.search}%`);
+  };
 
   onBtnSubmit = () => {
     // value input ==> simpan di state
-    let { idCategory, sortBy, minRange, maxRange } = this.state.searchFilter
+    let { idCategory, sortBy, minRange, maxRange } = this.state.searchFilter;
 
-    let query = []
+    let query = [];
 
-    if (idCategory) query.push(`idcategory=${idCategory}`)
-    if (sortBy) query.push(`sort=${sortBy}`)
+    if (idCategory) query.push(`idcategory=${idCategory}`);
+    if (sortBy) query.push(`sort=${sortBy}`);
     if (maxRange) {
-      if (!minRange) minRange = 0
-      query.push(`pack_price=${minRange}[and]${maxRange}`)
+      if (!minRange) minRange = 0;
+      query.push(`pack_price=${minRange}[and]${maxRange}`);
     }
 
-    this.props.getProductAction(1, `?${query.join('&')}`)
-  }
+    this.props.getProductAction(1, `?${query.join("&")}`);
+  };
 
   onBtnReset = () => {
     this.setState({
       searchFilter: {
-        ...defaultSearchFilter
+        ...defaultSearchFilter,
       },
-      search: ''
-    })
-    this.props.getProductAction(1)
-
-  }
-
-
+      search: "",
+    });
+    this.props.getProductAction(1);
+  };
 
   setSearchFilter = (key, value) => {
     this.setState({
       searchFilter: {
         ...this.state.searchFilter,
-        [key]: value
-      }
-    })
-  }
+        [key]: value,
+      },
+    });
+  };
   printFilterAll = () => {
     return (
       <>
@@ -233,19 +241,36 @@ class ProductPage extends React.Component {
               <Col md="12 mt-3" className="category-title">
                 <Form>
                   <FormGroup row>
-                    <div style={{ width: '13%', display: 'flex' }}>
+                    <div style={{ width: "13%", display: "flex" }}>
                       <Label for="checkbox2" xl={12}>
                         Category
                       </Label>
-                      <Button outline color="secondary" size="sm" onClick={this.onBtnReset}>Reset</Button>
+                      <Button
+                        outline
+                        color="secondary"
+                        size="sm"
+                        onClick={this.onBtnReset}
+                      >
+                        Reset
+                      </Button>
                     </div>
 
                     <Col xl={{ size: 12 }}>
                       {category.map((item, index) => {
                         return (
                           <FormGroup check>
-                            <Label check >
-                              <Input checked={item.id == this.state.searchFilter.idCategory} type="radio" name="radio2" value={item.nama} onChange={() => this.setSearchFilter('idCategory', item.id)} />
+                            <Label check>
+                              <Input
+                                checked={
+                                  item.id === this.state.searchFilter.idCategory
+                                }
+                                type="radio"
+                                name="radio2"
+                                value={item.nama}
+                                onChange={() =>
+                                  this.setSearchFilter("idCategory", item.id)
+                                }
+                              />
                               {item.nama}
                             </Label>
                           </FormGroup>
@@ -254,7 +279,6 @@ class ProductPage extends React.Component {
                     </Col>
                   </FormGroup>
                 </Form>
-
               </Col>
 
               <Col md="2" className="category-title">
@@ -274,8 +298,9 @@ class ProductPage extends React.Component {
                             className="p-1"
                             style={{ fontSize: "13px" }}
                             value={this.state.searchFilter.minRange}
-
-                            onChange={(e) => this.setSearchFilter('minRange', e.target.value)}
+                            onChange={(e) =>
+                              this.setSearchFilter("minRange", e.target.value)
+                            }
                           />
                         </div>
                         <div>
@@ -289,7 +314,9 @@ class ProductPage extends React.Component {
                             className="p-1"
                             style={{ fontSize: "13px" }}
                             value={this.state.searchFilter.maxRange}
-                            onChange={(e) => this.setSearchFilter('maxRange', e.target.value)}
+                            onChange={(e) =>
+                              this.setSearchFilter("maxRange", e.target.value)
+                            }
                           />
                         </div>
                       </div>
@@ -314,13 +341,52 @@ class ProductPage extends React.Component {
                           name="select"
                           id="exampleSelect"
                           style={{ fontSize: "13px" }}
-                          onChange={(e) => this.setSearchFilter('sortBy', e.target.value)}
+                          onChange={(e) =>
+                            this.setSearchFilter("sortBy", e.target.value)
+                          }
                         >
-                          <option value="" selected={this.state.searchFilter.sortBy == ""}>-</option>
-                          <option value='pack_price:desc' selected={this.state.searchFilter.sortBy == "pack_price:desc"}>Highest Price</option>
-                          <option value='pack_price:asc' selected={this.state.searchFilter.sortBy == 'pack_price:asc'} >Lowest Price</option>
-                          <option value='product_name:asc' selected={this.state.searchFilter.sortBy == 'product_name:asc'}>A-Z</option>
-                          <option value='product_name:desc' selected={this.state.searchFilter.sortBy == 'product_name:desc'}>Z-A</option>
+                          <option
+                            value=""
+                            selected={this.state.searchFilter.sortBy === ""}
+                          >
+                            -
+                          </option>
+                          <option
+                            value="pack_price:desc"
+                            selected={
+                              this.state.searchFilter.sortBy ===
+                              "pack_price:desc"
+                            }
+                          >
+                            Highest Price
+                          </option>
+                          <option
+                            value="pack_price:asc"
+                            selected={
+                              this.state.searchFilter.sortBy ===
+                              "pack_price:asc"
+                            }
+                          >
+                            Lowest Price
+                          </option>
+                          <option
+                            value="product_name:asc"
+                            selected={
+                              this.state.searchFilter.sortBy ===
+                              "product_name:asc"
+                            }
+                          >
+                            A-Z
+                          </option>
+                          <option
+                            value="product_name:desc"
+                            selected={
+                              this.state.searchFilter.sortBy ===
+                              "product_name:desc"
+                            }
+                          >
+                            Z-A
+                          </option>
                         </Input>
                       </FormGroup>
                     </Col>
@@ -329,7 +395,12 @@ class ProductPage extends React.Component {
               </Col>
 
               <Col md="12 submit mt-3">
-                <a style={{ color: "white", cursor: 'pointer' }} onClick={this.onBtnSubmit}>Submit</a>
+                <a
+                  style={{ color: "white", cursor: "pointer" }}
+                  onClick={this.onBtnSubmit}
+                >
+                  Submit
+                </a>
               </Col>
             </Row>
           </Container>
@@ -384,19 +455,40 @@ class ProductPage extends React.Component {
                       <Col md="12 mt-3" className="category-title">
                         <Form>
                           <FormGroup row>
-                            <div style={{ width: '13%', display: 'flex' }}>
+                            <div style={{ width: "13%", display: "flex" }}>
                               <Label for="checkbox2" xl={12}>
                                 Category
                               </Label>
-                              <Button outline color="secondary" size="sm" onClick={this.onBtnReset}>Reset</Button>
+                              <Button
+                                outline
+                                color="secondary"
+                                size="sm"
+                                onClick={this.onBtnReset}
+                              >
+                                Reset
+                              </Button>
                             </div>
 
                             <Col xl={{ size: 12 }}>
                               {category.map((item, index) => {
                                 return (
                                   <FormGroup check>
-                                    <Label check >
-                                      <Input checked={item.id == this.state.searchFilter.idCategory} type="radio" name="radio2" value={item.nama} onChange={() => this.setSearchFilter('idCategory', item.id)} />
+                                    <Label check>
+                                      <Input
+                                        checked={
+                                          item.id ===
+                                          this.state.searchFilter.idCategory
+                                        }
+                                        type="radio"
+                                        name="radio2"
+                                        value={item.nama}
+                                        onChange={() =>
+                                          this.setSearchFilter(
+                                            "idCategory",
+                                            item.id
+                                          )
+                                        }
+                                      />
                                       {item.nama}
                                     </Label>
                                   </FormGroup>
@@ -424,7 +516,12 @@ class ProductPage extends React.Component {
                                     className="p-1"
                                     style={{ fontSize: "calc(5px + 1vmin)" }}
                                     value={this.state.searchFilter.minRange}
-                                    onChange={(e) => this.setSearchFilter('minRange', e.target.value)}
+                                    onChange={(e) =>
+                                      this.setSearchFilter(
+                                        "minRange",
+                                        e.target.value
+                                      )
+                                    }
                                   />
                                 </div>
                                 <div>
@@ -438,7 +535,12 @@ class ProductPage extends React.Component {
                                     className="p-1"
                                     style={{ fontSize: "calc(5px + 1vmin)" }}
                                     value={this.state.searchFilter.maxRange}
-                                    onChange={(e) => this.setSearchFilter('maxRange', e.target.value)}
+                                    onChange={(e) =>
+                                      this.setSearchFilter(
+                                        "maxRange",
+                                        e.target.value
+                                      )
+                                    }
                                   />
                                 </div>
                               </div>
@@ -463,13 +565,57 @@ class ProductPage extends React.Component {
                                   name="select"
                                   id="exampleSelect"
                                   style={{ fontSize: "13px" }}
-                                  onChange={(e) => this.setSearchFilter('sortBy', e.target.value)}
+                                  onChange={(e) =>
+                                    this.setSearchFilter(
+                                      "sortBy",
+                                      e.target.value
+                                    )
+                                  }
                                 >
-                                  <option value="" selected={this.state.searchFilter.sortBy == ""}>-</option>
-                                  <option value='pack_price:desc' selected={this.state.searchFilter.sortBy == "pack_price:desc"}>Highest Price</option>
-                                  <option value='pack_price:asc' selected={this.state.searchFilter.sortBy == 'pack_price:asc'} >Lowest Price</option>
-                                  <option value='product_name:asc' selected={this.state.searchFilter.sortBy == 'product_name:asc'}>A-Z</option>
-                                  <option value='product_name:desc' selected={this.state.searchFilter.sortBy == 'product_name:desc'}>Z-A</option>
+                                  <option
+                                    value=""
+                                    selected={
+                                      this.state.searchFilter.sortBy === ""
+                                    }
+                                  >
+                                    -
+                                  </option>
+                                  <option
+                                    value="pack_price:desc"
+                                    selected={
+                                      this.state.searchFilter.sortBy ===
+                                      "pack_price:desc"
+                                    }
+                                  >
+                                    Highest Price
+                                  </option>
+                                  <option
+                                    value="pack_price:asc"
+                                    selected={
+                                      this.state.searchFilter.sortBy ===
+                                      "pack_price:asc"
+                                    }
+                                  >
+                                    Lowest Price
+                                  </option>
+                                  <option
+                                    value="product_name:asc"
+                                    selected={
+                                      this.state.searchFilter.sortBy ===
+                                      "product_name:asc"
+                                    }
+                                  >
+                                    A-Z
+                                  </option>
+                                  <option
+                                    value="product_name:desc"
+                                    selected={
+                                      this.state.searchFilter.sortBy ===
+                                      "product_name:desc"
+                                    }
+                                  >
+                                    Z-A
+                                  </option>
                                 </Input>
                               </FormGroup>
                             </Col>
@@ -478,7 +624,12 @@ class ProductPage extends React.Component {
                       </Col>
 
                       <Col md="12 submit mt-3">
-                        <a style={{ color: "white" }} onClick={this.onBtnSubmit}>Submit</a>
+                        <a
+                          style={{ color: "white" }}
+                          onClick={this.onBtnSubmit}
+                        >
+                          Submit
+                        </a>
                       </Col>
                     </Row>
                   </Container>
@@ -515,7 +666,7 @@ class ProductPage extends React.Component {
         .then((res) => {
           let token = localStorage.getItem("tkn_id");
           this.props.keepLogin(token);
-          alert(`${res.data}`);
+          // alert(`${res.data}`);
         })
         .catch((err) => {
           console.log(err);
@@ -534,10 +685,14 @@ class ProductPage extends React.Component {
 
     // Logic for displaying page numbers
     const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(this.props.product.length / todosPerPage); i++) {
+    for (
+      let i = 1;
+      i <= Math.ceil(this.props.product.length / todosPerPage);
+      i++
+    ) {
       pageNumbers.push(i);
     }
-    console.log("currentTodos", currentTodos);
+    // console.log("currentTodos", currentTodos);
     return (
       <Container fluid className="mt-5">
         <Row>
@@ -694,7 +849,13 @@ class ProductPage extends React.Component {
                           <span>Add to cart</span>
                         </li>
                       </ul>
-                      <Link to={`/detail?product=${item.product_name.replace(/\s/g, "-")}-${item.idproduct}`} style={{ textDecoration: 'none', color: 'black' }}>
+                      <Link
+                        to={`/detail?product=${item.product_name.replace(
+                          /\s/g,
+                          "-"
+                        )}-${item.idproduct}`}
+                        style={{ textDecoration: "none", color: "black" }}
+                      >
                         <CardBody className="p-2 d-flex flex-column">
                           <img
                             top
