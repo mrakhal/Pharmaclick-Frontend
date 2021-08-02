@@ -28,7 +28,7 @@ import { URL_API } from "../Helper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Toast } from 'primereact/toast';
 import HTTP from "../service/HTTP";
-import { getProductAction } from '../action'
+import { getProductAction, keepLogin } from '../action'
 import { Dialog } from 'primereact/dialog';
 import { Rating } from 'primereact/rating';
 import { Accordion, AccordionTab } from 'primereact/accordion';
@@ -130,7 +130,10 @@ class ProductDetailPage extends React.Component {
           price,
           product_name: detail.product_name
         })
-      console.log(res.data)
+        console.log(res.data)
+      let token = localStorage.getItem("tkn_id");
+      await this.props.keepLogin(token)
+      this.setState({ value: 1 })
       this.toast.show({ severity: 'success', summary: 'Success add to cart', detail: res.data, life: 3000 });
     } catch (error) {
       console.log("error add to cart", error)
@@ -405,4 +408,4 @@ const mapStateToProps = ({ productReducer, authReducer }) => {
   };
 };
 
-export default connect(mapStateToProps, { getProductAction })(ProductDetailPage);
+export default connect(mapStateToProps, { getProductAction, keepLogin })(ProductDetailPage);

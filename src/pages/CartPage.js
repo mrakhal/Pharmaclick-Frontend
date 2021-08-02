@@ -993,7 +993,7 @@ class CartPage extends React.Component {
                                     innerRef={(e) => (this.shippingIn = e)}
                                   >
                                     <option value="JNE">JNE</option>
-                                    )}
+                                    
                                   </Input>
                                 </FormGroup>
                               </Col>
