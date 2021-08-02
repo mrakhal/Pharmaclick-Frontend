@@ -61,27 +61,22 @@ class ProfileComp extends React.Component {
 
   componentDidMount() {
     this.props.getCity();
+    this.checkImage()
     // this.getAnImages();
     // this.props.getImageProfileUser(this.props.user.iduser);
     this.props.keepLogin(token);
   }
 
-  // getAnImages = () => {
-  //   axios
-  //     .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
-  //     .then((res) => {
-  //       if (res.data.image_url.length > 0) {
-  //         this.setState({ file: res.data.image_url });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
+  checkImage = () =>{
+    if(this.props.user.profile_image){
+      return this.setState({file:URL_API + `/${this.props.user.profile_image}`})
+    }
+  }
 
   handleChange(e) {
+    // URL_API + `/${this.props.user.profile_image}
     // eslint-disable-next-line) {
-    if (e.target.files[0]) {
+    if (this.props.user.profile_image) {
       // var reader = new FileReader();
       this.setState({
         fileName: e.target.files[0].name,
@@ -628,11 +623,10 @@ class ProfileComp extends React.Component {
               <Col md="9">
                 {" "}
                 <div className="d-flex justify-content-start align-items-center profile-image">
+                {this.props.user.profile_image ?(<></>):(<></>)}
                   <img
                     id="blah"
-                    // src={this.checkImageProfile()}
-                    // src={this.checkImageProfile()}
-                    src={URL_API +`/${this.props.profile}`}
+                    src={this.state.file}
                     width="100px"
                     height="100px"
                     alt="profile_image"
