@@ -27,7 +27,7 @@ import Profile from "../../assets/images/profile.png";
 import {
   getCity,
   getAddress,
-  getImageProfileUser,
+  // getImageProfileUser,
   keepLogin,
 } from "../../action";
 import { connect } from "react-redux";
@@ -61,23 +61,23 @@ class ProfileComp extends React.Component {
 
   componentDidMount() {
     this.props.getCity();
-    this.getAnImages();
-    this.props.getImageProfileUser(this.props.user.iduser);
+    // this.getAnImages();
+    // this.props.getImageProfileUser(this.props.user.iduser);
     this.props.keepLogin(token);
   }
 
-  getAnImages = () => {
-    axios
-      .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
-      .then((res) => {
-        if (res.data.image_url.length > 0) {
-          this.setState({ file: res.data.image_url });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // getAnImages = () => {
+  //   axios
+  //     .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
+  //     .then((res) => {
+  //       if (res.data.image_url.length > 0) {
+  //         this.setState({ file: res.data.image_url });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   handleChange(e) {
     // eslint-disable-next-line) {
@@ -126,8 +126,8 @@ class ProfileComp extends React.Component {
         axios
       .patch(URL_API + `/user/patch-user`, formData, headers)
       .then((res) => {
-        this.getAnImages();
-        this.props.getImageProfileUser(this.props.user.iduser);
+        // this.getAnImages();
+        // this.props.getImageProfileUser(this.props.user.iduser);
         this.setState({
           alert1: !this.state.alert1,
           color1: "success",
@@ -632,7 +632,7 @@ class ProfileComp extends React.Component {
                     id="blah"
                     // src={this.checkImageProfile()}
                     // src={this.checkImageProfile()}
-                    src={this.state.file}
+                    src={URL_API +`/${this.props.profile}`}
                     width="100px"
                     height="100px"
                     alt="profile_image"
@@ -929,13 +929,13 @@ const mapStateToProps = ({ productReducer, authReducer }) => {
   return {
     user: authReducer,
     city: productReducer.city_list,
-    profile: productReducer.image_profile,
+    profile: productReducer.profile_image,
   };
 };
 
 export default connect(mapStateToProps, {
   getCity,
   getAddress,
-  getImageProfileUser,
+  // getImageProfileUser,
   keepLogin,
 })(ProfileComp);

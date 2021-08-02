@@ -45,7 +45,7 @@ class SidebarComp extends React.Component {
                 </Link>
               </li>
               <li>
-                <Link to="/" style={{ textDecoration: "none" }}>
+                <Link to="/transaction" style={{ textDecoration: "none" }}>
                   <span className="ti-time"></span>
                   <span>Transactions</span>
                 </Link>

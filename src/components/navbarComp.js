@@ -23,7 +23,7 @@ import "../assets/css/navigation.css";
 import Logo from "../assets/images/logo.png";
 import Profile from "../assets/images/profile.png";
 import { connect } from "react-redux";
-import { authLogout, getImageProfileUser } from "../action";
+import { authLogout } from "../action";
 import axios from "axios";
 import CartEmpty from "../assets/images/emptyCart.jpg";
 import { URL_API } from "../Helper";
@@ -35,9 +35,9 @@ class NavbarComp extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.getAnImages();
-    }, 800);
+    // setTimeout(() => {
+    //   this.getAnImages();
+    // }, 800);
 
     let list = document.querySelectorAll(`.menu-item`);
     for (let i = 0; i < list.length; i++) {
@@ -52,19 +52,19 @@ class NavbarComp extends React.Component {
     // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
-  getAnImages =  () => {
-     axios
-      .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
-      .then((res) => {
-        if (res.data.image_url.length > 0) {
-          this.setState({ file: res.data.image_url });
-        }
-      })
-      .catch((err) => {
-        this.setState({ file: Profile });
-        console.log(err);
-      });
-  };
+  // getAnImages =  () => {
+  //    axios
+  //     .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
+  //     .then((res) => {
+  //       if (res.data.image_url.length > 0) {
+  //         this.setState({ file: res.data.image_url });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       this.setState({ file: Profile });
+  //       console.log(err);
+  //     });
+  // };
 
   btLogout = () => {
     this.props.authLogout();
@@ -226,7 +226,12 @@ class NavbarComp extends React.Component {
                   <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
                 <img
-                  src={this.state.file}
+                  src={URL_API + `/${this.props.user.profile_image}`}
+                  // src={
+              //   rowData.images[0].includes("http")
+              // ? `${rowData.images[0]}`
+              // : `${URL_API}/${rowData.images[0]}`
+          // }
                   width="35px;"
                   height="35px;"
                   style={{ borderRadius: "50%" }}
@@ -302,6 +307,6 @@ const mapStateToProps = ({ productReducer, authReducer }) => {
   };
 };
 
-export default connect(mapStateToProps, { authLogout, getImageProfileUser })(
+export default connect(mapStateToProps, { authLogout })(
   NavbarComp
 );
