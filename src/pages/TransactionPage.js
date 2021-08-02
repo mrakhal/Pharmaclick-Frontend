@@ -21,6 +21,7 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import "../assets/css/TransactionPage.css";
 import { URL_API } from "../Helper";
 import axios from "axios";
+import { connect } from "react-redux";
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -410,4 +411,9 @@ class TransactionPage extends React.Component {
   }
 }
 
-export default TransactionPage;
+const mapStateToProps = ({ authReducer }) => {
+  return {
+    ...authReducer
+  }
+}
+export default connect(mapStateToProps)(TransactionPage);

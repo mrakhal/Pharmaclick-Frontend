@@ -666,7 +666,7 @@ class ProductPage extends React.Component {
         .then((res) => {
           let token = localStorage.getItem("tkn_id");
           this.props.keepLogin(token);
-          alert(`${res.data}`);
+          // alert(`${res.data}`);
         })
         .catch((err) => {
           console.log(err);
