@@ -159,20 +159,10 @@ class ProductPage extends React.Component {
   }
 
   componentDidMount() {
-    // let list = document.querySelectorAll(`.list`);
-    // for (let i = 0; i < list.length; i++) {
-    //   list[i].onclick = function () {
-    //     let j = 0;
-    //     while (j < list.length) {
-    //       list[j++].className = "list";
-    //     }
-    //     list[i].className = "list active";
-    //   };
-    // }
     this.props.getProductAction(1);
   }
 
-  handleClick(event) {
+  handleClick = (event) => {
     this.setState({
       currentPage: Number(event.target.id),
     });
@@ -896,7 +886,7 @@ class ProductPage extends React.Component {
                             href="#"
                             key={item}
                             id={item}
-                            onClick={this.handleClick}
+                            onClick={(event) => this.handleClick(event)}
                           >
                             {item}
                           </PaginationLink>
