@@ -24,6 +24,7 @@ import { keepLogin, getImageProfileUser, getProductAction } from "./action";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import TransactionPage from "./pages/TransactionPage";
 import SalesReportPage from "./pages/SalesReportPage";
+import RevenuePage from "./pages/RevenuePage";
 
 
 class App extends React.Component {
@@ -77,6 +78,7 @@ class App extends React.Component {
                 component={ProductManagementPage}
               />
               <Route path={"/sales-report"} component={SalesReportPage} />
+              <Route path={"/revenue-report"} component={RevenuePage} />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
             <FooterComp />
