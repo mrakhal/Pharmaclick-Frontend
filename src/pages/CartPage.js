@@ -42,7 +42,7 @@ class CartPage extends React.Component {
       colorAlert: "",
       popoverOpen: false,
       popoverMessage: "",
-      selectedAddress: [],
+      selectedAddress: null,
       shippingCost: 0,
       activeFormAddress: false,
       alertAddress: false,
@@ -51,13 +51,22 @@ class CartPage extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.getCity();
-    this.getAddressDefault();
-    setTimeout(() => {
-      this.shippingCost();
-    }, 1500);
-    this.cekPrice();
+    const addresses = await this.getAddressDefault();
+    if (addresses.length <= 0) {
+      return
+    }
+    const defaultAddress = addresses[0]
+    const dataShippingCost = await this.getShippingCost(defaultAddress)
+    this.setState({
+      selectedAddress: defaultAddress,
+      dataShippingCost,
+    })
+    // setTimeout(() => {
+    //   this.shippingCost();
+    // }, 1500);
+    // this.cekPrice();
     // this.props.getAddress(this.props.user.iduser);
   }
 
@@ -143,13 +152,13 @@ class CartPage extends React.Component {
   };
 
   getAddressDefault = () => {
-    HTTP.get(`/user/get-address?set_default=${1}`)
+    return HTTP.get(`/user/get-address?set_default=${1}&iduser=${this.props.user.iduser}`)
       .then((res) => {
-        console.log("waw", res.data);
-        this.setState({ selectedAddress: res.data });
+        console.log('address',res.data)
+        return res.data
       })
       .catch((err) => {
-        console.log(err);
+        return err
       });
   };
 
@@ -626,8 +635,24 @@ class CartPage extends React.Component {
 
   onChange = (e) => {
     this.shippingCost();
-    return this.setState({ shippingCost: this.serviceShippigIn.value });
+    console.log("test",this.serviceShippingIn.value )
+    return this.setState({ shippingCost: this.serviceShippingIn.value });
+
     // return e.target.value;
+  };
+
+  getShippingCost = (address) => {
+     return HTTP.post(`/transaction/shipping-cost`, {
+        origin: address.id_city_origin,
+        destination: 22,
+        weight: 1000,
+      })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          return error;
+        });
   };
 
   shippingCost = async () => {
@@ -698,6 +723,8 @@ class CartPage extends React.Component {
       recipient: this.state.selectedAddress.recipient,
       postal_code: this.state.selectedAddress.postal_code,
       address: this.state.selectedAddress.address,
+      // expedition:this.shippingIn.value,
+      // service:this.serviceShippingIn.value,
       shipping_cost: this.state.shippingCost,
       total_price: this.cekPrice(),
       note: this.noteIn.value,
@@ -760,6 +787,8 @@ class CartPage extends React.Component {
       recipient: this.recipientForm.value,
       postal_code: parseInt(this.postalCodeForm.value),
       address: this.addressForm.value,
+      // expedition:this.shippingIn.value,
+      // service:this.serviceShippingIn.value,
       shipping_cost: this.state.shippingCost,
       total_price: this.cekPrice(),
       note: this.noteIn.value,
@@ -899,7 +928,7 @@ class CartPage extends React.Component {
                                 type="select"
                                 name="select"
                                 id="exampleSelect"
-                                innerRef={(e) => (this.serviceShippigIn = e)}
+                                innerRef={(e) => (this.serviceShippingIn = e)}
                                 onChange={this.onChange}
                               >
                                 <option value={0}>Choose Service</option>
@@ -1005,7 +1034,7 @@ class CartPage extends React.Component {
                                     name="select"
                                     id="exampleSelect"
                                     innerRef={(e) =>
-                                      (this.serviceShippigIn = e)
+                                      (this.serviceShippingIn = e)
                                     }
                                     onChange={this.onChange}
                                   >

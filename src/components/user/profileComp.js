@@ -43,7 +43,7 @@ class ProfileComp extends React.Component {
     this.state = {
       modal: false,
       modals: false,
-      file: Profile,
+      file: this.checkImage(),
       isOpen: false,
       alert: false,
       alert1: false,
@@ -61,7 +61,6 @@ class ProfileComp extends React.Component {
 
   componentDidMount() {
     this.props.getCity();
-    this.checkImage()
     // this.getAnImages();
     // this.props.getImageProfileUser(this.props.user.iduser);
     this.props.keepLogin(token);
@@ -69,27 +68,21 @@ class ProfileComp extends React.Component {
 
   checkImage = () =>{
     if(this.props.user.profile_image){
-      return this.setState({file:URL_API + `/${this.props.user.profile_image}`})
+      return  `${URL_API}/${this.props.user.profile_image}`
     }
+    return Profile
   }
 
   handleChange(e) {
     // URL_API + `/${this.props.user.profile_image}
     // eslint-disable-next-line) {
-    if (this.props.user.profile_image) {
-      // var reader = new FileReader();
-      this.setState({
-        fileName: e.target.files[0].name,
-        fileUpload: e.target.files[0],
-        file: URL.createObjectURL(e.target.files[0]),
+
+    let file = e.target.files[0]
+    this.setState({
+        fileName: file.name,
+        fileUpload: file,
+        file: URL.createObjectURL(file),
       });
-    } else {
-      this.setState({
-        fileName: "Select file",
-        fileUpload: null,
-        file: this.state.file,
-      });
-    }
   }
 
  onBtSave = () => {
@@ -246,13 +239,13 @@ class ProfileComp extends React.Component {
           this.props.getAddress(this.props.user.iduser);
           this.setState({
             modal: !this.state.modal,
-            alert: !this.state.alert,
+            alert: true,
             color: "success",
             message: res.data.message,
           });
           setTimeout(() => {
             this.setState({
-              alert: !this.state.alert,
+              alert: false,
             });
           }, 3000);
         })

@@ -46,7 +46,6 @@ class TransactionAdminPage extends React.Component {
 
   componentDidMount = () => {
     this.getTransactionHistory();
-    // this.getDetailTransactions();
   };
 
   getDetailTransactions = (idtransaction) => {
@@ -182,121 +181,6 @@ class TransactionAdminPage extends React.Component {
         });
   };
 
-  onBtnTransactionProof = () => {
-    let formData = new FormData();
-    let data = {
-      idtransaction: this.state.idtransaction,
-      id_transaction_status: 5,
-    };
-    formData.append("data", JSON.stringify(data));
-    formData.append("images", this.state.fileUpload);
-
-    let token = localStorage.getItem("tkn_id");
-    const headers = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    if (this.state.fileUpload !== null) {
-      axios
-        .post(URL_API + `/user/upload-transaction`, formData, headers)
-        .then((res) => {
-          this.setState({
-            modalUpload: !this.state.modalUpload,
-            alertUpload: !this.state.alertUpload,
-            color: "success",
-            alertMessage: res.data.message,
-          });
-          setTimeout(() => {
-            this.setState({
-              alertUpload: !this.state.alertUpload,
-            });
-          }, 3000);
-          this.getTransactionHistory();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-
-  printModalUploadTransactions = () => {
-    return (
-      <>
-        <Modal isOpen={this.state.modalUpload}>
-          <div className="d-flex justify-content-between header-upload">
-            <p>UPLOAD PAYMENT PROOF</p>
-
-            <Button
-              outline
-              color="danger"
-              onClick={() => {
-                this.setState({ modalUpload: !this.state.modalUpload });
-              }}
-            >
-              X
-            </Button>
-          </div>
-
-          <ModalBody className="body-upload">
-            <Container>
-              <Col md="12 pb-5">
-                <Container className="contain-upload">
-                  <Row>
-                    <Col md="12" className="card-upload">
-                      <center className="mt-3">
-                        <img
-                          src={this.state.file}
-                          width="250px"
-                          height="200px"
-                        />
-                      </center>
-                    </Col>
-                    <div className="d-flex justify-content-evenly align-items-center">
-                      <div class="image-upload">
-                        <label for="file-input">
-                          <div className="btn-getstarted mt-3">
-                            <a>
-                              <span>
-                                <FontAwesomeIcon icon={faCamera} />
-                              </span>{" "}
-                              UPLOAD
-                            </a>
-                          </div>
-                        </label>
-
-                        <input
-                          id="file-input"
-                          type="file"
-                          max-files="2000"
-                          onChange={this.handleChange}
-                        />
-                      </div>
-                    </div>
-                    {this.state.file !== Upload && (
-                      <>
-                        <Button
-                          color="primary"
-                          className="btn-upload mt-4"
-                          onClick={() => {
-                            this.onBtnTransactionProof();
-                          }}
-                        >
-                          SUBMIT
-                        </Button>
-                      </>
-                    )}
-                  </Row>
-                </Container>
-                {/* <h6>Upload Your Proof Transactions</h6> */}
-              </Col>
-            </Container>
-          </ModalBody>
-        </Modal>
-      </>
-    );
-  };
-
   confirmationTransaction = (id) =>{
       HTTP.patch(`/transaction/accept/${id}`)
       .then((res)=>{
@@ -348,8 +232,6 @@ class TransactionAdminPage extends React.Component {
                 <main>
                 <Container className="pb-5"><Row>
       <Col md="8 mt-4">
-
-        {this.printModalUploadTransactions()}
         <Container>
           {this.printModal()}
           <Row>

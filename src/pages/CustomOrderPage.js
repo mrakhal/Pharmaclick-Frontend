@@ -646,6 +646,8 @@ class CustomOrderPage extends React.Component {
       id_city_destination: 22,
       recipient: this.state.selectedAddress.recipient,
       postal_code: this.state.selectedAddress.postal_code,
+      expedition: this.shippingIn.value,
+      service: this.serviceShippigIn.value,
       address: this.state.selectedAddress.address,
       shipping_cost: 0,
       total_price: 0,
@@ -684,7 +686,6 @@ class CustomOrderPage extends React.Component {
 
   checkoutFormPerscription = () => {
     let formData = new FormData();
-    let token = localStorage.getItem("tkn_id");
 
     let data = {
       id_transaction_status: 4,
@@ -694,6 +695,8 @@ class CustomOrderPage extends React.Component {
       recipient: this.recipientForm.value,
       postal_code: parseInt(this.postalCodeForm.value),
       address: this.addressForm.value,
+      expedition: this.shippingIn.value,
+      service: this.serviceShippigIn.value,
       shipping_cost: 0,
       total_price: this.cekPrice(),
       note: this.noteIn.value,
@@ -816,12 +819,14 @@ class CustomOrderPage extends React.Component {
                                 name="select"
                                 id="exampleSelect"
                                 required="true"
+                                // onChange={()=>{this.setState({expedition:this.value})}}
+                                innerRef={(e) => (this.shippingIn = e)}
                               >
                                 {this.state.dataShippingCost.map(
                                   (item, idx) => {
                                     return (
                                       <>
-                                        <option>JNE</option>
+                                        <option value="JNE">JNE</option>
                                       </>
                                     );
                                   }
@@ -848,7 +853,7 @@ class CustomOrderPage extends React.Component {
                                         {item.cost.cost.map((val, idx) => {
                                           return (
                                             <>
-                                              <option value={val.value}>
+                                              <option value={item.cost.service}>
                                                 {item.cost.service} (
                                                 {item.cost.description})
                                               </option>
@@ -946,10 +951,10 @@ class CustomOrderPage extends React.Component {
                                         console.log("ITEM", item.cost);
                                         return (
                                           <>
-                                            {item.cost.cost.map((val, idx) => {
+                                            {item.cost.cost.map((val, idx) => { 
                                               return (
                                                 <>
-                                                  <option value={val.value}>
+                                                  <option value={item.cost.service}>
                                                     {item.cost.service} (
                                                     {item.cost.description})
                                                   </option>
