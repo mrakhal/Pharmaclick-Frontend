@@ -97,7 +97,7 @@ class ProfileComp extends React.Component {
     }
   }
 
-  onBtSave = () => {
+ onBtSave = () => {
     let formData = new FormData();
     let data = {
       iduser: this.props.user.iduser,
@@ -109,12 +109,13 @@ class ProfileComp extends React.Component {
     };
     formData.append("data", JSON.stringify(data));
     console.log("fileupload", this.state.fileUpload);
+    
     if (this.state.fileUpload !== null) {
       if (
         this.state.fileUpload.type.split("/")[1] === "jpeg" ||
         this.state.fileUpload.type.split("/")[1] === "jpg"
       ) {
-        formData.append("images", this.state.fileUpload);
+        formData.append("images", this.state.fileUpload);  
       }
     }
     const headers = {
@@ -122,11 +123,7 @@ class ProfileComp extends React.Component {
         Authorization: `Bearer ${token}`,
       },
     };
-    // if (
-    //   this.state.fileUpload.type.split("/")[1] === "jpeg" ||
-    //   this.state.fileUpload.type.split("/")[1] === "jpg"
-    // ) {
-    axios
+        axios
       .patch(URL_API + `/user/patch-user`, formData, headers)
       .then((res) => {
         this.getAnImages();
@@ -145,18 +142,6 @@ class ProfileComp extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-    // } else {
-    //   this.setState({
-    //     alert1: !this.state.alert1,
-    //     color1: "danger",
-    //     message1: "image must .jpg/.jpeg",
-    //   });
-    //   setTimeout(() => {
-    //     this.setState({
-    //       alert1: !this.state.alert1,
-    //     });
-    //   }, 3000);
-    // }
   };
 
   onBtnEditAddress = () => {
