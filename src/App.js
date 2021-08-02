@@ -72,7 +72,7 @@ class App extends React.Component {
                 path={"/product-management"}
                 component={ProductManagementPage}
               />
-              <Route path="/transaction" component={TransactionAdminPage} />
+              <Route path="/transactions" component={TransactionAdminPage} />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
             <FooterComp />
