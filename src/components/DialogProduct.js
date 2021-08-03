@@ -67,7 +67,7 @@ class DialogProduct extends React.Component {
         try {
             let { idproduct, product_name, brand, stock, price, description, usage, dosage, indication, effect, pack_price, netto } = this.props.productDetail
             let { category, selectedUnit } = this.props
-            console.log('selected unit', selectedUnit.name)
+            // console.log('selected unit', selectedUnit.name)
             let checkField = [product_name, brand, stock, price, description, usage, dosage, indication, effect]
             if (checkField.indexOf("") > -1) {
                 this.setState({ error: true })
