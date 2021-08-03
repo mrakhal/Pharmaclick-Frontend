@@ -29,7 +29,6 @@ import CartEmpty from "../assets/images/emptyCart.jpg";
 import axios from "axios";
 import { URL_API } from "../Helper";
 
-let token = localStorage.getItem("tkn_id");
 
 class CartPage extends React.Component {
   constructor(props) {
@@ -85,6 +84,7 @@ class CartPage extends React.Component {
         this.setState({ modal: !this.state.modal });
         this.shippingCost();
         this.cekPrice();
+        let token = localStorage.getItem("tkn_id");
         this.props.keepLogin(token);
         this.setState({ dataShippingCost: [], shippingCost: 0 });
       })
@@ -587,6 +587,7 @@ class CartPage extends React.Component {
         netto: netto,
       });
       if (res.data) {
+        let token = localStorage.getItem("tkn_id");
         this.props.keepLogin(token);
         if (res.data.message) {
           this.setState({
@@ -614,6 +615,7 @@ class CartPage extends React.Component {
       netto: netto,
     })
       .then((res) => {
+        let token = localStorage.getItem("tkn_id");
         this.props.keepLogin(token);
       })
       .catch((err) => {
@@ -628,6 +630,7 @@ class CartPage extends React.Component {
     )
       .then((res) => {
         // alert(res.data.message);
+        let token = localStorage.getItem("tkn_id");
         this.props.keepLogin(token);
       })
       .catch((err) => {
@@ -700,7 +703,6 @@ class CartPage extends React.Component {
 
   checkoutTransactions = () => {
     // let formData = new FormData();
-    let token = localStorage.getItem("tkn_id");
     let idProductAll = [];
     this.props.user.cart.forEach((item, idx) => {
       idProductAll.push({
@@ -727,6 +729,7 @@ class CartPage extends React.Component {
       note: this.noteIn.value,
       idtype: 1,
     };
+    let token = localStorage.getItem("tkn_id");
     const headers = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -765,7 +768,6 @@ class CartPage extends React.Component {
 
   checkoutFormTransactions = () => {
     // let formData = new FormData();
-
     let idProductAll = [];
     this.props.user.cart.forEach((item, idx) => {
       idProductAll.push({
@@ -791,6 +793,7 @@ class CartPage extends React.Component {
       note: this.noteIn.value,
       idtype: 1,
     };
+    let token = localStorage.getItem("tkn_id");
     const headers = {
       headers: {
         Authorization: `Bearer ${token}`,

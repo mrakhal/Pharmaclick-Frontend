@@ -40,8 +40,6 @@ class TransactionAdminPage extends React.Component {
       currentPage: 1,
       todosPerPage: 5,
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -59,30 +57,6 @@ class TransactionAdminPage extends React.Component {
         console.log(err);
       });
   };
-
-  handleClick(event) {
-    this.setState({
-      currentPage: Number(event.target.id),
-    });
-  }
-
-  handleChange(e) {
-    // eslint-disable-next-line) {
-    if (e.target.files[0]) {
-      // var reader = new FileReader();
-      this.setState({
-        fileName: e.target.files[0].name,
-        fileUpload: e.target.files[0],
-        file: URL.createObjectURL(e.target.files[0]),
-      });
-    } else {
-      this.setState({
-        fileName: "Select file",
-        fileUpload: null,
-        file: this.state.file,
-      });
-    }
-  }
 
   printModal = () => {
     return (
@@ -171,7 +145,13 @@ class TransactionAdminPage extends React.Component {
   };
 
   getTransactionHistory = () => {
-      HTTP.get(`/user/sort-transactions`)
+    let token = localStorage.getItem("tkn_id");
+    const headers = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios.get(URL_API + `/user/sort-transactions`,headers)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
@@ -225,9 +205,6 @@ class TransactionAdminPage extends React.Component {
     ) {
       pageNumbers.push(i);
     }
-
-    console.log("waw", this.state.historyTransactions);
-    console.log("detran", this.state.detailTransactions);
     return (
         <div class="main-content">
                 <main>
