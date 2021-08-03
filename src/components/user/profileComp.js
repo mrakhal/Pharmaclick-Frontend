@@ -110,8 +110,6 @@ class ProfileComp extends React.Component {
         axios
       .patch(URL_API + `/user/patch-user`, formData, headers)
       .then((res) => {
-        // this.getAnImages();
-        // this.props.getImageProfileUser(this.props.user.iduser);
         this.setState({
           alert1: !this.state.alert1,
           color1: "success",

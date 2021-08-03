@@ -215,18 +215,24 @@ class NavbarComp extends React.Component {
                 <NavItem type="none" style={{ marginRight: "10px" }}>
                   <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
-                <img
-                  src={this.state.file}
-                  // src={
-              //   rowData.images[0].includes("http")
-              // ? `${rowData.images[0]}`
-              // : `${URL_API}/${rowData.images[0]}`
-          // }
+                {this.props.user.profile_image ?(<><img
+                  src={`${URL_API}/${this.props.user.profile_image}`}
+                  width="35px;"
+                  height="35px;"
+                  style={{ borderRadius: "50%" }}
+                  alt="profile image"
+                /></>):(
+                  <>
+                  <img
+                  src={Profile}
                   width="35px;"
                   height="35px;"
                   style={{ borderRadius: "50%" }}
                   alt="profile image"
                 />
+                </>
+                )}
+                
                 <UncontrolledDropdown>
                   <DropdownToggle nav caret></DropdownToggle>
                   <DropdownMenu right>
