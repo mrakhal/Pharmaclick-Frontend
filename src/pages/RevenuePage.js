@@ -159,7 +159,7 @@ class RevenuePage extends React.Component {
             console.log("data", data)
             let datasets = [
                 {
-                    label: 'Total Pieces of Product Sold Per-Month',
+                    label: 'Total Revenue',
                     data: data,
                     fill: true,
                     borderColor: '#4bc0c0'
@@ -167,7 +167,8 @@ class RevenuePage extends React.Component {
             ]
 
             this.setState({
-                revenuesReport: {...this.state.revenuesReport, labels, datasets}
+                revenuesReport: {...this.state.revenuesReport, labels, datasets},
+                dataRevenues: res.data[0]
             })
         } catch (error) {
             
