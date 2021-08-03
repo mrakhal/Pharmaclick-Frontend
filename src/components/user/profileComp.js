@@ -709,7 +709,7 @@ class ProfileComp extends React.Component {
                               Phone Number
                             </Label>
                             <Input
-                              type="number"
+                              type="text"
                               name="phoneNumber"
                               id="phoneNumber"
                               placeholder="Enter your phone number"
@@ -725,7 +725,7 @@ class ProfileComp extends React.Component {
                               Age
                             </Label>
                             <Input
-                              type="text"
+                              type="number"
                               name="age"
                               id="age"
                               placeholder="Enter your age"

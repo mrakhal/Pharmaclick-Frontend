@@ -31,13 +31,12 @@ import { URL_API } from "../Helper";
 class NavbarComp extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isOpen: false, role: "user", file: Profile };
+    this.state = { isOpen: false, role: "user", file: this.checkImage() };
   }
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.getAnImages();
-    // }, 800);
+      this.checkImage();
+
 
     let list = document.querySelectorAll(`.menu-item`);
     for (let i = 0; i < list.length; i++) {
@@ -52,19 +51,12 @@ class NavbarComp extends React.Component {
     // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
-  // getAnImages =  () => {
-  //    axios
-  //     .get(URL_API + `/user/get-image-user?iduser=${this.props.user.iduser}`)
-  //     .then((res) => {
-  //       if (res.data.image_url.length > 0) {
-  //         this.setState({ file: res.data.image_url });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       this.setState({ file: Profile });
-  //       console.log(err);
-  //     });
-  // };
+  checkImage = () =>{
+    if(this.props.user.profile_image){
+      return  `${URL_API}/${this.props.user.profile_image}`
+    }
+    return Profile
+  }
 
   btLogout = () => {
     this.props.authLogout();
@@ -226,7 +218,7 @@ class NavbarComp extends React.Component {
                   <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
                 <img
-                  src={URL_API + `/${this.props.user.profile_image}`}
+                  src={this.state.file}
                   // src={
               //   rowData.images[0].includes("http")
               // ? `${rowData.images[0]}`
