@@ -35,9 +35,7 @@ class NavbarComp extends React.Component {
   }
 
   componentDidMount() {
-      this.checkImage();
-
-
+    this.checkImage()
     let list = document.querySelectorAll(`.menu-item`);
     for (let i = 0; i < list.length; i++) {
       list[i].onclick = function () {
@@ -48,14 +46,14 @@ class NavbarComp extends React.Component {
         list[i].className = "menu-item active";
       };
     }
-    // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
-  checkImage = () =>{
+  checkImage = () => {
     if(this.props.user.profile_image){
-      return  `${URL_API}/${this.props.user.profile_image}`
+      return `${URL_API}/${this.props.user.profile_image}`
+    }else{
+      return Profile
     }
-    return Profile
   }
 
   btLogout = () => {

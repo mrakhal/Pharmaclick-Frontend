@@ -19,6 +19,7 @@ import DialogProductCustom from "../components/DialogProductCustom";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import DialogAddCustom from "../components/DialogAddCustom";
+import DialogRestockCustom from "../components/DialogRestockCustom";
 import { Toast } from "primereact/toast";
 import { URL_API } from "../Helper";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
@@ -32,6 +33,7 @@ class CustomProductManagementPage extends React.Component {
       loading: false,
       costumers: [],
       productDialog: false,
+      productRestockDialog:false,
       productDetail: [],
       addDialog: false,
       notif: false,
@@ -210,6 +212,39 @@ class CustomProductManagementPage extends React.Component {
     }
   };
 
+  restockProduct = async (product) => {
+    try {
+      let index = this.category.findIndex(
+        (item) => item.name.toLocaleLowerCase() == product.category
+      );
+      let unitIndex = this.unit.findIndex(
+        (item) => item.name.toLocaleLowerCase() == product.unit
+      );
+
+      this.setState({
+        productDetail: product,
+        productRestockDialog: true,
+        addDialog: false,
+        confirmDialog: false,
+        idstock: null,
+        selectedCategory: this.category[index],
+        selectedUnit: this.unit[unitIndex],
+      });
+
+      this.setState({
+        productDetail: product,
+        productRestockDialog: true,
+        addDialog: false,
+        confirmDialog: false,
+        idstock: null,
+        selectedCategory: this.category[index],
+        selectedUnit: this.unit[unitIndex],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -221,6 +256,7 @@ class CustomProductManagementPage extends React.Component {
         <Button
           icon="pi pi-undo"
           className="p-button-rounded p-button-primary ml-1"
+          onClick={() => this.restockProduct(rowData)}
         />
         <Button
           icon="pi pi-trash"
@@ -316,6 +352,7 @@ class CustomProductManagementPage extends React.Component {
     let {
       productDetail,
       productDialog,
+      productRestockDialog,
       addDialog,
       selectedCategory,
       selectedUnit,
@@ -451,6 +488,25 @@ class CustomProductManagementPage extends React.Component {
             productDetail={productDetail}
             productDialog={productDialog}
             hide={() => this.setState({ productDialog: false })}
+            inputChange={(e, property) => {
+              this.inputChange(e, property);
+            }}
+            stockChange={(e, property) => this.stockChange(e, property)}
+            toast={(a) =>
+              this.toast.show({
+                severity: "success",
+                summary: "Success!",
+                detail: a,
+                life: 3000,
+              })
+            }
+          />
+          <DialogRestockCustom
+            category={selectedCategory}
+            unit={selectedUnit}
+            productDetail={productDetail}
+            productRestockDialog={productRestockDialog}
+            hide={() => this.setState({ productRestockDialog: false })}
             inputChange={(e, property) => {
               this.inputChange(e, property);
             }}
