@@ -22,6 +22,9 @@ import "../assets/css/TransactionPage.css";
 import { URL_API } from "../Helper";
 import axios from "axios";
 import { connect } from "react-redux";
+import {
+  keepLogin,
+} from "../action";
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -41,10 +44,9 @@ class TransactionPage extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentDidMount = () => {
-    this.getTransactionHistory();
-    // this.getDetailTransactions();
-  };
+  componentDidMount() {
+   this.getTransactionHistory();
+   }
 
   getDetailTransactions = (idtransaction) => {
     HTTP.get(`/user/detail-transactions/${idtransaction}`)
@@ -161,11 +163,11 @@ class TransactionPage extends React.Component {
     );
   };
 
-  getTransactionHistory = () => {
+  getTransactionHistory = async () => {
     if (this.statusTrans.value) {
       let value = `?id_transaction_status=${this.statusTrans.value}`;
 
-      HTTP.get(`/user/sort-transactions${value}`)
+     HTTP.get(`/user/sort-transactions${value}`)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
@@ -416,4 +418,4 @@ const mapStateToProps = ({ authReducer }) => {
     ...authReducer
   }
 }
-export default connect(mapStateToProps)(TransactionPage);
+export default connect(mapStateToProps,{keepLogin})(TransactionPage);

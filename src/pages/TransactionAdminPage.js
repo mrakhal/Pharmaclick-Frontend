@@ -44,9 +44,9 @@ class TransactionAdminPage extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.getTransactionHistory();
-  };
+  }
 
   getDetailTransactions = (idtransaction) => {
     HTTP.get(`/user/detail-transactions/${idtransaction}`)
@@ -91,7 +91,8 @@ class TransactionAdminPage extends React.Component {
           <ModalBody>
             <Container>
               <Row>
-                <div className="d-flex justify-content-between ">
+              
+                {/* <div className="d-flex justify-content-between ">
                   <p></p>
                   <Button
                     color="danger"
@@ -101,7 +102,7 @@ class TransactionAdminPage extends React.Component {
                   >
                     X
                   </Button>
-                </div>
+                </div> */}
                 <hr className="mt-3" />
                 {this.state.detailTransactions.slice(0, 1).map((item, idx) => {
                   return (

@@ -55,14 +55,16 @@ class CartPage extends React.Component {
     this.props.getCity();
     const addresses = await this.getAddressDefault();
     if (addresses.length <= 0) {
-      return
-    }
+      await this.cityForm.value
+      this.shippingCost()
+    }else{
     const defaultAddress = addresses[0]
     const dataShippingCost = await this.getShippingCost(defaultAddress)
     this.setState({
       selectedAddress: defaultAddress,
       dataShippingCost,
     })
+    }
     // setTimeout(() => {
     //   this.shippingCost();
     // }, 1500);
@@ -467,7 +469,7 @@ class CartPage extends React.Component {
                       innerRef={(e) => (this.cityForm = e)}
                       id="city"
                       // innerRef={(e) => (this.originIn = e)}
-                      // onChange={this.shippingCost}
+                      onChange={()=>{this.shippingCost()}}
                       required
                     >
                       {this.props.city.map((item) => {
@@ -634,8 +636,7 @@ class CartPage extends React.Component {
   };
 
   onChange = (e) => {
-    this.shippingCost();
-    console.log("test",this.serviceShippingIn.value )
+    // this.getShippingCost();
     return this.setState({ shippingCost: this.serviceShippingIn.value });
 
     // return e.target.value;
@@ -655,22 +656,18 @@ class CartPage extends React.Component {
         });
   };
 
-  shippingCost = async () => {
-    if (this.state.selectedAddress) {
+  shippingCost = () => {
       HTTP.post(`/transaction/shipping-cost`, {
-        origin: this.state.selectedAddress.id_city_origin,
+        origin: this.cityForm.value,
         destination: 22,
         weight: 1000,
       })
         .then((res) => {
-          this.setState({ dataShippingCost: res.data });
+          this.setState({dataShippingCost: res.data})
         })
         .catch((error) => {
-          console.log(error);
+          return error
         });
-    } else {
-      alert("error");
-    }
   };
 
   printAlert = () => {
@@ -782,7 +779,7 @@ class CartPage extends React.Component {
       id_transaction_status: 4,
       idproduct: idProductAll,
       invoice: `PRM#CLICK${new Date().valueOf()}`,
-      id_city_origin: this.state.selectedAddress.id_city_origin,
+      id_city_origin: this.cityForm.value,
       id_city_destination: 22,
       recipient: this.recipientForm.value,
       postal_code: parseInt(this.postalCodeForm.value),

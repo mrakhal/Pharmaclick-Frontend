@@ -480,6 +480,7 @@ class CustomOrderPage extends React.Component {
                       className="form-inputan"
                       innerRef={(e) => (this.cityForm = e)}
                       id="city"
+                      onChange={this.onChange}
                       // innerRef={(e) => (this.originIn = e)}
                       // onChange={this.shippingCost}
                       required
@@ -690,7 +691,7 @@ class CustomOrderPage extends React.Component {
     let data = {
       id_transaction_status: 4,
       invoice: `PRM#CLICK${new Date().valueOf()}`,
-      id_city_origin: this.state.selectedAddress.id_city_origin,
+      id_city_origin: this.cityForm.value,
       id_city_destination: 22,
       recipient: this.recipientForm.value,
       postal_code: parseInt(this.postalCodeForm.value),
