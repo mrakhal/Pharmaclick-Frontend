@@ -195,15 +195,6 @@ class ProductManagementPage extends React.Component {
         selectedUnit: this.unit[unitIndex],
       });
 
-      this.setState({
-        productDetail: product,
-        productDialog: true,
-        addDialog: false,
-        confirmDialog: false,
-        idstock: null,
-        selectedCategory: this.category[index],
-        selectedUnit: this.unit[unitIndex],
-      });
     } catch (error) {
       console.log(error);
     }
@@ -442,7 +433,7 @@ class ProductManagementPage extends React.Component {
           {/* DIALOG */}
           <DialogProduct
             category={selectedCategory}
-            unit={selectedUnit}
+            selectedUnit={selectedUnit}
             productDetail={productDetail}
             productDialog={productDialog}
             hide={() => this.setState({ productDialog: false })}
