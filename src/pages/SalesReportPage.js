@@ -26,7 +26,6 @@ const data = {
 };
 
 
-
 let filter = { selectedTime: 'Yearly', selectedDetailTime: '2021', year: '2021' }
 class SalesReportPage extends React.Component {
     constructor(props) {
@@ -92,9 +91,9 @@ class SalesReportPage extends React.Component {
                     borderColor: '#4bc0c0'
                 }
             ]
-            console.log(data)
+            // console.log(data)
             let labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            console.log(this.state.salesReport)
+            // console.log(this.state.salesReport)
             this.setState({
                 salesReport: { ...this.state.salesReport, labels, datasets },
                 totalProductSold: res.data[0].total_product,
@@ -132,10 +131,10 @@ class SalesReportPage extends React.Component {
                 labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4']
                 data = [0, 0, 0, 0]
             }
-            console.log("url: ", url)
+            // console.log("url: ", url)
             let res = await HTTP.get(url)
 
-            console.log("filter data", res.data[0])
+            // console.log("filter data", res.data[0])
             let { detail } = res.data[0]
             if (selectedTime.name == "Yearly") detail.forEach((item, index) => data[item.month - 1] += item.qty_buy)
             if (selectedTime.name == "Monthly") detail.forEach((item, index) => data[item.week - 1] += item.qty_buy)
@@ -147,9 +146,9 @@ class SalesReportPage extends React.Component {
                     borderColor: '#4bc0c0'
                 }
             ]
-            console.log(data)
+            // console.log(data)
 
-            console.log(this.state.salesReport)
+            // console.log(this.state.salesReport)
             this.setState({
                 salesReport: { ...this.state.salesReport, labels, datasets },
                 totalProductSold: res.data[0].total_product,
@@ -183,7 +182,7 @@ class SalesReportPage extends React.Component {
                     <Column field="fullname" header="Customer" sortable></Column>
                     <Column field="created_at" header="Date" sortable></Column>
                     <Column field="qty" header={`Amount ${data.type == 'pack' ? '(pack)' : '(bottle)'}`} sortable></Column>
-                    <Column field="total_netto" header={`Amount by Weight (${data.unit})`} sortable></Column> 
+                    <Column field="total_netto" header={`Amount by Unit (${data.unit})`} sortable></Column> 
                     <Column field="transaction_status" header="Transaction Status" sortable></Column> 
                     {/* <Column headerStyle={{ width: '4rem' }} body={this.searchBodyTemplate}></Column> */}
                 </DataTable>
@@ -192,7 +191,7 @@ class SalesReportPage extends React.Component {
     }
     render() {
         let { salesReport, totalQtySold, totalProductSold, filter, productSales, expandedRows } = this.state
-        console.log('filter', filter)
+        // console.log('filter', filter)
         return (
             <div className="main-content">
                 <main>
@@ -222,6 +221,7 @@ class SalesReportPage extends React.Component {
                                 </Card>
                             </div>
                             <div style={{ width: '30%', margin: 'auto' }}>
+                                
                                 <Card className="my-3 d-flex justify-content-center" style={{ textAlign: 'center', height: '50%' }}>
                                     <div className="d-flex">
                                         <i className="pi pi-check mx-1"></i>
@@ -270,71 +270,3 @@ class SalesReportPage extends React.Component {
 
 export default SalesReportPage;
 
-// import React from 'react'
-// import "../assets/css/SidebarComp.css";
-// import { Chart } from 'primereact/chart';
-// import { Button } from 'primereact/button';
-// import HTTP from '../service/HTTP';
-
-
-
-// class AdminTransactionPage extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             salesReport: { ...data }
-//         }
-//     }
-
-//     componentDidMount() {
-//         this.getSalesReport()
-//     }
-//     getSalesReport = async () =>{
-//         try {
-//             let res = await HTTP.get('/transaction/report')
-//             console.log(res.data)
-//         } catch (error) {
-//             console.log("error get sales report", error)
-//         }
-//     }
-//     getDataPerWeek = async () => {
-//         try {
-//             let labels = ['week 1', 'week 2', 'week 3', 'week 4']
-//             this.setState({
-//                 salesReport: {
-//                     ...this.state.salesReport,
-//                     labels
-//                 }
-//             })
-//         } catch (error) {
-//             console.log("", error)
-//         }
-//     }
-//     getDataPerMonth = async () => {
-//         try {
-//             let labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-//             this.setState({
-//                 salesReport: {
-//                     ...this.state.salesReport,
-//                     labels
-//                 }
-//             })
-//         } catch (error) {
-//             console.log("", error)
-//         }
-//     }
-//     render() {
-//         let { salesReport } = this.state
-//         return (
-//             <div className="main-content">
-//                 <main>
-//                 <Button label="Week" onClick={this.getDataPerWeek}/>
-//                 <Button label="Month" onClick={this.getDataPerMonth}/>
-//                     <Chart type="line" data={salesReport} />
-//                 </main>
-//             </div>
-//         );
-//     }
-// }
-
-// export default AdminTransactionPage;
