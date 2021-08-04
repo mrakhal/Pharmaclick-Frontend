@@ -27,7 +27,6 @@ import { connect } from "react-redux";
 import { TabView, TabPanel } from 'primereact/tabview';
 import { TabMenu } from 'primereact/tabmenu';
 import { Rating } from 'primereact/rating';
-import { keepLogin } from "../action";
 
 const productReview = [{ idproduct: null, review: '', rating: null }]
 class TransactionPage extends React.Component {
@@ -60,9 +59,10 @@ class TransactionPage extends React.Component {
     ];
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.getTransactionHistory();
-  }
+    // this.getDetailTransactions();
+  };
 
   getDetailTransactions = async (idtransaction) => {
     try {
@@ -242,16 +242,12 @@ class TransactionPage extends React.Component {
     }
   };
 
-  getTransactionHistory = async () => {
-    if (this.statusTrans.value) {
-      let value = `?id_transaction_status=${this.statusTrans.value}`;
-      let token = localStorage.getItem("tkn_id");
-      const headers = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-     axios.get(URL_API+`/user/sort-transactions${value}`,headers)
+  getTransactionHistory = (status = 4) => {
+    if (status) {
+      console.log("status trans", status)
+      let value = `?id_transaction_status=${status}`;
+
+      HTTP.get(`/user/sort-transactions${value}`)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
@@ -264,13 +260,8 @@ class TransactionPage extends React.Component {
         });
     } else {
       let value = ``;
-      let token = localStorage.getItem("tkn_id");
-      const headers = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-      axios.get(URL_API+`/user/sort-transactions${value}`,headers)
+
+      HTTP.get(`/user/sort-transactions${value}`)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
@@ -523,4 +514,4 @@ const mapStateToProps = ({ authReducer }) => {
     ...authReducer
   }
 }
-export default connect(mapStateToProps, { keepLogin })(TransactionPage);
+export default connect(mapStateToProps)(TransactionPage);
