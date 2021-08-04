@@ -13,6 +13,8 @@ import {
   Alert,
   Modal,
   ModalBody,
+  ModalHeader,
+  Form,
 } from "reactstrap";
 import HTTP from "../service/HTTP.js";
 import Upload from "../assets/images/bg-upload.png";
@@ -22,6 +24,9 @@ import "../assets/css/TransactionPage.css";
 import { URL_API } from "../Helper";
 import axios from "axios";
 import { connect } from "react-redux";
+import { TabView, TabPanel } from 'primereact/tabview';
+import { TabMenu } from 'primereact/tabmenu';
+import { Rating } from 'primereact/rating';
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -37,8 +42,20 @@ class TransactionPage extends React.Component {
       color: "",
       alertUpload: false,
       idtransaction: null,
+      statusTrans: 4,
+      activeIndex: 0,
+      modalType: 'detail',
+      rating: ''
     };
     this.handleChange = this.handleChange.bind(this);
+
+    this.items = [
+      { label: 'Request', icon: 'pi pi-fw pi-question', status: 4 },
+      { label: 'Waiting Confirmation', icon: 'pi pi-fw pi-inbox', status: 5 },
+      { label: 'On Progress', icon: 'pi pi-fw pi-spinner', status: 1 },
+      { label: 'Done', icon: 'pi pi-fw pi-check', status: 2 },
+      { label: 'Reject', icon: 'pi pi-fw pi-times', status: 3 }
+    ];
   }
 
   componentDidMount = () => {
@@ -46,16 +63,22 @@ class TransactionPage extends React.Component {
     // this.getDetailTransactions();
   };
 
-  getDetailTransactions = (idtransaction) => {
-    HTTP.get(`/user/detail-transactions/${idtransaction}`)
-      .then((res) => {
-        this.setState({
-          detailTransactions: res.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  getDetailTransactions = async (idtransaction) => {
+    try {
+      let res = await HTTP.get(`/user/detail-transactions/${idtransaction}`)
+      this.setState({ detailTransactions: res.data })
+    } catch (error) {
+      console.log(error)
+    }
+    // HTTP.get(`/user/detail-transactions/${idtransaction}`)
+    //   .then((res) => {
+    //     this.setState({
+    //       detailTransactions: res.data,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   handleChange(e) {
@@ -76,100 +99,138 @@ class TransactionPage extends React.Component {
     }
   }
 
-  printModal = () => {
-    return (
-      <>
-        <Modal isOpen={this.state.modal}>
-          <ModalBody>
-            <Container>
-              <Row>
-                <div className="d-flex justify-content-between ">
-                  <p></p>
-                  <Button
-                    color="danger"
-                    onClick={() => {
-                      this.setState({ modal: !this.state.modal });
-                    }}
-                  >
-                    X
-                  </Button>
-                </div>
-                <hr className="mt-3" />
-                {this.state.detailTransactions.slice(0, 1).map((item, idx) => {
-                  return (
-                    <>
-                      {" "}
-                      <Col md="6">
-                        <p>
-                          Recipient : <br />
-                          {item.recipient}
-                        </p>
-                      </Col>
-                      <Col md="6">
-                        <p>
-                          Address : <br />
-                          {item.address}, {item.postal_code}
-                        </p>
-                      </Col>
-                    </>
-                  );
-                })}
+  printModal = (modalType) => {
+    if (modalType == 'detail') {
+      return (
+        <>
+          <Modal isOpen={this.state.modal}>
+            <ModalBody>
+              <Container>
+                <Row>
+                  <div className="d-flex justify-content-between ">
+                    <p></p>
+                    <Button
+                      color="danger"
+                      onClick={() => {
+                        this.setState({ modal: !this.state.modal });
+                      }}
+                    >
+                      X
+                    </Button>
+                  </div>
+                  <hr className="mt-3" />
+                  {this.state.detailTransactions.slice(0, 1).map((item, idx) => {
+                    return (
+                      <>
+                        {" "}
+                        <Col md="6">
+                          <p>
+                            Recipient : <br />
+                            {item.recipient}
+                          </p>
+                        </Col>
+                        <Col md="6">
+                          <p>
+                            Address : <br />
+                            {item.address}, {item.postal_code}
+                          </p>
+                        </Col>
+                      </>
+                    );
+                  })}
 
-                <Col md="6"></Col>
-              </Row>
-            </Container>
-            <hr />
-            <Container>
-              <Row>
-                {this.state.detailTransactions.map((item, idx) => {
-                  return (
-                    <>
-                      <Col md="4">
-                        <img src={item.image_url} width="100%" />
-                      </Col>
-                      <Col md="8 mt-3">
-                        <p>
-                          <strong>{item.product_name}</strong>
-                          <br />
-                          {item.brand}
-                        </p>
-                        <p>
-                          Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
-                        </p>
-                      </Col>
-                      <hr />
-                    </>
-                  );
-                })}
-              </Row>
-            </Container>
-            <Container>
-              <Row>
-                {this.state.detailTransactions.splice(0, 1).map((item, idx) => {
-                  return (
-                    <>
-                      <Col md="4">Total</Col>
-                      <Col md="8">Rp.{item.total_price.toLocaleString()}</Col>
-                    </>
-                  );
-                })}
-              </Row>
-            </Container>
-          </ModalBody>
+                  <Col md="6"></Col>
+                </Row>
+              </Container>
+              <hr />
+              <Container>
+                <Row>
+                  {this.state.detailTransactions.map((item, idx) => {
+                    return (
+                      <>
+                        <Col md="4">
+                          <img src={item.image_url} width="100%" />
+                        </Col>
+                        <Col md="8 mt-3">
+                          <p>
+                            <strong>{item.product_name}</strong>
+                            <br />
+                            {item.brand}
+                          </p>
+                          <p>
+                            Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
+                          </p>
+                        </Col>
+                        <hr />
+                      </>
+                    );
+                  })}
+                </Row>
+              </Container>
+              <Container>
+                <Row>
+                  {this.state.detailTransactions.splice(0, 1).map((item, idx) => {
+                    return (
+                      <>
+                        <Col md="4">Total</Col>
+                        <Col md="8">Rp.{item.total_price.toLocaleString()}</Col>
+                      </>
+                    );
+                  })}
+                </Row>
+              </Container>
+            </ModalBody>
+          </Modal>
+        </>
+      );
+    } else if (modalType == 'review') {
+      return (
+        <Modal isOpen={this.state.modal} toggle={() => this.setState({ modal: !this.state.modal })}>
+          <ModalHeader>Review</ModalHeader>
+
+          <Container className="p-3">
+            {this.state.detailTransactions.map((item, idx) => {
+              console.log("item name", item.product_name)
+              return (
+                <>
+                  {/* <img src={item.image_url} height="30%" /> */}
+                  <strong>{idx + 1}. {item.product_name}</strong>
+                  <br />
+                  <div className="d-flex">
+                    <span>Rating : </span>
+                    <Rating value={this.state.rating} onChange={(e) => this.setState({ rating: e.value })} className="mx-1"/>
+                  </div>
+                  <Form>
+                    <FormGroup>
+                      <Label>Review :</Label>
+                      <Input type="textarea" />
+                    </FormGroup>
+                  </Form>
+                  <Button className="my-2">
+                    Submit Review
+                  </Button>
+                  <br />
+                </>
+              );
+            })}
+          </Container>
         </Modal>
-      </>
-    );
+      )
+    }
   };
 
-  getTransactionHistory = () => {
-    if (this.statusTrans.value) {
-      let value = `?id_transaction_status=${this.statusTrans.value}`;
+  getTransactionHistory = (status = 4) => {
+    if (status) {
+      console.log("status trans", status)
+      let value = `?id_transaction_status=${status}`;
 
       HTTP.get(`/user/sort-transactions${value}`)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
           });
+
+          console.log("res", res.data)
         })
         .catch((err) => {
           console.log(err);
@@ -188,6 +249,7 @@ class TransactionPage extends React.Component {
         });
     }
   };
+
 
   onBtnTransactionProof = () => {
     let formData = new FormData();
@@ -304,35 +366,25 @@ class TransactionPage extends React.Component {
     );
   };
 
+  onTabChange = (status) => {
+    this.getTransactionHistory(status)
+    let index = this.items.findIndex(item => item.status == status)
+    this.setState({ activeIndex: index })
+  }
   render() {
-    console.log("waw", this.state.historyTransactions);
-    console.log("detran", this.state.detailTransactions);
+    // console.log("waw", this.state.historyTransactions);
+    // console.log("detran", this.state.detailTransactions);
     return (
       <Col md="10 mt-5">
         {this.printModalUploadTransactions()}
-        <Container>
-          {this.printModal()}
+        <Container style={{ height: '100vh' }}>
+          {this.printModal(this.state.modalType)}
           <Row>
-            <Col md="4">
-              <FormGroup>
-                <Label for="exampleSelect">Filter By</Label>
-                <Input
-                  type="select"
-                  name="select"
-                  id="exampleSelect"
-                  innerRef={(e) => (this.statusTrans = e)}
-                  onClick={this.getTransactionHistory}
-                >
-                  <option value={4}>Request</option>
-                  <option value={5}>Waiting Confirmation</option>
-                  <option value={1}>On Progress</option>
-                  <option value={2}>Done</option>
-                  <option value={3}>Reject</option>
-                </Input>
-              </FormGroup>
+            <Col md="12">
+              <TabMenu model={this.items} onTabChange={(e) => this.onTabChange(e.value.status)} activeIndex={this.state.activeIndex} />
             </Col>
             <Col md="12 mt-2">
-              <Alert isOpen={this.state.alertUpload} color={this.state.color}>
+              <Alert isOpen={this.state.alertUpload} >
                 {this.state.alertMessage}
               </Alert>
             </Col>
@@ -374,7 +426,7 @@ class TransactionPage extends React.Component {
                             <Button
                               color="warning"
                               onClick={() => {
-                                this.setState({ modal: !this.state.modal });
+                                this.setState({ modal: !this.state.modal, modalType: 'detail' });
                                 this.getDetailTransactions(item.id);
                               }}
                             >
@@ -396,6 +448,19 @@ class TransactionPage extends React.Component {
                                 </Button>
                               </>
                             )}
+                            {
+                              item.status_name === "done" && (
+                                <Button
+                                  color="success"
+                                  onClick={() => {
+                                    this.getDetailTransactions(item.id)
+                                    this.setState({ modal: !this.state.modal, modalType: 'review' })
+                                  }}>
+                                  Review Product
+                                </Button>
+                              )
+                            }
+
                           </Col>
                         </Row>
                       </Container>

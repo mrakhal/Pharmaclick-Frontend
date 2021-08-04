@@ -682,7 +682,7 @@ class ProductPage extends React.Component {
     ) {
       pageNumbers.push(i);
     }
-    // console.log("currentTodos", currentTodos);
+    console.log("currentTodos", currentTodos);
     return (
       <Container fluid className="mt-5">
         <Row>
@@ -851,7 +851,10 @@ class ProductPage extends React.Component {
                             top
                             width="100%"
                             height="auto"
-                            src={item.images}
+                            src={
+                              item.images[0].includes('http') ?
+                              item.images[0] : `${URL_API}/${item.images}`
+                            }
                             alt={item.product_name}
                             className="img-fluid "
                           />
