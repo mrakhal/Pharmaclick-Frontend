@@ -27,7 +27,6 @@ import Profile from "../../assets/images/profile.png";
 import {
   getCity,
   getAddress,
-  // getImageProfileUser,
   keepLogin,
 } from "../../action";
 import { connect } from "react-redux";
@@ -35,7 +34,6 @@ import axios from "axios";
 import { URL_API } from "../../Helper";
 import HTTP from "../../service/HTTP";
 
-let token = localStorage.getItem("tkn_id");
 
 class ProfileComp extends React.Component {
   constructor(props) {
@@ -59,11 +57,11 @@ class ProfileComp extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  
   componentDidMount() {
+    let token = localStorage.getItem("tkn_id");
+    this.props.keepLogin(token)
     this.props.getCity();
-    // this.getAnImages();
-    // this.props.getImageProfileUser(this.props.user.iduser);
-    this.props.keepLogin(token);
   }
 
   checkImage = () =>{
@@ -74,9 +72,6 @@ class ProfileComp extends React.Component {
   }
 
   handleChange(e) {
-    // URL_API + `/${this.props.user.profile_image}
-    // eslint-disable-next-line) {
-
     let file = e.target.files[0]
     this.setState({
         fileName: file.name,
@@ -106,6 +101,7 @@ class ProfileComp extends React.Component {
         formData.append("images", this.state.fileUpload);  
       }
     }
+    let token = localStorage.getItem("tkn_id");
     const headers = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -188,6 +184,7 @@ class ProfileComp extends React.Component {
       })
       .then((res) => {
         // this.props.getAddress(this.props.user.iduser);
+        let token = localStorage.getItem("tkn_id");
         this.props.keepLogin(token);
       })
       .catch((err) => {
@@ -712,7 +709,7 @@ class ProfileComp extends React.Component {
                               Phone Number
                             </Label>
                             <Input
-                              type="number"
+                              type="text"
                               name="phoneNumber"
                               id="phoneNumber"
                               placeholder="Enter your phone number"
@@ -728,7 +725,7 @@ class ProfileComp extends React.Component {
                               Age
                             </Label>
                             <Input
-                              type="text"
+                              type="number"
                               name="age"
                               id="age"
                               placeholder="Enter your age"
@@ -923,6 +920,5 @@ const mapStateToProps = ({ productReducer, authReducer }) => {
 export default connect(mapStateToProps, {
   getCity,
   getAddress,
-  // getImageProfileUser,
   keepLogin,
 })(ProfileComp);

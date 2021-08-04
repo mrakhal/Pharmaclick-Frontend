@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import PassResetPage from "./pages/PassResetPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProductManagementPage from "./pages/ProductManagementPage";
+import CustomProductManagementPage from "./pages/CustomProductManagement";
 import ProductPage from "./pages/ProductPage";
 import VerificationPage from "./pages/VerificationPage";
 import ProfilePage from "./pages/profilePage";
@@ -32,7 +33,7 @@ class App extends React.Component {
     this.state = {};
   }
   componentDidMount() {
-    this.props.getProductAction(1);
+    // this.props.getProductAction(1);
     this.reLogin();
   }
 
@@ -75,6 +76,10 @@ class App extends React.Component {
               <Route
                 path={"/product-management"}
                 component={ProductManagementPage}
+              />
+              <Route
+                path={"/custom-product-management"}
+                component={CustomProductManagementPage}
               />
               <Route path="/transactions" component={TransactionAdminPage} />
               <Route path={"/sales-report"} component={SalesReportPage} />

@@ -15,16 +15,16 @@ import { getProductAction } from "../action";
 import "../assets/css/ProductManagement.css";
 import "primeflex/primeflex.css";
 import { productReducer } from "../reducer/ProductReducer";
-import DialogProduct from "../components/DialogProduct";
+import DialogProductCustom from "../components/DialogProductCustom";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import DialogAdd from "../components/DialogAdd";
+import DialogAddCustom from "../components/DialogAddCustom";
 import { Toast } from "primereact/toast";
 import { URL_API } from "../Helper";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import HTTP from "../service/HTTP";
 
-class ProductManagementPage extends React.Component {
+class CustomProductManagementPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,11 +65,11 @@ class ProductManagementPage extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getProductAction(1);
+    this.props.getProductAction(2);
   }
 
   // componentWillUnmount() {
-  //   this.props.getProductAction(1);
+  //   this.props.getProductAction(2);
   // }
   //COLUMN BODY
   bodyImage = (rowData) => {
@@ -196,6 +196,15 @@ class ProductManagementPage extends React.Component {
         selectedUnit: this.unit[unitIndex],
       });
 
+      this.setState({
+        productDetail: product,
+        productDialog: true,
+        addDialog: false,
+        confirmDialog: false,
+        idstock: null,
+        selectedCategory: this.category[index],
+        selectedUnit: this.unit[unitIndex],
+      });
     } catch (error) {
       console.log(error);
     }
@@ -208,6 +217,10 @@ class ProductManagementPage extends React.Component {
           icon="pi pi-pencil"
           className="p-button-rounded p-button-success p-mr-2"
           onClick={() => this.editProduct(rowData)}
+        />
+        <Button
+          icon="pi pi-undo"
+          className="p-button-rounded p-button-primary ml-1"
         />
         <Button
           icon="pi pi-trash"
@@ -240,7 +253,7 @@ class ProductManagementPage extends React.Component {
   leftToolbarTemplate = () => {
     return (
       <React.Fragment>
-        <h4>Packed Product Management</h4>
+        <h4>Custom Product Management</h4>
       </React.Fragment>
     );
   };
@@ -294,7 +307,7 @@ class ProductManagementPage extends React.Component {
         detail: "Delete product success",
         life: 3000,
       });
-      this.props.getProductAction(1);
+      this.props.getProductAction(2);
     } catch (error) {
       console.log("error delete produk", error);
     }
@@ -432,9 +445,9 @@ class ProductManagementPage extends React.Component {
           </div>
 
           {/* DIALOG */}
-          <DialogProduct
+          <DialogProductCustom
             category={selectedCategory}
-            selectedUnit={selectedUnit}
+            unit={selectedUnit}
             productDetail={productDetail}
             productDialog={productDialog}
             hide={() => this.setState({ productDialog: false })}
@@ -451,7 +464,7 @@ class ProductManagementPage extends React.Component {
               })
             }
           />
-          <DialogAdd
+          <DialogAddCustom
             productDetail={productDetail}
             addDialog={addDialog}
             hide={() => this.setState({ addDialog: false })}
@@ -481,5 +494,5 @@ const mapStateToProps = ({ productReducer }) => {
 };
 
 export default connect(mapStateToProps, { getProductAction })(
-  ProductManagementPage
+  CustomProductManagementPage
 );

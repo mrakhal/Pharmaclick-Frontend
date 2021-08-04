@@ -27,6 +27,7 @@ import { connect } from "react-redux";
 import { TabView, TabPanel } from 'primereact/tabview';
 import { TabMenu } from 'primereact/tabmenu';
 import { Rating } from 'primereact/rating';
+import { keepLogin } from "../action";
 
 class TransactionPage extends React.Component {
   constructor(props) {
@@ -58,10 +59,9 @@ class TransactionPage extends React.Component {
     ];
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.getTransactionHistory();
-    // this.getDetailTransactions();
-  };
+  }
 
   getDetailTransactions = async (idtransaction) => {
     try {
@@ -198,7 +198,7 @@ class TransactionPage extends React.Component {
                   <br />
                   <div className="d-flex">
                     <span>Rating : </span>
-                    <Rating value={this.state.rating} onChange={(e) => this.setState({ rating: e.value })} className="mx-1"/>
+                    <Rating value={this.state.rating} onChange={(e) => this.setState({ rating: e.value })} className="mx-1" />
                   </div>
                   <Form>
                     <FormGroup>
@@ -219,10 +219,9 @@ class TransactionPage extends React.Component {
     }
   };
 
-  getTransactionHistory = (status = 4) => {
-    if (status) {
-      console.log("status trans", status)
-      let value = `?id_transaction_status=${status}`;
+  getTransactionHistory = async () => {
+    if (this.statusTrans.value) {
+      let value = `?id_transaction_status=${this.statusTrans.value}`;
 
       HTTP.get(`/user/sort-transactions${value}`)
         .then((res) => {
@@ -481,4 +480,4 @@ const mapStateToProps = ({ authReducer }) => {
     ...authReducer
   }
 }
-export default connect(mapStateToProps)(TransactionPage);
+export default connect(mapStateToProps, { keepLogin })(TransactionPage);
