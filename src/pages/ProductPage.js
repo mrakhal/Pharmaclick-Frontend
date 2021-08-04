@@ -162,7 +162,7 @@ class ProductPage extends React.Component {
     this.props.getProductAction(1);
   }
 
-  handleClick(event) {
+  handleClick = (event) => {
     this.setState({
       currentPage: Number(event.target.id),
     });
@@ -886,7 +886,7 @@ class ProductPage extends React.Component {
                             href="#"
                             key={item}
                             id={item}
-                            onClick={this.handleClick}
+                            onClick={(event) => this.handleClick(event)}
                           >
                             {item}
                           </PaginationLink>
