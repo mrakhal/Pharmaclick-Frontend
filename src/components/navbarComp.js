@@ -35,9 +35,7 @@ class NavbarComp extends React.Component {
   }
 
   componentDidMount() {
-      this.checkImage();
-
-
+    this.checkImage()
     let list = document.querySelectorAll(`.menu-item`);
     for (let i = 0; i < list.length; i++) {
       list[i].onclick = function () {
@@ -48,14 +46,14 @@ class NavbarComp extends React.Component {
         list[i].className = "menu-item active";
       };
     }
-    // this.props.getImageProfileUser(this.props.user.iduser);
   }
 
-  checkImage = () =>{
+  checkImage = () => {
     if(this.props.user.profile_image){
-      return  `${URL_API}/${this.props.user.profile_image}`
+      return `${URL_API}/${this.props.user.profile_image}`
+    }else{
+      return Profile
     }
-    return Profile
   }
 
   btLogout = () => {
@@ -217,18 +215,24 @@ class NavbarComp extends React.Component {
                 <NavItem type="none" style={{ marginRight: "10px" }}>
                   <a>{this.props.user.fullname.split(" ")[0]}</a>
                 </NavItem>
-                <img
-                  src={this.state.file}
-                  // src={
-              //   rowData.images[0].includes("http")
-              // ? `${rowData.images[0]}`
-              // : `${URL_API}/${rowData.images[0]}`
-          // }
+                {this.props.user.profile_image ?(<><img
+                  src={`${URL_API}/${this.props.user.profile_image}`}
+                  width="35px;"
+                  height="35px;"
+                  style={{ borderRadius: "50%" }}
+                  alt="profile image"
+                /></>):(
+                  <>
+                  <img
+                  src={Profile}
                   width="35px;"
                   height="35px;"
                   style={{ borderRadius: "50%" }}
                   alt="profile image"
                 />
+                </>
+                )}
+                
                 <UncontrolledDropdown>
                   <DropdownToggle nav caret></DropdownToggle>
                   <DropdownMenu right>

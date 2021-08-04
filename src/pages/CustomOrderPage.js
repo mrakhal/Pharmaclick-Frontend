@@ -55,14 +55,20 @@ class CustomOrderPage extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.getCity();
-    this.getAddressDefault();
-
-    setTimeout(() => {
-      this.shippingCost();
-    }, 1500);
-    this.cekPrice();
+    const addresses = await this.getAddressDefault();
+    if (addresses.length <= 0) {
+      await this.cityForm.value
+      this.shippingCost()
+    }else{
+    const defaultAddress = addresses[0]
+    const dataShippingCost = await this.getShippingCost(defaultAddress)
+    this.setState({
+      selectedAddress: defaultAddress,
+      dataShippingCost,
+    })
+    }
     // this.props.getAddress(this.props.user.iduser);
   }
 
@@ -166,13 +172,13 @@ class CustomOrderPage extends React.Component {
   };
 
   getAddressDefault = () => {
-    HTTP.get(`/user/get-address?set_default=${1}`)
+    return HTTP.get(`/user/get-address?set_default=${1}&iduser=${this.props.user.iduser}`)
       .then((res) => {
-        console.log("waw", res.data);
-        this.setState({ selectedAddress: res.data });
+        console.log('address',res.data)
+        return res.data
       })
       .catch((err) => {
-        console.log(err);
+        return err
       });
   };
 
@@ -591,10 +597,24 @@ class CustomOrderPage extends React.Component {
     // return e.target.value;
   };
 
-  shippingCost = async () => {
+  getShippingCost = (address) => {
+     return HTTP.post(`/transaction/shipping-cost`, {
+        origin: address.id_city_origin,
+        destination: 22,
+        weight: 1000,
+      })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          return error;
+        });
+  };
+
+  shippingCost = () => {
     if (this.state.selectedAddress) {
       HTTP.post(`/transaction/shipping-cost`, {
-        origin: this.state.selectedAddress.id_city_origin,
+        origin: this.cityForm.value,
         destination: 22,
         weight: 1000,
       })
@@ -1009,7 +1029,7 @@ class CustomOrderPage extends React.Component {
                           <Col md="2 d-flex align-items-center ">
                             <a>3</a>
                           </Col>
-                          <Col md="8 pt-2 d-flex align-items-center">
+                          <Col md="10 pt-2 d-flex align-items-center">
                             <h6 style={{ fontWeight: "900" }}>
                               UPLOAD PERSCRIPTION
                             </h6>

@@ -222,8 +222,13 @@ class TransactionPage extends React.Component {
   getTransactionHistory = async () => {
     if (this.statusTrans.value) {
       let value = `?id_transaction_status=${this.statusTrans.value}`;
-
-      HTTP.get(`/user/sort-transactions${value}`)
+      let token = localStorage.getItem("tkn_id");
+      const headers = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+     axios.get(URL_API+`/user/sort-transactions${value}`,headers)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
@@ -236,8 +241,13 @@ class TransactionPage extends React.Component {
         });
     } else {
       let value = ``;
-
-      HTTP.get(`/user/sort-transactions${value}`)
+      let token = localStorage.getItem("tkn_id");
+      const headers = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      axios.get(URL_API+`/user/sort-transactions${value}`,headers)
         .then((res) => {
           this.setState({
             historyTransactions: res.data,
