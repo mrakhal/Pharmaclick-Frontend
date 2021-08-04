@@ -28,6 +28,7 @@ import { TabView, TabPanel } from 'primereact/tabview';
 import { TabMenu } from 'primereact/tabmenu';
 import { Rating } from 'primereact/rating';
 
+const productReview = [{ idproduct: null, review: '', rating: null }]
 class TransactionPage extends React.Component {
   constructor(props) {
     super(props);
@@ -45,7 +46,7 @@ class TransactionPage extends React.Component {
       statusTrans: 4,
       activeIndex: 0,
       modalType: 'detail',
-      rating: ''
+      productReview: {...productReview}
     };
     this.handleChange = this.handleChange.bind(this);
 
@@ -198,7 +199,12 @@ class TransactionPage extends React.Component {
                   <br />
                   <div className="d-flex">
                     <span>Rating : </span>
-                    <Rating value={this.state.rating} onChange={(e) => this.setState({ rating: e.value })} className="mx-1"/>
+                    <Rating value={this.state.productReview.rating} onChange={(e) => this.setState({ 
+                      productReview: {
+                        ...this.state.productReview,
+                        rating: e.value
+                      } 
+                    })} className="mx-1" />
                   </div>
                   <Form>
                     <FormGroup>
@@ -388,87 +394,92 @@ class TransactionPage extends React.Component {
                 {this.state.alertMessage}
               </Alert>
             </Col>
-            {this.state.historyTransactions.map((item) => {
-              return (
-                <>
-                  <Col md="12">
-                    <Card
-                      body
-                      style={{
-                        borderRadius: "15px",
-                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-                        marginTop: "1%",
-                        border: "none",
-                      }}
-                    >
-                      <Container>
-                        <Row>
-                          <Col md="4">
-                            <CardTitle tag="h6">Invoice</CardTitle>
-                            <CardText>{item.invoice}</CardText>
-                          </Col>
-                          <Col md="3">
-                            <CardTitle tag="h6">Recipient Name</CardTitle>
-                            <CardText>{item.recipient}</CardText>
-                          </Col>
-                          <Col md="2">
-                            <CardTitle tag="h6">Status</CardTitle>
-                            <CardText>{item.status_name}</CardText>
-                          </Col>
-                          <Col
-                            md="3"
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Button
-                              color="warning"
-                              onClick={() => {
-                                this.setState({ modal: !this.state.modal, modalType: 'detail' });
-                                this.getDetailTransactions(item.id);
+            {
+              this.state.historyTransactions.length > 0 ?
+              this.state.historyTransactions.map((item) => {
+                return (
+                  <>
+                    <Col md="12">
+                      <Card
+                        body
+                        style={{
+                          borderRadius: "15px",
+                          boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+                          marginTop: "1%",
+                          border: "none",
+                        }}
+                      >
+                        <Container>
+                          <Row>
+                            <Col md="4">
+                              <CardTitle tag="h6">Invoice</CardTitle>
+                              <CardText>{item.invoice}</CardText>
+                            </Col>
+                            <Col md="3">
+                              <CardTitle tag="h6">Recipient Name</CardTitle>
+                              <CardText>{item.recipient}</CardText>
+                            </Col>
+                            <Col md="2">
+                              <CardTitle tag="h6">Status</CardTitle>
+                              <CardText>{item.status_name}</CardText>
+                            </Col>
+                            <Col
+                              md="3"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
                               }}
                             >
-                              Detail
-                            </Button>
-                            &nbsp; &nbsp;
-                            {item.status_name === "request" && (
-                              <>
-                                <Button
-                                  color="primary"
-                                  onClick={() => {
-                                    this.setState({
-                                      modalUpload: !this.state.modalUpload,
-                                      idtransaction: item.id,
-                                    });
-                                  }}
-                                >
-                                  Upload
-                                </Button>
-                              </>
-                            )}
-                            {
-                              item.status_name === "done" && (
-                                <Button
-                                  color="success"
-                                  onClick={() => {
-                                    this.getDetailTransactions(item.id)
-                                    this.setState({ modal: !this.state.modal, modalType: 'review' })
-                                  }}>
-                                  Review Product
-                                </Button>
-                              )
-                            }
-
-                          </Col>
-                        </Row>
-                      </Container>
-                    </Card>
-                  </Col>
-                </>
-              );
-            })}
+                              <Button
+                                color="warning"
+                                onClick={() => {
+                                  this.setState({ modal: !this.state.modal, modalType: 'detail' });
+                                  this.getDetailTransactions(item.id);
+                                }}
+                              >
+                                Detail
+                              </Button>
+                              &nbsp; &nbsp;
+                              {item.status_name === "request" && (
+                                <>
+                                  <Button
+                                    color="primary"
+                                    onClick={() => {
+                                      this.setState({
+                                        modalUpload: !this.state.modalUpload,
+                                        idtransaction: item.id,
+                                      });
+                                    }}
+                                  >
+                                    Upload
+                                  </Button>
+                                </>
+                              )}
+                              {
+                                item.status_name === "done" && (
+                                  <Button
+                                    color="success"
+                                    onClick={() => {
+                                      this.getDetailTransactions(item.id)
+                                      this.setState({ modal: !this.state.modal, modalType: 'review' })
+                                    }}>
+                                    Review Product
+                                  </Button>
+                                )
+                              }
+  
+                            </Col>
+                          </Row>
+                        </Container>
+                      </Card>
+                    </Col>
+                  </>
+                );
+              })
+              :
+              <h6>No records found</h6>
+            }
           </Row>
         </Container>
       </Col>
