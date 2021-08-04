@@ -19,9 +19,11 @@ class DashboardPage extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.getRevenue()
-        this.getUser()
+    async componentDidMount() {
+        await this.getRevenue()
+        await this.getRevenue()
+        await this.getUser()
+
     }
     getRevenue = async () => {
         try {
