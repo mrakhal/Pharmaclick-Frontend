@@ -79,6 +79,7 @@ class ProductManagementPage extends React.Component {
           src={
             rowData.images[0].includes("http")
               ? `${rowData.images[0]}`
+              
               : `${URL_API}/${rowData.images[0]}`
           }
           style={{ height: "100px", width: "100px" }}

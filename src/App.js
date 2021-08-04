@@ -1,10 +1,8 @@
 import "./App.css";
 import React from "react";
-import axios from "axios";
 import { connect } from "react-redux";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import SidebarComp from "./components/SidebarComp";
-import { URL_API } from "./Helper";
 import DashboardPage from "./pages/DashboardPage";
 import LandingPage from "./pages/LandingPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -20,7 +18,7 @@ import FooterComp from "./components/footerComp";
 import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/CartPage";
 import CustomOrderPage from "./pages/CustomOrderPage";
-import { keepLogin, getImageProfileUser, getProductAction } from "./action";
+import { keepLogin, getProductAction } from "./action";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import TransactionAdminPage from "./pages/TransactionAdminPage";
 
@@ -48,7 +46,7 @@ class App extends React.Component {
   render() {
     return (
       <>
-        {this.props.role == "user" ? (
+        {this.props.role === "user" ? (
           <>
             <NavbarComp />
             <Switch>
@@ -64,7 +62,7 @@ class App extends React.Component {
             </Switch>
             <FooterComp />
           </>
-        ) : this.props.role == "admin" ? (
+        ) : this.props.role === "admin" ? (
           <>
             <SidebarComp />
             <Switch>
@@ -111,5 +109,5 @@ const mapStateToProps = ({ authReducer }) => {
 export default connect(mapStateToProps, {
   getProductAction,
   keepLogin,
-  getImageProfileUser,
+  // getImageProfileUser,
 })(App);
