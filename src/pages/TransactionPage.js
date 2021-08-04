@@ -46,7 +46,7 @@ class TransactionPage extends React.Component {
       statusTrans: 4,
       activeIndex: 0,
       modalType: 'detail',
-      productReview: { ...productReview }
+      productReview: []
     };
     this.handleChange = this.handleChange.bind(this);
 
@@ -68,6 +68,7 @@ class TransactionPage extends React.Component {
     try {
       let res = await HTTP.get(`/user/detail-transactions/${idtransaction}`)
       this.setState({ detailTransactions: res.data })
+      console.log("detail trans", res.data)
     } catch (error) {
       console.log(error)
     }
@@ -100,6 +101,27 @@ class TransactionPage extends React.Component {
     }
   }
 
+  onProductReviewChange = (rating, idproduct, index, idtransaction) => {
+    console.log(rating, idproduct, idtransaction)
+    this.state.productReview[index]= { idproduct, rating, idtransaction }
+    this.setState({ productReview: this.state.productReview }, () => console.log("after", this.state.productReview))
+  }
+
+  onInputChange = (review, index) => {
+    this.state.productReview[index] = {...this.state.productReview[index], review}
+    this.setState({ productReview: this.state.productReview }, () => console.log("after IC", this.state.productReview))
+  }
+
+  onBtnSubmitReview = async () =>{
+    try {
+      await HTTP.post('/product/review', this.state.productReview)
+      this.getTransactionHistory()
+      this.getTransactionHistory()
+      this.setState({modal: !this.state.modal})
+    } catch (error) {
+      console.log(error)
+    }
+  }
   printModal = (modalType) => {
     if (modalType == 'detail') {
       return (
@@ -191,7 +213,7 @@ class TransactionPage extends React.Component {
 
           <Container className="p-3">
             {this.state.detailTransactions.map((item, idx) => {
-              console.log("item name", item.product_name)
+
               return (
                 <>
                   {/* <img src={item.image_url} height="30%" /> */}
@@ -199,24 +221,19 @@ class TransactionPage extends React.Component {
                   <br />
                   <div className="d-flex">
                     <span>Rating : </span>
-                    <Rating value={this.state.productReview.rating} onChange={(e) => this.setState({
-                      productReview: {
-                        ...this.state.productReview,
-                        rating: e.value
-                      }
-                    })} className="mx-1" />
+                    <Rating value={this.state.productReview[idx] && this.state.productReview[idx].rating} onChange={(e) => this.onProductReviewChange(e.value, item.idproduct, idx, item.idtransaction)} className="mx-1" />
                   </div>
                   <Form>
                     <FormGroup>
                       <Label>Review :</Label>
-                      <Input type="textarea" />
+                      <Input value={this.state.productReview[idx] && this.state.productReview[idx].review} onChange={(e) => this.onInputChange(e.target.value, idx)}/>
                     </FormGroup>
                   </Form>
                   <br />
                 </>
               );
             })}
-            <Button className="my-2">
+            <Button className="my-2" onClick={this.onBtnSubmitReview}>
               Submit Review
             </Button>
           </Container>
@@ -236,7 +253,7 @@ class TransactionPage extends React.Component {
             historyTransactions: res.data,
           });
 
-          console.log("res", res.data)
+          console.log("res history", res.data)
         })
         .catch((err) => {
           console.log(err);
@@ -378,7 +395,7 @@ class TransactionPage extends React.Component {
     this.setState({ activeIndex: index })
   }
   render() {
-    // console.log("waw", this.state.historyTransactions);
+    console.log("waw", this.state.historyTransactions);
     // console.log("detran", this.state.detailTransactions);
     return (
       <Col md="10 mt-5">
@@ -463,8 +480,13 @@ class TransactionPage extends React.Component {
                                       onClick={() => {
                                         this.getDetailTransactions(item.id)
                                         this.setState({ modal: !this.state.modal, modalType: 'review' })
-                                      }}>
-                                      Review Product
+                                      }}
+                                      disabled={parseInt(item.review)}>
+                                        {
+                                          parseInt(item.review) ?
+                                          'Product Reviewed' :
+                                          'Review Product' 
+                                        }
                                     </Button>
                                   )
                                 }
