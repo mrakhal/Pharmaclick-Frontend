@@ -29,6 +29,7 @@ import { TabMenu } from 'primereact/tabmenu';
 import { Rating } from 'primereact/rating';
 import { keepLogin } from "../action";
 
+const productReview = [{ idproduct: null, review: '', rating: null }]
 class TransactionPage extends React.Component {
   constructor(props) {
     super(props);
@@ -46,7 +47,7 @@ class TransactionPage extends React.Component {
       statusTrans: 4,
       activeIndex: 0,
       modalType: 'detail',
-      rating: ''
+      productReview: []
     };
     this.handleChange = this.handleChange.bind(this);
 
@@ -67,6 +68,7 @@ class TransactionPage extends React.Component {
     try {
       let res = await HTTP.get(`/user/detail-transactions/${idtransaction}`)
       this.setState({ detailTransactions: res.data })
+      console.log("detail trans", res.data)
     } catch (error) {
       console.log(error)
     }
@@ -99,6 +101,27 @@ class TransactionPage extends React.Component {
     }
   }
 
+  onProductReviewChange = (rating, idproduct, index, idtransaction) => {
+    console.log(rating, idproduct, idtransaction)
+    this.state.productReview[index]= { idproduct, rating, idtransaction }
+    this.setState({ productReview: this.state.productReview }, () => console.log("after", this.state.productReview))
+  }
+
+  onInputChange = (review, index) => {
+    this.state.productReview[index] = {...this.state.productReview[index], review}
+    this.setState({ productReview: this.state.productReview }, () => console.log("after IC", this.state.productReview))
+  }
+
+  onBtnSubmitReview = async () =>{
+    try {
+      await HTTP.post('/product/review', this.state.productReview)
+      this.getTransactionHistory()
+      this.getTransactionHistory()
+      this.setState({modal: !this.state.modal})
+    } catch (error) {
+      console.log(error)
+    }
+  }
   printModal = (modalType) => {
     if (modalType == 'detail') {
       return (
@@ -190,7 +213,7 @@ class TransactionPage extends React.Component {
 
           <Container className="p-3">
             {this.state.detailTransactions.map((item, idx) => {
-              console.log("item name", item.product_name)
+
               return (
                 <>
                   {/* <img src={item.image_url} height="30%" /> */}
@@ -198,21 +221,21 @@ class TransactionPage extends React.Component {
                   <br />
                   <div className="d-flex">
                     <span>Rating : </span>
-                    <Rating value={this.state.rating} onChange={(e) => this.setState({ rating: e.value })} className="mx-1" />
+                    <Rating value={this.state.productReview[idx] && this.state.productReview[idx].rating} onChange={(e) => this.onProductReviewChange(e.value, item.idproduct, idx, item.idtransaction)} className="mx-1" />
                   </div>
                   <Form>
                     <FormGroup>
                       <Label>Review :</Label>
-                      <Input type="textarea" />
+                      <Input value={this.state.productReview[idx] && this.state.productReview[idx].review} onChange={(e) => this.onInputChange(e.target.value, idx)}/>
                     </FormGroup>
                   </Form>
-                  <Button className="my-2">
-                    Submit Review
-                  </Button>
                   <br />
                 </>
               );
             })}
+            <Button className="my-2" onClick={this.onBtnSubmitReview}>
+              Submit Review
+            </Button>
           </Container>
         </Modal>
       )
@@ -234,7 +257,7 @@ class TransactionPage extends React.Component {
             historyTransactions: res.data,
           });
 
-          console.log("res", res.data)
+          console.log("res history", res.data)
         })
         .catch((err) => {
           console.log(err);
@@ -381,7 +404,7 @@ class TransactionPage extends React.Component {
     this.setState({ activeIndex: index })
   }
   render() {
-    // console.log("waw", this.state.historyTransactions);
+    console.log("waw", this.state.historyTransactions);
     // console.log("detran", this.state.detailTransactions);
     return (
       <Col md="10 mt-5">
@@ -397,87 +420,97 @@ class TransactionPage extends React.Component {
                 {this.state.alertMessage}
               </Alert>
             </Col>
-            {this.state.historyTransactions.map((item) => {
-              return (
-                <>
-                  <Col md="12">
-                    <Card
-                      body
-                      style={{
-                        borderRadius: "15px",
-                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-                        marginTop: "1%",
-                        border: "none",
-                      }}
-                    >
-                      <Container>
-                        <Row>
-                          <Col md="4">
-                            <CardTitle tag="h6">Invoice</CardTitle>
-                            <CardText>{item.invoice}</CardText>
-                          </Col>
-                          <Col md="3">
-                            <CardTitle tag="h6">Recipient Name</CardTitle>
-                            <CardText>{item.recipient}</CardText>
-                          </Col>
-                          <Col md="2">
-                            <CardTitle tag="h6">Status</CardTitle>
-                            <CardText>{item.status_name}</CardText>
-                          </Col>
-                          <Col
-                            md="3"
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Button
-                              color="warning"
-                              onClick={() => {
-                                this.setState({ modal: !this.state.modal, modalType: 'detail' });
-                                this.getDetailTransactions(item.id);
-                              }}
-                            >
-                              Detail
-                            </Button>
-                            &nbsp; &nbsp;
-                            {item.status_name === "request" && (
-                              <>
+            {
+              this.state.historyTransactions.length > 0 ?
+                this.state.historyTransactions.map((item) => {
+                  return (
+                    <>
+                      <Col md="12">
+                        <Card
+                          body
+                          style={{
+                            borderRadius: "15px",
+                            boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+                            marginTop: "1%",
+                            border: "none",
+                          }}
+                        >
+                          <Container>
+                            <Row>
+                              <Col md="4">
+                                <CardTitle tag="h6">Invoice</CardTitle>
+                                <CardText>{item.invoice}</CardText>
+                              </Col>
+                              <Col md="3">
+                                <CardTitle tag="h6">Recipient Name</CardTitle>
+                                <CardText>{item.recipient}</CardText>
+                              </Col>
+                              <Col md="2">
+                                <CardTitle tag="h6">Status</CardTitle>
+                                <CardText>{item.status_name}</CardText>
+                              </Col>
+                              <Col
+                                md="3"
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
                                 <Button
-                                  color="primary"
+                                  color="warning"
                                   onClick={() => {
-                                    this.setState({
-                                      modalUpload: !this.state.modalUpload,
-                                      idtransaction: item.id,
-                                    });
+                                    this.setState({ modal: !this.state.modal, modalType: 'detail' });
+                                    this.getDetailTransactions(item.id);
                                   }}
                                 >
-                                  Upload
+                                  Detail
                                 </Button>
-                              </>
-                            )}
-                            {
-                              item.status_name === "done" && (
-                                <Button
-                                  color="success"
-                                  onClick={() => {
-                                    this.getDetailTransactions(item.id)
-                                    this.setState({ modal: !this.state.modal, modalType: 'review' })
-                                  }}>
-                                  Review Product
-                                </Button>
-                              )
-                            }
+                                &nbsp; &nbsp;
+                                {item.status_name === "request" && (
+                                  <>
+                                    <Button
+                                      color="primary"
+                                      onClick={() => {
+                                        this.setState({
+                                          modalUpload: !this.state.modalUpload,
+                                          idtransaction: item.id,
+                                        });
+                                      }}
+                                    >
+                                      Upload
+                                    </Button>
+                                  </>
+                                )}
+                                {
+                                  item.status_name === "done" && (
+                                    <Button
+                                      color="success"
+                                      onClick={() => {
+                                        this.getDetailTransactions(item.id)
+                                        this.setState({ modal: !this.state.modal, modalType: 'review' })
+                                      }}
+                                      disabled={parseInt(item.review)}>
+                                        {
+                                          parseInt(item.review) ?
+                                          'Product Reviewed' :
+                                          'Review Product' 
+                                        }
+                                    </Button>
+                                  )
+                                }
 
-                          </Col>
-                        </Row>
-                      </Container>
-                    </Card>
-                  </Col>
-                </>
-              );
-            })}
+                              </Col>
+                            </Row>
+                          </Container>
+                        </Card>
+                      </Col>
+                    </>
+                  );
+                })
+                :
+                <h6>No records found</h6>
+            }
           </Row>
         </Container>
       </Col>
