@@ -54,7 +54,6 @@ class CartPage extends React.Component {
     this.props.getCity();
     const addresses = await this.getAddressDefault();
     if (addresses.length <= 0) {
-      await this.cityForm.value
       this.shippingCost()
     }else{
     const defaultAddress = addresses[0]
@@ -64,11 +63,6 @@ class CartPage extends React.Component {
       dataShippingCost,
     })
     }
-    // setTimeout(() => {
-    //   this.shippingCost();
-    // }, 1500);
-    // this.cekPrice();
-    // this.props.getAddress(this.props.user.iduser);
   }
 
   onBtnSetDefault = (idaddressIn) => {
@@ -79,7 +73,6 @@ class CartPage extends React.Component {
       iduser: iduser,
     })
       .then((res) => {
-        this.getAddressDefault();
         this.props.getAddress(this.props.user.iduser);
         this.setState({ modal: !this.state.modal });
         this.shippingCost();
@@ -87,6 +80,7 @@ class CartPage extends React.Component {
         let token = localStorage.getItem("tkn_id");
         this.props.keepLogin(token);
         this.setState({ dataShippingCost: [], shippingCost: 0 });
+        this.getAddressDefault();
       })
       .catch((err) => {
         console.log(err);
@@ -647,8 +641,8 @@ class CartPage extends React.Component {
 
   getShippingCost = (address) => {
      return HTTP.post(`/transaction/shipping-cost`, {
-        origin: address.id_city_origin,
-        destination: 22,
+        origin: 22,
+        destination: address.id_city_origin,
         weight: 1000,
       })
         .then((res) => {
@@ -661,8 +655,8 @@ class CartPage extends React.Component {
 
   shippingCost = () => {
       HTTP.post(`/transaction/shipping-cost`, {
-        origin: this.cityForm.value,
-        destination: 22,
+        origin: 22,
+        destination: this.cityForm.value,
         weight: 1000,
       })
         .then((res) => {

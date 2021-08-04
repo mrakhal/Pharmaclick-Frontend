@@ -17,6 +17,7 @@ import ProfilePage from "./pages/profilePage";
 import NavbarComp from "./components/navbarComp";
 import FooterComp from "./components/footerComp";
 import ContactPage from "./pages/ContactPage";
+import ManagementOrderCustomPage from "./pages/ManagementOrderCustomPage";
 import CartPage from "./pages/CartPage";
 import CustomOrderPage from "./pages/CustomOrderPage";
 import { keepLogin, getProductAction } from "./action";
@@ -29,7 +30,6 @@ class App extends React.Component {
     this.state = {};
   }
   componentDidMount() {
-    // this.props.getProductAction(1);
     this.reLogin();
   }
 
@@ -76,6 +76,10 @@ class App extends React.Component {
               <Route
                 path={"/custom-product-management"}
                 component={CustomProductManagementPage}
+              />
+              <Route
+                path={"/custom-order"}
+                component={ManagementOrderCustomPage}
               />
               <Route path="/transactions" component={TransactionAdminPage} />
               <Route path={"*"} component={NotFoundPage} />
