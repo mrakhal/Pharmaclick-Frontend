@@ -22,7 +22,7 @@ import CartPage from "./pages/CartPage";
 import CustomOrderPage from "./pages/CustomOrderPage";
 import { keepLogin, getImageProfileUser, getProductAction } from "./action";
 import ProductDetailPage from "./pages/ProductDetailPage";
-import TransactionPage from "./pages/TransactionPage";
+import TransactionAdminPage from "./pages/TransactionAdminPage";
 
 class App extends React.Component {
   constructor(props) {
@@ -74,6 +74,7 @@ class App extends React.Component {
                 path={"/product-management"}
                 component={ProductManagementPage}
               />
+              <Route path="/transactions" component={TransactionAdminPage} />
               <Route path={"*"} component={NotFoundPage} />
             </Switch>
             <FooterComp />
