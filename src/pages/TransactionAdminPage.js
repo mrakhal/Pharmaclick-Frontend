@@ -241,7 +241,7 @@ class TransactionAdminPage extends React.Component {
                       <hr />
                       <div>
                         <Dropdown value={this.state.selectedStatus} options={this.status} onChange={(e) => this.onDropdownChange(e)} optionLabel="status_name" placeholder="Filter by Status.." />
-                        <Button onClick={this.onBtnReset}>Reset</Button>
+                        <Button onClick={this.onBtnReset} className="h-100 mx-2" color="primary">Reset</Button>
                       </div>
                     </div>
                     <Col md="12 mt-2">
@@ -278,13 +278,10 @@ class TransactionAdminPage extends React.Component {
                                   </Col>
                                   <Col
                                     md="3"
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      alignItems: "center",
-                                    }}
                                   >
-
+                                    <div>
+                                      
+                                    </div>
                                     {item.status_name === "request" ? (
                                       <div className="d-flex flex-wrap justify-content-center align-items-center">
                                         <Button
@@ -297,7 +294,7 @@ class TransactionAdminPage extends React.Component {
                                           Detail
                                         </Button>
 
-                                        <Button className="mt-1"
+                                        <Button className="mt-1 mx-2"
                                           color="primary"
                                           disabled
                                         >
@@ -321,7 +318,7 @@ class TransactionAdminPage extends React.Component {
                                         >
                                           Detail
                                         </Button>
-                                        <Button className="mt-1"
+                                        <Button className="mt-1 mx-2"
                                           color="primary"
                                           onClick={() => {
                                             this.confirmationTransaction(item.id)
@@ -352,7 +349,7 @@ class TransactionAdminPage extends React.Component {
                                           Detail
                                         </Button>
                                         <Button
-                                          className="mt-1"
+                                          className="mt-1 ml-2"
                                           color="danger"
                                           disabled
                                         >
@@ -370,7 +367,7 @@ class TransactionAdminPage extends React.Component {
                                           Detail
                                         </Button>
                                         <Button
-                                          className="mt-1"
+                                          className="mt-1 ml-2"
                                           color="primary"
                                           disabled
                                         >
