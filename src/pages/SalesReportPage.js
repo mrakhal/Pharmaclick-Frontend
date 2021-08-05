@@ -37,7 +37,8 @@ class SalesReportPage extends React.Component {
             dateRange: null,
             filter: { ...filter },
             productSales: [],
-            expandedRows: null
+            expandedRows: null,
+            totalUnconfirmed: null
         }
 
         this.time = [
@@ -91,13 +92,14 @@ class SalesReportPage extends React.Component {
                     borderColor: '#4bc0c0'
                 }
             ]
-            // console.log(data)
+
             let labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
             // console.log(this.state.salesReport)
             this.setState({
                 salesReport: { ...this.state.salesReport, labels, datasets },
                 totalProductSold: res.data[0].total_product,
-                totalQtySold: res.data[0].total_qty
+                totalQtySold: res.data[0].total_qty,
+                totalUnconfirmed: res.data[0].total_unconfirmed
             })
         } catch (error) {
             console.log("error get sales report", error)
@@ -136,6 +138,7 @@ class SalesReportPage extends React.Component {
 
             // console.log("filter data", res.data[0])
             let { detail } = res.data[0]
+            // let a = detail.filter(item => item.sttu)
             if (selectedTime.name == "Yearly") detail.forEach((item, index) => data[item.month - 1] += item.qty_buy)
             if (selectedTime.name == "Monthly") detail.forEach((item, index) => data[item.week - 1] += item.qty_buy)
             let datasets = [
@@ -152,7 +155,8 @@ class SalesReportPage extends React.Component {
             this.setState({
                 salesReport: { ...this.state.salesReport, labels, datasets },
                 totalProductSold: res.data[0].total_product,
-                totalQtySold: res.data[0].total_qty
+                totalQtySold: res.data[0].total_qty,
+                totalUnconfirmed: res.data[0].total_unconfirmed
             })
         } catch (error) {
             console.log("error filter", error)
@@ -192,7 +196,7 @@ class SalesReportPage extends React.Component {
         );
     }
     render() {
-        let { salesReport, totalQtySold, totalProductSold, filter, productSales, expandedRows } = this.state
+        let { salesReport, totalQtySold, totalProductSold, filter, productSales, expandedRows, totalUnconfirmed } = this.state
         // console.log('filter', filter)
         return (
             <div className="main-content">
@@ -238,6 +242,14 @@ class SalesReportPage extends React.Component {
                                         <h6>Total Pieces Sold:</h6>
                                     </div>
                                     <h2 style={{ color: 'blueviolet' }}>{totalQtySold} </h2>
+                                    <h6>Product</h6>
+                                </Card>
+                                <Card className="my-3 d-flex justify-content-center" style={{ textAlign: 'center', height: '50%' }}>
+                                    <div className="d-flex">
+                                        <i className="pi pi-check mx-1"></i>
+                                        <h6>Total Unpaid Product:</h6>
+                                    </div>
+                                    <h2 style={{ color: 'blueviolet' }}>{totalUnconfirmed} </h2>
                                     <h6>Product</h6>
                                 </Card>
                             </div>

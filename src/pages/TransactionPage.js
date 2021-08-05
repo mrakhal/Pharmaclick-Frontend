@@ -300,6 +300,7 @@ class TransactionPage extends React.Component {
             alertMessage: res.data.message,
           });
           this.onTabChange(4)
+          this.getTransactionHistory(4)
 
         })
         .catch((err) => {

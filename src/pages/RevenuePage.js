@@ -35,15 +35,15 @@ class RevenuePage extends React.Component {
             dataRevenues: [], // data dari backend
             date: '', // date pada input form
             revenuesReport: { ...data }, // data untuk chart (default)
-            filter: {...filter} // variabel untuk filter data
+            filter: { ...filter } // variabel untuk filter data
         }
 
         this.options = {
-            scales: {
-                y: {
-                    max: 1000000,
-                }
-            }
+            // scales: {
+            //     y: {
+            //         max: 1000000,
+            //     }
+            // }
         }
 
         this.time = [
@@ -79,7 +79,8 @@ class RevenuePage extends React.Component {
             let revenue = await HTTP.get('/transaction/revenue')
             let data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             let { transactions } = revenue.data[0]
-
+            // let transactionDone = transactions.filter(item => item.status == "done" || item.status == "custom")
+            console.log(revenue.data[0])
             transactions.forEach((item, index) => data[item.month - 1] += item.total_price)
             let datasets = [
                 {
@@ -130,7 +131,7 @@ class RevenuePage extends React.Component {
         })
     }
 
-    onBtnFilter = async () =>{
+    onBtnFilter = async () => {
         try {
             let { selectedTime, selectedDetailTime, year } = this.state.filter
             let url = `/transaction/revenue`
@@ -167,11 +168,11 @@ class RevenuePage extends React.Component {
             ]
 
             this.setState({
-                revenuesReport: {...this.state.revenuesReport, labels, datasets},
+                revenuesReport: { ...this.state.revenuesReport, labels, datasets },
                 dataRevenues: res.data[0]
             })
         } catch (error) {
-            
+
         }
     }
     render() {
@@ -188,14 +189,14 @@ class RevenuePage extends React.Component {
                                 <Chart type="line" data={revenuesReport} options={this.options} />
                             </Card>
                         </div>
-                        <div style={{ width: '40%', margin: 'auto',  }} className="mx-3 p-auto">
+                        <div style={{ width: '40%', margin: 'auto', }} className="mx-3 p-auto">
                             <div className="d-flex justify-content-between">
-                                <Dropdown optionLabel="name" value={filter.selectedTime} options={this.time} onChange={(e) => this.onTimeChange("selectedTime", e.value)} 
-                                placeholder="Select Time" style={{width: '100%'}} />
+                                <Dropdown optionLabel="name" value={filter.selectedTime} options={this.time} onChange={(e) => this.onTimeChange("selectedTime", e.value)}
+                                    placeholder="Select Time" style={{ width: '100%' }} />
                                 <Dropdown optionLabel="name" value={filter.selectedDetailTime}
-                                className="mx-1"
+                                    className="mx-1"
                                     options={filter.selectedTime.name == 'Yearly' ? this.year : this.month}
-                                    onChange={(e) => this.onTimeChange("selectedDetailTime", e.value)} placeholder="Select Detail"  />
+                                    onChange={(e) => this.onTimeChange("selectedDetailTime", e.value)} placeholder="Select Detail" />
                                 {
                                     filter.selectedTime.name == "Monthly"
                                     &&
@@ -203,22 +204,29 @@ class RevenuePage extends React.Component {
                                 }
                                 <Button label="Filter" className="p-button-raised" onClick={this.onBtnFilter} />
                             </div>
-                            <Card className="my-3 d-flex justify-content-center" style={{ textAlign: 'center', height: '50%' }}>
-                                <div className="d-flex">
-                                    <i className="pi pi-check mx-1"></i>
-                                    <h6>Total Revenue:</h6>
-                                </div>
-                                <h2 style={{ color: 'blueviolet' }}>IDR. {dataRevenues.total_revenue ? dataRevenues.total_revenue.toLocaleString() : 0} </h2>
-                                {/* <h6>IDR</h6> */}
-                            </Card>
-                            <Card className="my-3 d-flex justify-content-center" style={{ textAlign: 'center', height: '50%' }}>
-                                <div className="d-flex">
-                                    <i className="pi pi-check mx-1"></i>
-                                    <h6>Total Transaction:</h6>
-                                </div>
-                                <h2 style={{ color: 'blueviolet' }}>{dataRevenues.total_transactions} </h2>
-                                <h6>Transactions</h6>
-                            </Card>
+                            <div className="d-flex h-100 my-3">
+                                <Card className="d-flex justify-content-center" style={{ textAlign: 'center', height: '20vh', width: '50%' }}>
+                                    <p style={{ fontSize: '14px' }}>Total Confirmed Revenue :</p>
+                                    <h4 style={{ color: 'blueviolet' }}>IDR. {dataRevenues.total_revenue ? dataRevenues.total_revenue.toLocaleString() : 0} </h4>
+                                    {/* <h6>IDR</h6> */}
+                                </Card>
+                                <Card className="d-flex justify-content-center ml-2" style={{ textAlign: 'center', height: '20vh', width: '50%' }}>
+                                    <span style={{ fontSize: '14px' }}>Total Confirmed Transaction :</span>
+                                    <h4 style={{ color: 'blueviolet' }}>{dataRevenues.total_transactions} </h4>
+                                    <h6>Transactions</h6>
+                                </Card>
+                            </div>
+                            <div className="d-flex h-100">
+                                <Card className="my-3 d-flex justify-content-center align-items-center" style={{ textAlign: 'center', height: '20vh', width: '50%' }}>
+                                    <p>Unconfirmed Revenue:</p>
+                                    <h4 style={{ color: 'blueviolet' }}>IDR. {dataRevenues.total_revenue ? dataRevenues.total_unconfirmed_revenue.toLocaleString() : 0} </h4>
+                                </Card>
+                                <Card className="my-3 d-flex justify-content-center ml-2" style={{ textAlign: 'center', height: '20vh', width: '50%' }}>
+                                    <span>Total Unconfirmed Transaction:</span>
+                                    <h5 style={{ color: 'blueviolet' }}>{dataRevenues.total_unconfirmed_trans} </h5>
+                                    <h6>Transactions</h6>
+                                </Card>
+                            </div>
                         </div>
                     </div>
                     <hr />
