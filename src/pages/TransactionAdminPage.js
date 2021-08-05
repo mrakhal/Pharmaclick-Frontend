@@ -78,7 +78,7 @@ class TransactionAdminPage extends React.Component {
       let url = this.state.paymentProof[0] ? `${URL_API}/${this.state.paymentProof[0].image_url}` : '/'
       return (
         <>
-          <Modal isOpen={this.state.modal} toggle={() => this.setState({ modal: false })}>
+          <Modal isOpen={this.state.modal} toggle={() => this.setState({ modal: false, modalType: '' })}>
             <ModalHeader>
               <h5>Payment Proof</h5>
             </ModalHeader>
@@ -86,7 +86,7 @@ class TransactionAdminPage extends React.Component {
               <img src={url} />
               <div className="d-flex ">
                 <Button color="success">Download Payment Proof</Button>
-                <Button color="warning" className="ml-3" onClick={() => this.setState({ modal: false })}>Close</Button>
+                <Button color="warning" className="ml-3" onClick={() => this.setState({ modal: false, modalType: '' })}>Close</Button>
               </div>
             </ModalBody>
           </Modal>
