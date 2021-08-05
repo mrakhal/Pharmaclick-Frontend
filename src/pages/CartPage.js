@@ -54,8 +54,8 @@ class CartPage extends React.Component {
     this.props.getCity();
     const addresses = await this.getAddressDefault();
     if (addresses.length <= 0) {
-      // await this.cityForm.value
-      this.shippingCost()
+      await this.cityForm.value
+      await this.shippingCost()
     }else{
     const defaultAddress = addresses[0]
     const dataShippingCost = await this.getShippingCost(defaultAddress)

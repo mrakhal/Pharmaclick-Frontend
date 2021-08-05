@@ -103,21 +103,21 @@ class TransactionPage extends React.Component {
 
   onProductReviewChange = (rating, idproduct, index, idtransaction) => {
     console.log(rating, idproduct, idtransaction)
-    this.state.productReview[index]= { idproduct, rating, idtransaction }
+    this.state.productReview[index] = { idproduct, rating, idtransaction }
     this.setState({ productReview: this.state.productReview }, () => console.log("after", this.state.productReview))
   }
 
   onInputChange = (review, index) => {
-    this.state.productReview[index] = {...this.state.productReview[index], review}
+    this.state.productReview[index] = { ...this.state.productReview[index], review }
     this.setState({ productReview: this.state.productReview }, () => console.log("after IC", this.state.productReview))
   }
 
-  onBtnSubmitReview = async () =>{
+  onBtnSubmitReview = async () => {
     try {
       await HTTP.post('/product/review', this.state.productReview)
       this.getTransactionHistory()
       this.getTransactionHistory()
-      this.setState({modal: !this.state.modal})
+      this.setState({ modal: !this.state.modal })
     } catch (error) {
       console.log(error)
     }
@@ -226,7 +226,7 @@ class TransactionPage extends React.Component {
                   <Form>
                     <FormGroup>
                       <Label>Review :</Label>
-                      <Input value={this.state.productReview[idx] && this.state.productReview[idx].review} onChange={(e) => this.onInputChange(e.target.value, idx)}/>
+                      <Input value={this.state.productReview[idx] && this.state.productReview[idx].review} onChange={(e) => this.onInputChange(e.target.value, idx)} />
                     </FormGroup>
                   </Form>
                   <br />
@@ -242,7 +242,7 @@ class TransactionPage extends React.Component {
     }
   };
 
-  getTransactionHistory = (status = 4) => {
+  getTransactionHistory = (status) => {
     if (status) {
       console.log("status trans", status)
       let value = `?id_transaction_status=${status}`;
@@ -299,12 +299,8 @@ class TransactionPage extends React.Component {
             color: "success",
             alertMessage: res.data.message,
           });
-          setTimeout(() => {
-            this.setState({
-              alertUpload: !this.state.alertUpload,
-            });
-          }, 3000);
-          this.getTransactionHistory();
+          this.onTabChange(4)
+
         })
         .catch((err) => {
           console.log(err);
@@ -482,11 +478,11 @@ class TransactionPage extends React.Component {
                                         this.setState({ modal: !this.state.modal, modalType: 'review' })
                                       }}
                                       disabled={parseInt(item.review)}>
-                                        {
-                                          parseInt(item.review) ?
+                                      {
+                                        parseInt(item.review) ?
                                           'Product Reviewed' :
-                                          'Review Product' 
-                                        }
+                                          'Review Product'
+                                      }
                                     </Button>
                                   )
                                 }

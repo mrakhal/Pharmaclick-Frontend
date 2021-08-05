@@ -61,11 +61,10 @@ class TransactionAdminPage extends React.Component {
   printModal = () => {
     return (
       <>
-        <Modal isOpen={this.state.modal}>
+        <Modal isOpen={this.state.modal} toggle={() => this.setState({ modal: false })}>
           <ModalBody>
             <Container>
               <Row>
-              
                 {/* <div className="d-flex justify-content-between ">
                   <p></p>
                   <Button
@@ -184,6 +183,9 @@ class TransactionAdminPage extends React.Component {
       })
   }
 
+  handleClick = (item) => {
+    this.setState({ currentPage: item })
+  }
   render() {
     const { currentPage, todosPerPage } = this.state;
     // Logic for displaying todos
@@ -196,11 +198,7 @@ class TransactionAdminPage extends React.Component {
 
     // Logic for displaying page numbers
     const pageNumbers = [];
-    for (
-      let i = 1;
-      i <= Math.ceil(this.state.historyTransactions.length / todosPerPage);
-      i++
-    ) {
+    for (let i = 1; i <= Math.ceil(this.state.historyTransactions.length / todosPerPage); i++) {
       pageNumbers.push(i);
     }
     return (
@@ -282,12 +280,10 @@ class TransactionAdminPage extends React.Component {
                                     </div>
                                   ) : item.status_name === "waiting" ? (
                                     <div className="d-flex flex-wrap justify-content-center align-items-center">
-                                      <Button
-                                        color="warning"
-                                        onClick={() => {
-                                          this.setState({ modal: !this.state.modal });
-                                          this.getDetailTransactions(item.id);
-                                        }}
+                                      <Button color="warning" onClick={() => {
+                                        this.setState({ modal: !this.state.modal });
+                                        this.getDetailTransactions(item.id);
+                                      }}
                                       >
                                         Detail
                                       </Button>
@@ -373,7 +369,7 @@ class TransactionAdminPage extends React.Component {
                                 href="#"
                                 key={item}
                                 id={item}
-                                onClick={this.handleClick}
+                                onClick={() => this.handleClick(item)}
                               >
                                 {item}
                               </PaginationLink>

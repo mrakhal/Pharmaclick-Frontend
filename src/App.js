@@ -30,7 +30,8 @@ import RevenuePage from "./pages/RevenuePage";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+    };
   }
   componentDidMount() {
     // this.props.getProductAction(1);
@@ -49,68 +50,88 @@ class App extends React.Component {
   };
 
   render() {
+
     return (
+
       <>
         {this.props.role === "user" ? (
-          <>
-            <NavbarComp />
-            <Switch>
-              <Route path="/" component={LandingPage} exact />
-              <Route path={"/login"} component={LoginPage} />
-              <Route path={"/product"} component={ProductPage} />
-              <Route path={"/profile"} component={ProfilePage} />
-              <Route path={"/contact"} component={ContactPage} />
-              <Route path={"/cart"} component={CartPage} />
-              <Route path={"/detail"} component={ProductDetailPage} />
-              <Route path={"/custom"} component={CustomOrderPage} />
-              <Route path={"*"} component={NotFoundPage} />
-            </Switch>
-            <FooterComp />
-          </>
+          <UserPage />
         ) : this.props.role === "admin" ? (
-          <>
-            <SidebarComp />
-            <Switch>
-              <Route path={"/login"} component={LoginPage} />
-              <Route path="/dashboard" component={DashboardPage} exact />
-              <Route
-                path={"/product-management"}
-                component={ProductManagementPage}
-              />
-              <Route
-                path={"/custom-product-management"}
-                component={CustomProductManagementPage}
-              />
-              <Route path="/transactions" component={TransactionAdminPage} />
-              <Route path={"/sales-report"} component={SalesReportPage} />
-              <Route path={"/revenue-report"} component={RevenuePage} />
-              <Route path={"*"} component={NotFoundPage} />
-            </Switch>
-            <FooterComp />
-          </>
+          <AdminPage />
         ) : (
-          <>
-            <NavbarComp />
-            <Switch>
-              <Route path="/" component={LandingPage} exact />
-              <Route path={"/product"} component={ProductPage} />
-              <Route path={"/login"} component={LoginPage} />
-              <Route path={"/register"} component={RegisterPage} />
-              <Route path={"/reset"} component={PassResetPage} />
-              <Route path={"/verif"} component={VerificationPage} />
-              <Route path={"/contact"} component={ContactPage} />
-              <Route path={"/detail"} component={ProductDetailPage} />
-              <Route path={"*"} component={NotFoundPage} />
-              <Route path={"/custom"} component={CustomOrderPage} />
-            </Switch>
-            <FooterComp />
-          </>
-        )}
+          <VisitorPage />
+        )
+        }
       </>
     );
   }
 }
 
+const UserPage = () => {
+  return (
+    <>
+      <NavbarComp />
+      <Switch>
+        <Route path="/" component={LandingPage} exact />
+        <Route path={"/login"} component={LoginPage} />
+        <Route path={"/product"} component={ProductPage} />
+        <Route path={"/profile"} component={ProfilePage} />
+        <Route path={"/contact"} component={ContactPage} />
+        <Route path={"/cart"} component={CartPage} />
+        <Route path={"/detail"} component={ProductDetailPage} />
+        <Route path={"/custom"} component={CustomOrderPage} />
+        <Route component={NotFoundPage} />
+      </Switch>
+      <FooterComp />
+    </>
+  )
+}
+
+const AdminPage = () => {
+  return (
+    <>
+      <SidebarComp />
+      <Switch>
+        <Route path={"/login"} component={LoginPage} />
+        <Route path="/dashboard" component={DashboardPage} exact />
+        <Route
+          path={"/product-management"}
+          component={ProductManagementPage}
+        />
+        <Route
+          path={"/custom-product-management"}
+          component={CustomProductManagementPage}
+        />
+        <Route path="/transactions" component={TransactionAdminPage} />
+        <Route path={"/sales-report"} component={SalesReportPage} />
+        <Route path={"/revenue-report"} component={RevenuePage} />
+        <Route component={NotFoundPage} />
+      </Switch>
+      <FooterComp />
+    </>
+  )
+}
+
+const VisitorPage = () => {
+  return (
+    <>
+      <NavbarComp />
+      <Switch>
+        <Route path="/" component={LandingPage} exact />
+        <Route path={"/product"} component={ProductPage} />
+        <Route path={"/login"} component={LoginPage} />
+        <Route path={"/register"} component={RegisterPage} />
+        <Route path={"/reset"} component={PassResetPage} />
+        <Route path={"/verif"} component={VerificationPage} />
+        <Route path={"/contact"} component={ContactPage} />
+        <Route path={"/detail"} component={ProductDetailPage} />
+        <Route component={NotFoundPage} />
+        <Route path={"/custom"} component={CustomOrderPage} />
+      </Switch>
+      <FooterComp />
+    </>
+  )
+}
 const mapStateToProps = ({ authReducer }) => {
   return {
     ...authReducer,

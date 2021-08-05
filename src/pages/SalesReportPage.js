@@ -63,17 +63,17 @@ class SalesReportPage extends React.Component {
             { name: 'December', code: 11 }
         ]
         this.options = {
-            scales: {
-                y: {
-                    max: 40,
-                }
-            }
+            // scales: {
+            //     y: {
+            //         max: 40,
+            //     }
+            // }
         }
     }
 
-    componentDidMount() {
-        this.getSalesReport()
-        this.getProductSales()
+    async componentDidMount() {
+        await this.getSalesReport()
+        await this.getProductSales()
 
     }
     getSalesReport = async () => {

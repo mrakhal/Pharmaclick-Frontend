@@ -15,7 +15,7 @@ const bodyStyle = {
     textAlign: 'center'
 }
 let filter = { selectedTime: 'Yearly', selectedDetailTime: '2021', year: '2021' }
-const data = {
+const data = { // ganti jd deafault
     datasets: [
         {
             label: '',
@@ -34,7 +34,7 @@ class RevenuePage extends React.Component {
             endDate: '', // end that pada selection date
             dataRevenues: [], // data dari backend
             date: '', // date pada input form
-            revenuesReport: { ...data }, // data untuk chart
+            revenuesReport: { ...data }, // data untuk chart (default)
             filter: {...filter} // variabel untuk filter data
         }
 
