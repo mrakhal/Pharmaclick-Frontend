@@ -12,7 +12,7 @@ import {
   Input,
   Alert,
   Modal,
-  ModalBody, CardBody, Pagination, PaginationItem, PaginationLink
+  ModalBody, CardBody, Pagination, PaginationItem, PaginationLink, ModalHeader, Badge
 } from "reactstrap";
 import HTTP from "../service/HTTP.js";
 import Upload from "../assets/images/bg-upload.png";
@@ -41,7 +41,9 @@ class TransactionAdminPage extends React.Component {
       idtransaction: null,
       currentPage: 1,
       todosPerPage: 4,
-      selectedStatus: ''
+      selectedStatus: '',
+      paymentProof: [],
+      modalType: null
     };
 
     this.status = [
@@ -55,6 +57,7 @@ class TransactionAdminPage extends React.Component {
 
   componentDidMount() {
     this.getTransactionHistory();
+
   }
 
   getDetailTransactions = (idtransaction) => {
@@ -69,7 +72,27 @@ class TransactionAdminPage extends React.Component {
       });
   };
 
-  printModal = () => {
+  printModal = (modalType) => {
+    if (modalType == 'Payment') {
+      this.state.paymentProof[0] && console.log(`${URL_API}/${this.state.paymentProof[0].image_url}`)
+      let url = this.state.paymentProof[0] ? `${URL_API}/${this.state.paymentProof[0].image_url}` : '/'
+      return (
+        <>
+          <Modal isOpen={this.state.modal} toggle={() => this.setState({ modal: false })}>
+            <ModalHeader>
+              <h5>Payment Proof</h5>
+            </ModalHeader>
+            <ModalBody className="d-flex flex-column justify-content-center align-items-center">
+              <img src={url} />
+              <div className="d-flex ">
+                <Button color="success">Download Payment Proof</Button>
+                <Button color="warning" className="ml-3" onClick={() => this.setState({ modal: false })}>Close</Button>
+              </div>
+            </ModalBody>
+          </Modal>
+        </>
+      )
+    }
     return (
       <>
         <Modal isOpen={this.state.modal} toggle={() => this.setState({ modal: false })}>
@@ -208,9 +231,19 @@ class TransactionAdminPage extends React.Component {
     this.getTransactionHistory(e.value.code)
   }
 
-  onBtnReset = () =>{
-    this.setState({selectedStatus: null})
+  onBtnReset = () => {
+    this.setState({ selectedStatus: null })
     this.getTransactionHistory()
+  }
+
+  getTransactionProof = async (idtransaction) => {
+    try {
+      let res = await HTTP.get(`/user/transfer-proof/${idtransaction}`)
+      this.setState({ paymentProof: await res.data })
+      console.log("TP-->", res.data)
+    } catch (error) {
+      console.log("error get trans proof", error)
+    }
   }
   render() {
     const { currentPage, todosPerPage } = this.state;
@@ -234,7 +267,7 @@ class TransactionAdminPage extends React.Component {
             <Row style={{ width: '100%' }}>
               <Col md="8 mt-4" style={{ width: '100%' }}>
                 <Container >
-                  {this.printModal()}
+                  {this.printModal(this.state.modalType)}
                   <Row >
                     <div className="d-flex justify-content-between">
                       <h5>Transaction </h5>
@@ -280,7 +313,7 @@ class TransactionAdminPage extends React.Component {
                                     md="3"
                                   >
                                     <div>
-                                      
+
                                     </div>
                                     {item.status_name === "request" ? (
                                       <div className="d-flex flex-wrap justify-content-center align-items-center">
@@ -317,6 +350,15 @@ class TransactionAdminPage extends React.Component {
                                         }}
                                         >
                                           Detail
+                                        </Button>
+                                        <Button onClick={() => {
+                                          this.setState({ modal: !this.state.modal, modalType: 'Payment' });
+                                          this.getTransactionProof(item.id);
+
+                                        }}
+                                          className="ml-2"
+                                        >
+                                          Payment Proof
                                         </Button>
                                         <Button className="mt-1 mx-2"
                                           color="primary"
