@@ -79,7 +79,7 @@ class SalesReportPage extends React.Component {
     getSalesReport = async () => {
         try {
             let res = await HTTP.get('/transaction/sales-report')
-            console.log(res.data[0])
+            // console.log(res.data[0])
             let { detail } = res.data[0]
             let data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             detail.forEach((item, index) => data[item.month - 1] += item.qty_buy)
@@ -163,6 +163,7 @@ class SalesReportPage extends React.Component {
         try {
             let res = await HTTP.get('/transaction/product-sales')
             this.setState({ productSales: res.data })
+            // console.log(res.data)
         } catch (error) {
             console.log("error get product sales", error)
         }
@@ -174,6 +175,7 @@ class SalesReportPage extends React.Component {
     }
 
     rowExpansion = (data) => {
+        // console.log(data)
         return (
             <div>
                 <h5>Orders for {data.product_name}</h5>
