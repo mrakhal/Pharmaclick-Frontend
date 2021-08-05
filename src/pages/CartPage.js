@@ -729,7 +729,7 @@ class CartPage extends React.Component {
         Authorization: `Bearer ${token}`,
       },
     };
-    if (data.shippingCost < 1) {
+    if (data.shipping_cost < 1) {
       this.setState({
         alertSuccessOpen: !this.state.alertSuccessOpen,
         color: "danger",
@@ -797,7 +797,7 @@ class CartPage extends React.Component {
       data.recipient === "" ||
       this.postalCodeForm.value === "" ||
       data.address === "" ||
-      data.shippingCost < 1
+      data.shipping_cost < 1
     ) {
       this.setState({
         openAlertForm: !this.state.openAlertForm,

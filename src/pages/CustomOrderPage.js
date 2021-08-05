@@ -662,7 +662,7 @@ class CustomOrderPage extends React.Component {
       recipient: this.state.selectedAddress.recipient,
       postal_code: this.state.selectedAddress.postal_code,
       expedition: this.shippingIn.value,
-      service: this.serviceShippigIn.value,
+      service: parseInt(this.serviceShippigIn.value),
       address: this.state.selectedAddress.address,
       shipping_cost: 0,
       total_price: 0,
@@ -711,7 +711,7 @@ class CustomOrderPage extends React.Component {
       postal_code: parseInt(this.postalCodeForm.value),
       address: this.addressForm.value,
       expedition: this.shippingIn.value,
-      service: this.serviceShippigIn.value,
+      service: parseInt(this.serviceShippigIn.value),
       shipping_cost: 0,
       total_price: this.cekPrice(),
       note: this.noteIn.value,
@@ -865,7 +865,7 @@ class CustomOrderPage extends React.Component {
                                     console.log("ITEM", item.cost);
                                     return (
                                       <>
-                                        {item.cost.cost.map((val, idx) => {
+                                        {item.cost.cost.map((val, index) => {
                                           return (
                                             <>
                                               <option value={idx}>
@@ -944,7 +944,7 @@ class CustomOrderPage extends React.Component {
                                     innerRef={(e) => (this.shippingIn = e)}
                                   >
                                     <option value="JNE">JNE</option>
-                                    )}
+                                    )
                                   </Input>
                                 </FormGroup>
                               </Col>
@@ -966,10 +966,10 @@ class CustomOrderPage extends React.Component {
                                         console.log("ITEM", item.cost);
                                         return (
                                           <>
-                                            {item.cost.cost.map((val, idx) => { 
+                                            {item.cost.cost.map((val, index) => { 
                                               return (
                                                 <>
-                                                  <option value={item.cost.service}>
+                                                  <option value={idx}>
                                                     {item.cost.service} (
                                                     {item.cost.description})
                                                   </option>

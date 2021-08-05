@@ -1,5 +1,6 @@
 .wrapper {
-    background-color: #222;
+    /* background-color: black; */
+    background-color: #FFFFFF;
     min-height: 100px;
     max-width: 100%;
     margin: 10px auto;
@@ -117,10 +118,10 @@
 }
 
 .nav.nav-tabs .nav-link.active {
-    background-color: #222;
+    background-color: #E7E7E7;
     border: none;
     color: #fff;
-    border-bottom: 4px solid #fff
+    border-bottom: 4px solid black
 }
 
 .nav.nav-tabs .nav-item .nav-link:hover {
@@ -138,7 +139,7 @@
 }
 
 .table-dark {
-    background-color: #222
+    background-color: #E7E7E7;
 }
 
 .table thead th {
@@ -150,7 +151,7 @@
 .table thead th,
 .table td,
 .table th {
-    border: none;
+    /* border: none; */
     overflow: auto auto
 }
 
