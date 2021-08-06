@@ -47,6 +47,7 @@ class CartPage extends React.Component {
       alertAddress: false,
       alertSuccessOpen: false,
       openAlertForm: false,
+      qtyRemain:[]
     };
   }
 
@@ -585,7 +586,7 @@ class CartPage extends React.Component {
         this.props.keepLogin(token);
         if (res.data.message) {
           this.setState({
-            popoverOpen: !this.state.popoverOpen,
+            popoverOpen: true,
             popoverMessage: res.data.message,
           });
         }
@@ -742,13 +743,13 @@ class CartPage extends React.Component {
           this.props.keepLogin(token);
           if (res.data.message.includes("not enough stock")) {
             this.setState({
-              alertSuccessOpen: !this.state.alertSuccessOpen,
+              alertSuccessOpen: true,
               color: "danger",
               alertMessage: res.data.message,
             });
           } else {
             this.setState({
-              alertSuccessOpen: !this.state.alertSuccessOpen,
+              alertSuccessOpen: true,
               color: "success",
               alertMessage: res.data.message,
             });
@@ -1016,7 +1017,7 @@ class CartPage extends React.Component {
                                     innerRef={(e) => (this.shippingIn = e)}
                                   >
                                     <option value="JNE">JNE</option>
-                                    )}
+                                    )
                                   </Input>
                                 </FormGroup>
                               </Col>
@@ -1147,6 +1148,7 @@ class CartPage extends React.Component {
                                         width: "60px",
                                         textAlign: "center",
                                       }}
+                                      innerRef={(e) => (this.qtyCheck = e)}
                                       disabled
                                     />
                                     <Button
