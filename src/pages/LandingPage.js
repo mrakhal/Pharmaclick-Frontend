@@ -138,8 +138,8 @@ class LandingPage extends React.Component {
   }
 
   async componentDidMount() {
-      this.props.getProductAction(1);
-      await this.onBtnFilterCategory()
+    await this.props.getProductAction(1);
+    this.onBtnFilterCategory()
     
   }
 

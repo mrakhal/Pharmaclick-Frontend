@@ -52,6 +52,7 @@ class TransactionPage extends React.Component {
 
     this.items = [
       { label: 'Request', icon: 'pi pi-fw pi-question', status: 4 },
+      { label: 'Accept', icon: 'pi pi-fw pi-question', status: 6 },
       { label: 'Waiting Confirmation', icon: 'pi pi-fw pi-inbox', status: 5 },
       { label: 'On Progress', icon: 'pi pi-fw pi-spinner', status: 1 },
       { label: 'Done', icon: 'pi pi-fw pi-check', status: 2 },
@@ -171,7 +172,7 @@ class TransactionPage extends React.Component {
                   {this.state.detailTransactions.map((item, idx) => {
                     return (
                       <>
-                        <Col md="4">
+                      {item.idtype === 1 ? (<><Col md="4">
                           <img src={item.image_url} width="100%" />
                         </Col>
                         <Col md="8 mt-3">
@@ -184,19 +185,33 @@ class TransactionPage extends React.Component {
                             Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
                           </p>
                         </Col>
-                        <hr />
+                        <hr /></>):(<><Col md="4">
+                          <img src={item.image_url} width="100%" />
+                        </Col>
+                        <Col md="8 mt-3">
+                          <p>
+                            <strong>{item.product_name}</strong>
+                            <br />
+                            {item.brand}
+                          </p>
+                          <p>
+                            netto : Rp.{item.unit_price.toLocaleString()} X {item.qty_buy}
+                          </p>
+                        </Col></>)}  
                       </>
                     );
                   })}
                 </Row>
               </Container>
               <Container>
-                <Row>
+                <Row style={{lineHeight:"4px"}}>
                   {this.state.detailTransactions.splice(0, 1).map((item, idx) => {
                     return (
                       <>
-                        <Col md="4">Total</Col>
-                        <Col md="8">Rp.{item.total_price.toLocaleString()}</Col>
+                        <Col md="4"><strong>Shipping Cost</strong></Col>
+                        <Col md="8"><p> Rp.{item.shipping_cost.toLocaleString()}</p></Col>
+                        <Col md="4"><strong>Total</strong></Col>
+                        <Col md="8"><p> Rp.{item.total_price.toLocaleString()}</p></Col>
                       </>
                     );
                   })}
@@ -490,7 +505,6 @@ class TransactionPage extends React.Component {
                                     </Button>
                                   )
                                 }
-
                               </Col>
                             </Row>
                           </Container>

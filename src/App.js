@@ -25,7 +25,7 @@ import TransactionAdminPage from "./pages/TransactionAdminPage";
 import TransactionPage from "./pages/TransactionPage";
 import SalesReportPage from "./pages/SalesReportPage";
 import RevenuePage from "./pages/RevenuePage";
-
+import ManagementOrderCustomPage from "./pages/ManagementOrderCustomPage";
 
 class App extends React.Component {
   constructor(props) {
@@ -81,6 +81,10 @@ class App extends React.Component {
                 path={"/custom-product-management"}
                 component={CustomProductManagementPage}
               />
+              <Route
+                path={"/custom-order"}
+                component={ManagementOrderCustomPage}
+              />
               <Route path="/transactions" component={TransactionAdminPage} />
               <Route path={"/sales-report"} component={SalesReportPage} />
               <Route path={"/revenue-report"} component={RevenuePage} />
@@ -100,8 +104,8 @@ class App extends React.Component {
               <Route path={"/verif"} component={VerificationPage} />
               <Route path={"/contact"} component={ContactPage} />
               <Route path={"/detail"} component={ProductDetailPage} />
-              <Route path={"*"} component={NotFoundPage} />
               <Route path={"/custom"} component={CustomOrderPage} />
+              <Route path={"*"} component={NotFoundPage} />
             </Switch>
             <FooterComp />
           </>

@@ -43,7 +43,7 @@ class CustomOrderPage extends React.Component {
       colorAlert: "",
       popoverOpen: false,
       popoverMessage: "",
-      selectedAddress: [],
+      selectedAddress: null,
       shippingCost: 0,
       activeFormAddress: false,
       alertAddress: false,
@@ -59,7 +59,6 @@ class CustomOrderPage extends React.Component {
     this.props.getCity();
     const addresses = await this.getAddressDefault();
     if (addresses.length <= 0) {
-      await this.cityForm.value
       this.shippingCost()
     }else{
     const defaultAddress = addresses[0]
@@ -69,7 +68,6 @@ class CustomOrderPage extends React.Component {
       dataShippingCost,
     })
     }
-    // this.props.getAddress(this.props.user.iduser);
   }
 
   handleChange(e) {
@@ -98,10 +96,10 @@ class CustomOrderPage extends React.Component {
       iduser: iduser,
     })
       .then((res) => {
-        this.getAddressDefault();
         this.props.getAddress(this.props.user.iduser);
+        this.getAddressDefault();
         this.setState({ modal: !this.state.modal });
-        this.shippingCost();
+        this.getShippingCost()
         this.cekPrice();
         this.props.keepLogin(token);
         this.setState({ dataShippingCost: [], shippingCost: 0 });
@@ -592,15 +590,15 @@ class CustomOrderPage extends React.Component {
   };
 
   onChange = (e) => {
-    this.shippingCost();
+    // this.getShippingCost();
     return this.setState({ shippingCost: this.serviceShippigIn.value });
     // return e.target.value;
   };
 
   getShippingCost = (address) => {
      return HTTP.post(`/transaction/shipping-cost`, {
-        origin: address.id_city_origin,
-        destination: 22,
+        origin: 22,
+        destination: address.id_city_origin,
         weight: 1000,
       })
         .then((res) => {
@@ -612,21 +610,17 @@ class CustomOrderPage extends React.Component {
   };
 
   shippingCost = () => {
-    if (this.state.selectedAddress) {
       HTTP.post(`/transaction/shipping-cost`, {
-        origin: this.cityForm.value,
-        destination: 22,
+        origin: 22,
+        destination: this.cityForm.value,
         weight: 1000,
       })
         .then((res) => {
           this.setState({ dataShippingCost: res.data });
         })
         .catch((error) => {
-          console.log(error);
+          return error
         });
-    } else {
-      alert("error");
-    }
   };
 
   printAlert = () => {
@@ -668,7 +662,7 @@ class CustomOrderPage extends React.Component {
       recipient: this.state.selectedAddress.recipient,
       postal_code: this.state.selectedAddress.postal_code,
       expedition: this.shippingIn.value,
-      service: this.serviceShippigIn.value,
+      service: parseInt(this.serviceShippigIn.value),
       address: this.state.selectedAddress.address,
       shipping_cost: 0,
       total_price: 0,
@@ -688,7 +682,13 @@ class CustomOrderPage extends React.Component {
         color: "danger",
         alertMessage: "You Must Upload Image Perscription",
       });
-    } else {
+    } else if(this.props.user.role !== 'user'){
+      this.setState({
+        openAlertForm: !this.state.openAlertForm,
+        color: "danger",
+        alertMessage: "You must login to continue checkout.",
+      });
+    }else{
       axios
         .post(URL_API + `/transaction/checkout-perscription`, formData, headers)
         .then((res) => {
@@ -717,7 +717,7 @@ class CustomOrderPage extends React.Component {
       postal_code: parseInt(this.postalCodeForm.value),
       address: this.addressForm.value,
       expedition: this.shippingIn.value,
-      service: this.serviceShippigIn.value,
+      service: parseInt(this.serviceShippigIn.value),
       shipping_cost: 0,
       total_price: this.cekPrice(),
       note: this.noteIn.value,
@@ -742,7 +742,13 @@ class CustomOrderPage extends React.Component {
         color: "danger",
         alertMessage: "Please fill all field.",
       });
-    } else {
+    } else if(this.props.user.role !== 'user'){
+      this.setState({
+        openAlertForm: !this.state.openAlertForm,
+        color: "danger",
+        alertMessage: "You must login to continue checkout.",
+      });
+    }else{
       axios
         .post(URL_API + `/transaction/checkout-perscription`, formData, headers)
         .then((res) => {
@@ -871,10 +877,10 @@ class CustomOrderPage extends React.Component {
                                     console.log("ITEM", item.cost);
                                     return (
                                       <>
-                                        {item.cost.cost.map((val, idx) => {
+                                        {item.cost.cost.map((val, index) => {
                                           return (
                                             <>
-                                              <option value={item.cost.service}>
+                                              <option value={idx}>
                                                 {item.cost.service} (
                                                 {item.cost.description})
                                               </option>
@@ -950,7 +956,7 @@ class CustomOrderPage extends React.Component {
                                     innerRef={(e) => (this.shippingIn = e)}
                                   >
                                     <option value="JNE">JNE</option>
-                                    )}
+                                    )
                                   </Input>
                                 </FormGroup>
                               </Col>
@@ -972,10 +978,10 @@ class CustomOrderPage extends React.Component {
                                         console.log("ITEM", item.cost);
                                         return (
                                           <>
-                                            {item.cost.cost.map((val, idx) => { 
+                                            {item.cost.cost.map((val, index) => { 
                                               return (
                                                 <>
-                                                  <option value={item.cost.service}>
+                                                  <option value={idx}>
                                                     {item.cost.service} (
                                                     {item.cost.description})
                                                   </option>
