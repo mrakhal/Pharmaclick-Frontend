@@ -177,12 +177,31 @@ class TransactionAdminPage extends React.Component {
     );
   };
 
-  getTransactionHistory = (status) => {
-    let url = `/user/sort-transactions`
-    if (status) {
-      url += `?id_transaction_status=${status}`
+  removeDuplicates() {
+    return Array.from(new Set(this.state.historyTransactions.map(a => a.iduser)))
+      .map(id => {
+        return this.state.historyTransactions.find(a => a.iduser === id)
+      })
+  };
+
+  getTransactionHistory = () => {
+    let token = localStorage.getItem("tkn_id");
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    let val = ""
+    if (this.statusTrans.value && this.userTrans.value) {
+      val = `?id_transaction_status=${this.statusTrans.value}&iduser=${this.userTrans.value}`
+    } else if (this.statusTrans.value) {
+      val = `?id_transaction_status=${this.statusTrans.value}`
+    } else if (this.userTrans.value) {
+      val = `?iduser=${this.userTrans.value}`
+    } else if (this.statusTrans.value = "") {
+      val = `/`
     }
-    HTTP.get(url)
+    axios.get(URL_API + `/user/sort-transactions${val}`, headers)
       .then((res) => {
         this.setState({
           historyTransactions: res.data,
@@ -191,7 +210,6 @@ class TransactionAdminPage extends React.Component {
       .catch((err) => {
         console.log(err);
       });
-
   };
 
   confirmationTransaction = (id) => {
@@ -260,203 +278,240 @@ class TransactionAdminPage extends React.Component {
     for (let i = 1; i <= Math.ceil(this.state.historyTransactions.length / todosPerPage); i++) {
       pageNumbers.push(i);
     }
+    console.log("histrans", this.state.historyTransactions)
+    console.log("removedup", this.removeDuplicates())
     return (
       <div class="main-content">
         <main>
-          <Container className="pb-5" >
-            <Row style={{ width: '100%' }}>
-              <Col md="8 mt-4" style={{ width: '100%' }}>
-                <Container >
-                  {this.printModal(this.state.modalType)}
-                  <Row >
-                    <div className="d-flex justify-content-between">
-                      <h5>Transaction </h5>
-                      <hr />
-                      <div>
-                        <Dropdown value={this.state.selectedStatus} options={this.status} onChange={(e) => this.onDropdownChange(e)} optionLabel="status_name" placeholder="Filter by Status.." />
-                        <Button onClick={this.onBtnReset} className="h-100 mx-2" color="primary">Reset</Button>
-                      </div>
-                    </div>
-                    <Col md="12 mt-2">
-                      <Alert isOpen={this.state.alertConfirm} color={this.state.color}>
-                        {this.state.alertMessage}
-                      </Alert>
-                    </Col>
-                    {currentTodos.map((item) => {
-                      return (
-                        <>
-                          <Col md="12">
-                            <Card
-                              body
-                              style={{
-                                borderRadius: "15px",
-                                boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-                                marginTop: "1%",
-                                border: "none",
-                              }}
-                            >
-                              <Container >
-                                <Row>
-                                  <Col md="4">
-                                    <CardTitle tag="h6">Invoice</CardTitle>
-                                    <CardText>{item.invoice}</CardText>
-                                  </Col>
-                                  <Col md="3">
-                                    <CardTitle tag="h6">Recipient Name</CardTitle>
-                                    <CardText>{item.recipient}</CardText>
-                                  </Col>
-                                  <Col md="2">
-                                    <CardTitle tag="h6">Status</CardTitle>
-                                    <CardText>{item.status_name}</CardText>
-                                  </Col>
-                                  <Col
-                                    md="3"
-                                  >
-                                    <div>
+          <Container className="pb-5"><Row>
+            <Col md="8 mt-4">
+              <Container>
+                {this.printModal()}
+                <Row>
+                  <h5>Transaction <hr /></h5>
+                  <Col md="12 mt-2">
+                    <Alert isOpen={this.state.alertConfirm} color={this.state.color}>
+                      {this.state.alertMessage}
+                    </Alert>
+                  </Col>
+                  {currentTodos.map((item) => {
+                    return (
+                      <>
+                        <Col md="12">
+                          <Card
+                            body
+                            style={{
+                              borderRadius: "15px",
+                              boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+                              marginTop: "1%",
+                              border: "none",
+                            }}
+                          >
+                            <Container>
+                              <Row>
+                                <Col md="4">
+                                  <CardTitle tag="h6">Invoice</CardTitle>
+                                  <CardText>{item.invoice}</CardText>
+                                </Col>
+                                <Col md="3">
+                                  <CardTitle tag="h6">Recipient Name</CardTitle>
+                                  <CardText>{item.recipient}</CardText>
+                                </Col>
+                                <Col md="2">
+                                  <CardTitle tag="h6">Status</CardTitle>
+                                  <CardText>{item.status_name}</CardText>
+                                </Col>
+                                <Col
+                                  md="3"
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                >
 
-                                    </div>
-                                    {item.status_name === "request" ? (
-                                      <div className="d-flex flex-wrap justify-content-center align-items-center">
-                                        <Button
-                                          color="warning"
-                                          onClick={() => {
-                                            this.setState({ modal: !this.state.modal });
-                                            this.getDetailTransactions(item.id);
-                                          }}
-                                        >
-                                          Detail
-                                        </Button>
-
-                                        <Button className="mt-1 mx-2"
-                                          color="primary"
-                                          disabled
-                                        >
-                                          Accept
-                                        </Button>
-                                        <Button
-                                          color="danger"
-                                          className="mt-1"
-                                          disabled
-                                        >
-                                          Reject
-                                        </Button>
-
-                                      </div>
-                                    ) : item.status_name === "waiting" ? (
-                                      <div className="d-flex flex-wrap justify-content-center align-items-center">
-                                        <Button color="warning" onClick={() => {
+                                  {item.status_name === "request" ? (
+                                    <div className="d-flex flex-wrap justify-content-center align-items-center">
+                                      <Button
+                                        color="warning"
+                                        onClick={() => {
                                           this.setState({ modal: !this.state.modal });
                                           this.getDetailTransactions(item.id);
                                         }}
-                                        >
-                                          Detail
-                                        </Button>
-                                        <Button onClick={() => {
-                                          this.setState({ modal: !this.state.modal, modalType: 'Payment' });
-                                          this.getTransactionProof(item.id);
+                                      >
+                                        Detail
+                                      </Button>
 
+                                      <Button className="mt-1"
+                                        color="primary"
+                                        disabled
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        color="danger"
+                                        className="mt-1"
+                                        disabled
+                                      >
+                                        Reject
+                                      </Button>
+
+                                    </div>
+                                  ) : item.status_name === "waiting" ? (
+                                    <div className="d-flex flex-wrap justify-content-center align-items-center">
+                                      <Button
+                                        color="warning"
+                                        onClick={() => {
+                                          this.setState({ modal: !this.state.modal });
+                                          this.getDetailTransactions(item.id);
                                         }}
-                                          className="ml-2"
-                                        >
-                                          Payment Proof
-                                        </Button>
-                                        <Button className="mt-1 mx-2"
-                                          color="primary"
-                                          onClick={() => {
-                                            this.confirmationTransaction(item.id)
-                                          }}
-                                        >
-                                          Accept
-                                        </Button>
-                                        <Button
-                                          color="danger"
-                                          className="mt-1"
-                                          onClick={() => {
-                                            this.rejectTransaction(item.id)
-                                          }}
-                                        >
-                                          Reject
-                                        </Button>
+                                      >
+                                        Detail
+                                      </Button>
+                                      <Button className="mt-1"
+                                        color="primary"
+                                        onClick={() => {
+                                          this.confirmationTransaction(item.id)
+                                        }}
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        color="danger"
+                                        className="mt-1"
 
-                                      </div>
-                                    ) : item.status_name === "reject" ? (
-                                      <div className="d-flex flex-wrap justify-content-center align-items-center">
-                                        <Button
-                                          color="warning"
-                                          onClick={() => {
-                                            this.setState({ modal: !this.state.modal });
-                                            this.getDetailTransactions(item.id);
-                                          }}
-                                        >
-                                          Detail
-                                        </Button>
-                                        <Button
-                                          className="mt-1 ml-2"
-                                          color="danger"
-                                          disabled
-                                        >
-                                          Rejected
-                                        </Button></div>
-                                    ) : (
-                                      <div className="d-flex flex-wrap justify-content-center align-items-center">
-                                        <Button
-                                          color="warning"
-                                          onClick={() => {
-                                            this.setState({ modal: !this.state.modal });
-                                            this.getDetailTransactions(item.id);
-                                          }}
-                                        >
-                                          Detail
-                                        </Button>
-                                        <Button
-                                          className="mt-1 ml-2"
-                                          color="primary"
-                                          disabled
-                                        >
-                                          Accepted
-                                        </Button></div>
-                                    )}
-                                  </Col>
-                                </Row>
-                              </Container>
-                            </Card>
-                          </Col>
-                        </>
-                      );
-                    })}
+                                        onClick={() => {
+                                          this.rejectTransaction(item.id)
+                                        }}
+                                      >
+                                        Reject
+                                      </Button>
+
+                                    </div>
+                                  ) : item.status_name === "reject" ? (
+                                    <div className="d-flex flex-wrap justify-content-center align-items-center">
+                                      <Button
+                                        color="warning"
+                                        onClick={() => {
+                                          this.setState({ modal: !this.state.modal });
+                                          this.getDetailTransactions(item.id);
+                                        }}
+                                      >
+                                        Detail
+                                      </Button>
+                                      <Button
+                                        className="mt-1"
+                                        color="danger"
+                                        disabled
+                                      >
+                                        Rejected
+                                      </Button></div>
+                                  ) : (
+                                    <div className="d-flex flex-wrap justify-content-center align-items-center">
+                                      <Button
+                                        color="warning"
+                                        onClick={() => {
+                                          this.setState({ modal: !this.state.modal });
+                                          this.getDetailTransactions(item.id);
+                                        }}
+                                      >
+                                        Detail
+                                      </Button>
+                                      <Button
+                                        className="mt-1"
+                                        color="primary"
+                                        disabled
+                                      >
+                                        Accepted
+                                      </Button></div>
+                                  )}
+                                </Col>
+                              </Row>
+                            </Container>
+                          </Card>
+                        </Col>
+                      </>
+                    );
+                  })}
+                </Row>
+                <Container className="mt-4">
+                  <Row>
+                    <Col md="4 m-auto" xs="9 m-auto" sm="4 m-auto">
+                      <Pagination aria-label="Page navigation example">
+                        <PaginationItem>
+                          <PaginationLink first href="#" />
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink previous href="#" />
+                        </PaginationItem>
+                        {pageNumbers.map((item) => {
+                          return (
+                            <PaginationItem>
+                              <PaginationLink
+                                href="#"
+                                key={item}
+                                id={item}
+                                onClick={this.handleClick}
+                              >
+                                {item}
+                              </PaginationLink>
+                            </PaginationItem>
+                          );
+                        })}
+                      </Pagination>
+                    </Col>
                   </Row>
-                  <Container className="mt-4">
-                    <Row>
-                      <Col md="4 m-auto" xs="9 m-auto" sm="4 m-auto">
-                        <Pagination aria-label="Page navigation example">
-                          <PaginationItem>
-                            <PaginationLink first href="#" />
-                          </PaginationItem>
-                          <PaginationItem>
-                            <PaginationLink previous href="#" />
-                          </PaginationItem>
-                          {pageNumbers.map((item) => {
-                            return (
-                              <PaginationItem>
-                                <PaginationLink
-                                  href="#"
-                                  key={item}
-                                  id={item}
-                                  onClick={() => this.handleClick(item)}
-                                >
-                                  {item}
-                                </PaginationLink>
-                              </PaginationItem>
-                            );
-                          })}
-                        </Pagination>
-                      </Col>
-                    </Row>
-                  </Container>
                 </Container>
-              </Col>
-              {/* FILTER HERE */}
-            </Row>
+              </Container>
+            </Col>
+            <Col md="4 mt-4">
+              <Container>
+                <Row>
+                  <Col md="12">
+                    <h5>Filter <hr /></h5>
+                    <Card className="mt-5">
+                      <CardBody>
+                        <Col md="12">
+                          <FormGroup>
+                            <Label for="exampleSelect">Status Transaction</Label>
+                            <Input
+                              type="select"
+                              name="select"
+                              id="exampleSelect"
+                              onChange={this.getTransactionHistory}
+                              innerRef={(e) => (this.statusTrans = e)}
+                            >
+                              <option value="">All</option>
+                              <option value={4}>Request</option>
+                              <option value={5}>Waiting Confirmation</option>
+                              <option value={1}>On Progress</option>
+                              <option value={2}>Done</option>
+                              <option value={3}>Reject</option>
+                            </Input>
+                          </FormGroup>
+                          <FormGroup>
+                            <Label for="exampleSelect">List User</Label>
+                            <Input
+                              type="select"
+                              name="select"
+                              id="exampleSelect"
+                              innerRef={(e) => (this.userTrans = e)}
+                            >
+                              {this.removeDuplicates().map((item) => {
+                                return (<><option value={item.iduser}>{item.fullname}</option></>)
+                              })}
+
+                            </Input>
+                          </FormGroup>
+                          <Button outline color="primary" size="sm" className="mt-2" onClick={this.getTransactionHistory}>Filter</Button>
+                        </Col>
+                      </CardBody>
+                    </Card>
+                  </Col>
+                </Row>
+              </Container>
+            </Col>
+          </Row>
           </Container>
         </main>
       </div>
