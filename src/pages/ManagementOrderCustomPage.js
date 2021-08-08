@@ -175,11 +175,12 @@ class ManagementOrderCustomPage extends React.Component {
 
     };
 
-    handleRemoveFields = id => {
+    handleRemoveFields = (id) => {
+        // return console.log('index',id)
         const values  = [...this.state.products];
-        values.splice(values.findIndex(value => value.id === id), 1);
-        this.setState({products:values})
-      }
+        let val = values.splice(id, 1);
+        this.setState({products:val})
+    }
 
     printProducts = () => {
         if (this.state.products.length >= 0) {
@@ -197,14 +198,13 @@ class ManagementOrderCustomPage extends React.Component {
                     </Col>
                     <Col md="3">
                             <Label>Netto</Label>
-                            <Input type="number" innerRef={(e) => (this.qtyVal = e)} onChange={(e) => this.handleProducts(e, index)} max={this.state.stock.total_netto} invalid={this.state.invalid} />
+                            <Input type="number" innerRef={(e) => (this.qtyVal = e)} onChange={(e) => this.handleProducts(e, index)} min={0} max={this.state.stock.total_netto} invalid={this.state.invalid} />
                             {/* <FormFeedback invalid={this.state.invalid}>Stock not enough, remaining stock is {this.state.stock.total_netto}</FormFeedback> */}
                    </Col>
                     <Col md="3"><Label>Measure</Label>
                          <Input type="text" name="select" id="exampleSelect" innerRef={(e) => (this.unitVal = e)} value={this.state.product.unit} onChange={(e) => this.handleProducts(e, index)} disabled />
                     </Col>
                     <Col md="1 mt-4">
-                                    {/* {this.printProducts()} */}
                                     <Button
                                     color="success"
                                     type="button"
@@ -227,7 +227,6 @@ class ManagementOrderCustomPage extends React.Component {
                                     -
                                     </Button>
                                     </Col>
-                                    <Col md="12 mt-2"><Alert isOpen={this.state.alertInvalid} color={this.state.color} style={{fontSize:"11px"}}>{this.state.alertMessage}</Alert></Col>
                 </Row>
             </Container>
             );
@@ -239,84 +238,106 @@ class ManagementOrderCustomPage extends React.Component {
         return (
         <>
             <Modal isOpen={this.state.modal}>
-            <ModalBody>
-                <Container>
-                <Row>
-                    <div className="d-flex justify-content-between ">
-                    <p></p>
-                    <Button
-                        color="danger"
-                        onClick={() => {
-                        this.setState({ modal: !this.state.modal });
-                        }}
-                    >
-                        X
-                    </Button>
-                    </div>
-                    <hr className="mt-3" />
-                    <Col md="12">
-                        <img src={`${URL_API}/${this.state.img_order}`} width="100%" />
-                    </Col>
-                    {this.state.detailTransactions.slice(0, 1).map((item, idx) => {
-                    return (
-                        <>
-                        {" "}
-                        <Col md="6">
-                            <p>
-                            Recipient : <br />
-                            {item.recipient}
-                            </p>
-                        </Col>
-                        <Col md="6">
-                            <p>
-                            Address : <br />
-                            {item.address}, {item.postal_code}
-                            </p>
-                        </Col>
-                        </>
-                    );
-                    })}
+          <ModalBody>
+            <Container>
+              <Row>
+              
+                <div className="d-flex justify-content-between ">
+                  <h6 className="pt-3">Detail Transaction</h6>
+                  <Button
+                    color="danger"
+                    onClick={() => {
+                      this.setState({ modal: !this.state.modal });
+                    }}
+                  >
+                    X
+                  </Button>
+                </div>
+                <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}} className="mt-3"/>
+                {this.state.detailTransactions.slice(0, 1).map((item, idx) => {
+                  return (
+                    <>
+                      {" "}
+                      <Col md="6">
+                        <p>
+                          Recipient : <br />
+                          {item.recipient}
+                        </p>
+                      </Col>
+                      <Col md="6">
+                        <p>
+                          Address : <br />
+                          {item.address}, {item.postal_code}
+                        </p>
+                      </Col>
+                    </>
+                  );
+                })}
 
                 <Col md="6"></Col>
               </Row>
             </Container>
-            <hr />
+            <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/>
             <Container>
-              <Row>
-                {this.state.detailTransactions.map((item, idx) => {
-                  return (
-                    <>
-                      <Col md="4">
-                        <img src={item.image_url} width="100%" />
-                      </Col>
-                      <Col md="8 mt-3">
+                <Row>
+                  {this.state.detailTransactions.map((item, idx) => {
+                    return (
+                      <>
+                      {item.idtype === 1 ? (<><Col md="4">
+                          <img src={item.image_url} width="100%" />
+                        </Col>
+                        <Col md="8 mt-3">
+                          <p>
+                            <strong>{item.product_name}</strong>
+                            <br />
+                            {item.brand}
+                          </p>
+                          <p>
+                            Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
+                          </p>
+                        </Col>
+                        <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/></>):(<>
+                        {item.img_order_url && !item.image_url &&(<>
+                        <Col md="12"><h6>Image Perscription</h6><img src={`${URL_API}/${item.img_order_url}`} width="100%" /></Col></>)}
+                        {item.image_url && (<><Col md="4"><img src={
+                        item.image_url.includes("http")
+                          ? `${item.image_url}`
+                          : `${URL_API}/${item.image_url}`} width="100%" /></Col></>)}
+                        {item.unit_price || item.product_name || item.brand ? 
+                        (<><Col md="8 mt-3">
                         <p>
                           <strong>{item.product_name}</strong>
                           <br />
                           {item.brand}
                         </p>
                         <p>
-                          Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
+                          netto : Rp.{item.unit_price.toLocaleString()}/{item.unit} X {item.qty_buy_total_netto}
                         </p>
-                      </Col>
-                      <hr />
-                    </>
-                  );
-                })}
-              </Row>
-            </Container>
-            <Container>
-              <Row>
-                {this.state.detailTransactions.splice(0, 1).map((item, idx) => {
-                  return (
-                    <>
-                      <Col md="4">Total</Col>
-                      <Col md="8">Rp.{item.total_price.toLocaleString()}</Col>
-                    </>
-                  );
-                })}
-              </Row>
-            </Container>
+                      </Col></>):
+                        (<></>)}
+                        </>)}  
+                      </>
+                    );
+                  })}
+                </Row>
+              </Container>
+              <Container>
+                  <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/>
+                <Row style={{lineHeight:"5px"}}>
+                  {this.state.detailTransactions.splice(0, 1).map((item, idx) => {
+                    return (
+                      <>
+                      {item.shipping_cost || item.total_price ? 
+                      (<><Col md="4"><strong>Shipping Cost</strong></Col>
+                      <Col md="8"><p> Rp.{item.shipping_cost.toLocaleString()}</p></Col>
+                      <Col md="4"><strong>Total</strong></Col>
+                      <Col md="8"><p> Rp.{item.total_price.toLocaleString()}</p></Col></>):
+                      (<><center><p><i>Custom Order User {item.recipient}</i></p></center></>)}
+                      </>
+                    );
+                  })}
+                </Row>
+              </Container>
           </ModalBody>
         </Modal>
       </>
@@ -342,6 +363,7 @@ class ManagementOrderCustomPage extends React.Component {
                     </Button>
                     </div>
                                 <Col md="12">{this.printProducts()}</Col>
+                                <Col md="12 mt-2"><Alert isOpen={this.state.alertInvalid} color={this.state.color} style={{fontSize:"11px"}}>{this.state.alertMessage}</Alert></Col>
                                 <Col md="6">
                                     <Label>Destination</Label>
                                     <Input type="select" name="select" id="exampleSelect" innerRef={(e) => (this.destinationForm = e)} disabled>
@@ -430,7 +452,7 @@ class ManagementOrderCustomPage extends React.Component {
                                             <Col md="6" id="income">
                                                 <div className="d-flex justify-content-start align-items-center" style={{color:"black"}}>
                                                     <p className="pi pi-credit-card"></p>
-                                                    <p className=" mx-3" style={{color:"black"}}>Total Custom Order</p>
+                                                    <p className=" mx-3" style={{color:"black"}}>Total Request Custom Order</p>
                                                     <p className=" money">{this.state.historyTransactions.length}</p>
                                                 </div>
                                             </Col>

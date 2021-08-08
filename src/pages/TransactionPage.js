@@ -131,8 +131,8 @@ class TransactionPage extends React.Component {
             <ModalBody>
               <Container>
                 <Row>
-                  <div className="d-flex justify-content-between ">
-                    <p></p>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <p className="pt-4">Detail Transaction</p>
                     <Button
                       color="danger"
                       onClick={() => {
@@ -142,7 +142,7 @@ class TransactionPage extends React.Component {
                       X
                     </Button>
                   </div>
-                  <hr className="mt-3" />
+                  <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}} className="mt-3"/>
                   {this.state.detailTransactions.slice(0, 1).map((item, idx) => {
                     return (
                       <>
@@ -159,6 +159,12 @@ class TransactionPage extends React.Component {
                             {item.address}, {item.postal_code}
                           </p>
                         </Col>
+                        <Col md="12">
+                          <p>
+                            Note : <br />
+                            {item.note}
+                          </p>
+                        </Col>
                       </>
                     );
                   })}
@@ -166,7 +172,7 @@ class TransactionPage extends React.Component {
                   <Col md="6"></Col>
                 </Row>
               </Container>
-              <hr />
+              <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/>
               <Container>
                 <Row>
                   {this.state.detailTransactions.map((item, idx) => {
@@ -185,33 +191,41 @@ class TransactionPage extends React.Component {
                             Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
                           </p>
                         </Col>
-                        <hr /></>):(<><Col md="4">
+                        <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/></>):(<><Col md="12">
+                          <h6>Image Perscription</h6>
+                          {item.img_order_url ? (<><img src={`${URL_API}/${item.img_order_url}`} width="100%" /></>):(<><img src={`${URL_API}/${item.image_url}`} width="100%" /></>)}
                           <img src={item.image_url} width="100%" />
                         </Col>
-                        <Col md="8 mt-3">
-                          <p>
-                            <strong>{item.product_name}</strong>
-                            <br />
-                            {item.brand}
-                          </p>
-                          <p>
-                            netto : Rp.{item.unit_price.toLocaleString()} X {item.qty_buy}
-                          </p>
-                        </Col></>)}  
+                        {item.unit_price || item.product_name || item.brand ? 
+                        (<><Col md="8 mt-3">
+                        <p>
+                          <strong>{item.product_name}</strong>
+                          <br />
+                          {item.brand}
+                        </p>
+                        <p>
+                          netto : Rp.{item.unit_price.toLocaleString()}/{item.unit} X {item.qty_buy_total_netto}
+                        </p>
+                      </Col></>):
+                        (<></>)}
+                        </>)}  
                       </>
                     );
                   })}
                 </Row>
               </Container>
               <Container>
+              <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/>
                 <Row style={{lineHeight:"4px"}}>
                   {this.state.detailTransactions.splice(0, 1).map((item, idx) => {
                     return (
                       <>
-                        <Col md="4"><strong>Shipping Cost</strong></Col>
-                        <Col md="8"><p> Rp.{item.shipping_cost.toLocaleString()}</p></Col>
-                        <Col md="4"><strong>Total</strong></Col>
-                        <Col md="8"><p> Rp.{item.total_price.toLocaleString()}</p></Col>
+                      {item.shipping_cost || item.total_price ? 
+                      (<><Col md="4"><strong>Shipping Cost</strong></Col>
+                      <Col md="8"><p> Rp.{item.shipping_cost.toLocaleString()}</p></Col>
+                      <Col md="4"><strong>Total</strong></Col>
+                      <Col md="8"><p> Rp.{item.total_price.toLocaleString()}</p></Col></>):
+                      (<><center><p><i>Please Wait Admin Accept Your Custom Order.</i></p></center></>)}
                       </>
                     );
                   })}
