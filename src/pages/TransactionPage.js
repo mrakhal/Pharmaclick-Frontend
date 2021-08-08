@@ -431,7 +431,7 @@ class TransactionPage extends React.Component {
                 this.state.historyTransactions.map((item) => {
                   return (
                     <>
-                      <Col md="12">
+                    {item.idtype === 1 ? (<><Col md="12">
                         <Card
                           body
                           style={{
@@ -448,8 +448,8 @@ class TransactionPage extends React.Component {
                                 <CardText>{item.invoice}</CardText>
                               </Col>
                               <Col md="3">
-                                <CardTitle tag="h6">Recipient Name</CardTitle>
-                                <CardText>{item.recipient}</CardText>
+                                <CardTitle tag="h6">Order Type</CardTitle>
+                                <CardText>Pack</CardText>
                               </Col>
                               <Col md="2">
                                 <CardTitle tag="h6">Status</CardTitle>
@@ -510,6 +510,87 @@ class TransactionPage extends React.Component {
                           </Container>
                         </Card>
                       </Col>
+                      </>):
+                      (<><Col md="12">
+                      <Card
+                        body
+                        style={{
+                          borderRadius: "15px",
+                          boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+                          marginTop: "1%",
+                          border: "none",
+                        }}
+                      >
+                        <Container>
+                          <Row>
+                            <Col md="4">
+                              <CardTitle tag="h6">Invoice</CardTitle>
+                              <CardText>{item.invoice}</CardText>
+                            </Col>
+                            <Col md="3">
+                              <CardTitle tag="h6">Order Type</CardTitle>
+                              <CardText>Custom</CardText>
+                            </Col>
+                            <Col md="2">
+                              <CardTitle tag="h6">Status</CardTitle>
+                              <CardText>{item.status_name}</CardText>
+                            </Col>
+                            <Col
+                              md="3"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Button
+                                color="warning"
+                                onClick={() => {
+                                  this.setState({ modal: !this.state.modal, modalType: 'detail' });
+                                  this.getDetailTransactions(item.id);
+                                }}
+                              >
+                                Detail
+                              </Button>
+                              &nbsp; &nbsp;
+                              {item.status_name === "request" && (
+                                <>
+                                  {/* <Button
+                                    color="primary"
+                                    onClick={() => {
+                                      this.setState({
+                                        modalUpload: !this.state.modalUpload,
+                                        idtransaction: item.id,
+                                      });
+                                    }}
+                                  >
+                                    Upload
+                                  </Button> */}
+                                </>
+                              )}
+                              {
+                                item.status_name === "done" && (
+                                  <Button
+                                    color="success"
+                                    onClick={() => {
+                                      this.getDetailTransactions(item.id)
+                                      this.setState({ modal: !this.state.modal, modalType: 'review' })
+                                    }}
+                                    disabled={parseInt(item.review)}>
+                                      {
+                                        parseInt(item.review) ?
+                                        'Product Reviewed' :
+                                        'Review Product' 
+                                      }
+                                  </Button>
+                                )
+                              }
+                            </Col>
+                          </Row>
+                        </Container>
+                      </Card>
+                    </Col></>)}
+                      
                     </>
                   );
                 })

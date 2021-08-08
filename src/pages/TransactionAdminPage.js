@@ -66,7 +66,7 @@ class TransactionAdminPage extends React.Component {
             <Container>
               <Row>
               
-                {/* <div className="d-flex justify-content-between ">
+                <div className="d-flex justify-content-between ">
                   <p></p>
                   <Button
                     color="danger"
@@ -76,7 +76,7 @@ class TransactionAdminPage extends React.Component {
                   >
                     X
                   </Button>
-                </div> */}
+                </div>
                 <hr className="mt-3" />
                 {this.state.detailTransactions.slice(0, 1).map((item, idx) => {
                   return (
@@ -132,7 +132,7 @@ class TransactionAdminPage extends React.Component {
                           </p>
                           <p>
                             Shipping Cost : Rp.{item.shipping_cost.toLocaleString()}<br/>
-                            Product : Rp.{item.unit_price.toLocaleString()} X {item.qty_buy}
+                            Product : Rp.{item.unit_price.toLocaleString()}/{item.unit} X {item.qty_buy_total_netto}
                           </p>
                         </Col></>)}  
                       </>

@@ -30,8 +30,8 @@ class ManagementOrderCustomPage extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getProductAction(2)
         this.getTransactionHistory()
+        this.props.getProductAction(2)
     }
 
     onBtnSubmit = () =>{
@@ -388,14 +388,14 @@ class ManagementOrderCustomPage extends React.Component {
     }
 
     render() { 
-        // console.log('transaction history',this.state.historyTransactions)
-        // console.log('detail history',this.state.detailTransactions)
-        // console.log('products',this.state.product)
-        // console.log('products props',this.props.products)
-        // console.log('user',this.props.user)
-        // console.log('shippingCost',this.state.shippingCost)
-        // console.log('isi form products',this.state.products)
-        // console.log('service',this.state.service)
+        console.log('transaction history',this.state.historyTransactions)
+        console.log('detail history',this.state.detailTransactions)
+        console.log('products',this.state.product)
+        console.log('products props',this.props.products)
+        console.log('user',this.props.user)
+        console.log('shippingCost',this.state.shippingCost)
+        console.log('isi form products',this.state.products)
+        console.log('service',this.state.service)
         const { currentPage, todosPerPage } = this.state;
         // Logic for displaying todos
         const indexOfLastTodo = currentPage * todosPerPage;
