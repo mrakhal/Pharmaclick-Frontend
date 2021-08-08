@@ -47,6 +47,7 @@ class CartPage extends React.Component {
       alertAddress: false,
       alertSuccessOpen: false,
       openAlertForm: false,
+      qtyRemain: []
     };
   }
 
@@ -56,19 +57,14 @@ class CartPage extends React.Component {
     if (addresses.length <= 0) {
       await this.cityForm.value
       await this.shippingCost()
-    }else{
-    const defaultAddress = addresses[0]
-    const dataShippingCost = await this.getShippingCost(defaultAddress)
-    this.setState({
-      selectedAddress: defaultAddress,
-      dataShippingCost,
-    })
+    } else {
+      const defaultAddress = addresses[0]
+      const dataShippingCost = await this.getShippingCost(defaultAddress)
+      this.setState({
+        selectedAddress: defaultAddress,
+        dataShippingCost,
+      })
     }
-    // setTimeout(() => {
-    //   this.shippingCost();
-    // }, 1500);
-    // this.cekPrice();
-    // this.props.getAddress(this.props.user.iduser);
   }
 
   onBtnSetDefault = (idaddressIn) => {
@@ -79,7 +75,6 @@ class CartPage extends React.Component {
       iduser: iduser,
     })
       .then((res) => {
-        this.getAddressDefault();
         this.props.getAddress(this.props.user.iduser);
         this.setState({ modal: !this.state.modal });
         this.shippingCost();
@@ -87,6 +82,7 @@ class CartPage extends React.Component {
         let token = localStorage.getItem("tkn_id");
         this.props.keepLogin(token);
         this.setState({ dataShippingCost: [], shippingCost: 0 });
+        this.getAddressDefault();
       })
       .catch((err) => {
         console.log(err);
@@ -156,7 +152,7 @@ class CartPage extends React.Component {
   getAddressDefault = () => {
     return HTTP.get(`/user/get-address?set_default=${1}&iduser=${this.props.user.iduser}`)
       .then((res) => {
-        console.log('address',res.data)
+        console.log('address', res.data)
         return res.data
       })
       .catch((err) => {
@@ -469,7 +465,7 @@ class CartPage extends React.Component {
                       innerRef={(e) => (this.cityForm = e)}
                       id="city"
                       // innerRef={(e) => (this.originIn = e)}
-                      onChange={()=>{this.shippingCost()}}
+                      onChange={() => { this.shippingCost() }}
                       required
                     >
                       {this.props.city.map((item) => {
@@ -591,7 +587,7 @@ class CartPage extends React.Component {
         this.props.keepLogin(token);
         if (res.data.message) {
           this.setState({
-            popoverOpen: !this.state.popoverOpen,
+            popoverOpen: true,
             popoverMessage: res.data.message,
           });
         }
@@ -646,31 +642,31 @@ class CartPage extends React.Component {
   };
 
   getShippingCost = (address) => {
-     return HTTP.post(`/transaction/shipping-cost`, {
-        origin: address.id_city_origin,
-        destination: 22,
-        weight: 1000,
+    return HTTP.post(`/transaction/shipping-cost`, {
+      origin: 22,
+      destination: address.id_city_origin,
+      weight: 1000,
+    })
+      .then((res) => {
+        return res.data;
       })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((error) => {
-          return error;
-        });
+      .catch((error) => {
+        return error;
+      });
   };
 
   shippingCost = () => {
-      HTTP.post(`/transaction/shipping-cost`, {
-        origin: this.cityForm.value,
-        destination: 22,
-        weight: 1000,
+    HTTP.post(`/transaction/shipping-cost`, {
+      origin: 22,
+      destination: this.cityForm.value,
+      weight: 1000,
+    })
+      .then((res) => {
+        this.setState({ dataShippingCost: res.data })
       })
-        .then((res) => {
-          this.setState({dataShippingCost: res.data})
-        })
-        .catch((error) => {
-          return error
-        });
+      .catch((error) => {
+        return error
+      });
   };
 
   printAlert = () => {
@@ -692,7 +688,7 @@ class CartPage extends React.Component {
           placement="bottom"
           isOpen={this.state.popoverOpen}
           target="Popover1"
-          // toggle={() => this.setState({ popoverOpen: !this.state.popoverOpen })}
+        // toggle={() => this.setState({ popoverOpen: !this.state.popoverOpen })}
         >
           <PopoverHeader>{this.state.popoverMessage}</PopoverHeader>
           <PopoverBody>You can't add more quantity</PopoverBody>
@@ -735,7 +731,7 @@ class CartPage extends React.Component {
         Authorization: `Bearer ${token}`,
       },
     };
-    if (data.shippingCost < 1) {
+    if (data.shipping_cost < 1) {
       this.setState({
         alertSuccessOpen: !this.state.alertSuccessOpen,
         color: "danger",
@@ -748,13 +744,13 @@ class CartPage extends React.Component {
           this.props.keepLogin(token);
           if (res.data.message.includes("not enough stock")) {
             this.setState({
-              alertSuccessOpen: !this.state.alertSuccessOpen,
+              alertSuccessOpen: true,
               color: "danger",
               alertMessage: res.data.message,
             });
           } else {
             this.setState({
-              alertSuccessOpen: !this.state.alertSuccessOpen,
+              alertSuccessOpen: true,
               color: "success",
               alertMessage: res.data.message,
             });
@@ -803,7 +799,7 @@ class CartPage extends React.Component {
       data.recipient === "" ||
       this.postalCodeForm.value === "" ||
       data.address === "" ||
-      data.shippingCost < 1
+      data.shipping_cost < 1
     ) {
       this.setState({
         openAlertForm: !this.state.openAlertForm,
@@ -1022,7 +1018,7 @@ class CartPage extends React.Component {
                                     innerRef={(e) => (this.shippingIn = e)}
                                   >
                                     <option value="JNE">JNE</option>
-                                    
+                                    )
                                   </Input>
                                 </FormGroup>
                               </Col>
@@ -1153,6 +1149,7 @@ class CartPage extends React.Component {
                                         width: "60px",
                                         textAlign: "center",
                                       }}
+                                      innerRef={(e) => (this.qtyCheck = e)}
                                       disabled
                                     />
                                     <Button

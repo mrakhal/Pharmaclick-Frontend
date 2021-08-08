@@ -17,6 +17,7 @@ import ProfilePage from "./pages/profilePage";
 import NavbarComp from "./components/navbarComp";
 import FooterComp from "./components/footerComp";
 import ContactPage from "./pages/ContactPage";
+import ManagementOrderCustomPage from "./pages/ManagementOrderCustomPage";
 import CartPage from "./pages/CartPage";
 import CustomOrderPage from "./pages/CustomOrderPage";
 import { keepLogin, getProductAction } from "./action";
@@ -34,7 +35,6 @@ class App extends React.Component {
     };
   }
   componentDidMount() {
-    // this.props.getProductAction(1);
     this.reLogin();
   }
 
