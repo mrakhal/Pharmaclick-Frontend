@@ -91,7 +91,13 @@ class DialogAddCustom extends React.Component {
             formData.append('products', fileUpload)
 
             // let res = await axios.post(URL_API + '/product',  formData )
-            let res = await HTTP.post('/product/custom', formData)
+            let token = localStorage.getItem("tkn_id");
+            const headers = {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            };
+            let res = await axios.post(URL_API + '/product/custom', formData,headers)
             console.log(res.data)
             this.setState({ selectedCategory: '', selectedUnit: '', fileUpload: '', stock })
             this.props.hide()

@@ -144,13 +144,13 @@ class NavbarComp extends React.Component {
                   </NavLink>
                 </Link>
               </NavItem>
-              <NavItem>
+              {this.props.user.role === "user" ?(<><NavItem>
                 <Link to="/custom">
                   <NavLink>
                     <a className="menu-item">Custom Order</a>
                   </NavLink>
                 </Link>
-              </NavItem>
+              </NavItem></>):(<></>)}
             </Nav>
             {this.props.user.role === "user" ? (
               <div className="d-flex justify-content-end align-items-center drop-menu">

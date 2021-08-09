@@ -120,7 +120,7 @@ class TransactionAdminPage extends React.Component {
                             Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
                           </p>
                         </Col>
-                        <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/></>):(<>
+                        </>):(<>
                         {item.img_order_url && !item.image_url &&(<>
                         <Col md="12"><img src={`${URL_API}/${item.img_order_url}`} width="100%" /></Col></>)}
                         {item.image_url && (<><Col md="4"><img src={
@@ -155,8 +155,10 @@ class TransactionAdminPage extends React.Component {
                       (<><Col md="4"><strong>Shipping Cost</strong></Col>
                       <Col md="8"><p> Rp.{item.shipping_cost.toLocaleString()}</p></Col>
                       <Col md="4"><strong>Total</strong></Col>
-                      <Col md="8"><p> Rp.{item.total_price.toLocaleString()}</p></Col></>):
-                      (<><center><p><i>Please Wait Admin Accept Your Custom Order.</i></p></center></>)}
+                      <Col md="8"><p> Rp.{item.total_price.toLocaleString()}</p></Col>
+                      {item.id_transaction_status === 4 &&(<><hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/>
+                      <center><p><i>Please Wait User Upload Transaction Proof.</i></p></center></>)}</>):
+                      (<><center><p><i>Please Wait Admin Accept User Custom Order.</i></p></center></>)}
                       </>
                     );
                   })}
@@ -248,6 +250,7 @@ class TransactionAdminPage extends React.Component {
       pageNumbers.push(i);
     }
     console.log("histrans",this.state.historyTransactions)
+    console.log("detrans",this.state.detailTransactions)
     console.log("removedup",this.removeDuplicates())
     return (
       <div class="main-content">
@@ -315,13 +318,13 @@ class TransactionAdminPage extends React.Component {
                               </Button>
                         
                                   <Button className="mt-1"
-                                    color="primary"
+                                    color="secondary"
                                   disabled
                                   >
                                     Accept
                                   </Button>
                                   <Button
-                                    color="danger"
+                                    color="secondary"
                                     className="mt-1"
                                   disabled
                                   >

@@ -1,4 +1,3 @@
-import axios from "axios";
 import React from "react";
 import "../assets/css/SidebarComp.css";
 import { DataTable } from "primereact/datatable";
@@ -21,7 +20,7 @@ import { InputText } from "primereact/inputtext";
 import DialogAdd from "../components/DialogAdd";
 import { Toast } from "primereact/toast";
 import { URL_API } from "../Helper";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import HTTP from "../service/HTTP";
 
 class ProductManagementPage extends React.Component {

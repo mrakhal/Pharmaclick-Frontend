@@ -55,14 +55,15 @@ class CartPage extends React.Component {
     this.props.getCity();
     const addresses = await this.getAddressDefault();
     if (addresses.length <= 0) {
-      this.shippingCost()
-    }else{
-    const defaultAddress = addresses[0]
-    const dataShippingCost = await this.getShippingCost(defaultAddress)
-    this.setState({
-      selectedAddress: defaultAddress,
-      dataShippingCost,
-    })
+      await this.cityForm.value
+      await this.shippingCost()
+    } else {
+      const defaultAddress = addresses[0]
+      const dataShippingCost = await this.getShippingCost(defaultAddress)
+      this.setState({
+        selectedAddress: defaultAddress,
+        dataShippingCost,
+      })
     }
   }
 
@@ -153,7 +154,7 @@ class CartPage extends React.Component {
   getAddressDefault = () => {
     return HTTP.get(`/user/get-address?set_default=${1}&iduser=${this.props.user.iduser}`)
       .then((res) => {
-        console.log('address',res.data)
+        console.log('address', res.data)
         return res.data
       })
       .catch((err) => {
@@ -466,7 +467,7 @@ class CartPage extends React.Component {
                       innerRef={(e) => (this.cityForm = e)}
                       id="city"
                       // innerRef={(e) => (this.originIn = e)}
-                      onChange={()=>{this.shippingCost()}}
+                      onChange={() => { this.shippingCost() }}
                       required
                     >
                       {this.props.city.map((item) => {
@@ -648,12 +649,9 @@ class CartPage extends React.Component {
         destination: address.id_city_origin,
         weight: 1000,
       })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((error) => {
-          return error;
-        });
+      .catch((error) => {
+        return error;
+      });
   };
 
   shippingCost = () => {
@@ -662,12 +660,9 @@ class CartPage extends React.Component {
         destination: this.cityForm.value,
         weight: 1000,
       })
-        .then((res) => {
-          this.setState({dataShippingCost: res.data})
-        })
-        .catch((error) => {
-          return error
-        });
+      .catch((error) => {
+        return error
+      });
   };
 
   printAlert = () => {
@@ -689,7 +684,7 @@ class CartPage extends React.Component {
           placement="bottom"
           isOpen={this.state.popoverOpen}
           target="Popover1"
-          // toggle={() => this.setState({ popoverOpen: !this.state.popoverOpen })}
+        // toggle={() => this.setState({ popoverOpen: !this.state.popoverOpen })}
         >
           <PopoverHeader>{this.state.popoverMessage}</PopoverHeader>
           <PopoverBody>You can't add more quantity</PopoverBody>

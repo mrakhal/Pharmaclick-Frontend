@@ -15,18 +15,20 @@ class DashboardPage extends React.Component {
         this.state = {
             totalRevenue: 0,
             totaUserTrans: 0,
-            usersList: []
+            usersList: [],
+            registeredUser: 0
         }
     }
 
-    componentDidMount() {
-        this.getRevenue()
-        this.getUser()
+    async componentDidMount() {
+        await this.getRevenue()
+        await this.getUser()
+        await this.getRevenue()
+
     }
     getRevenue = async () => {
         try {
             let res = await HTTP.get('/transaction/revenue')
-            console.log(res.data[0])
             this.setState({ totalRevenue: res.data[0].total_revenue, totalUserTrans: res.data[0].total_user })
         } catch (error) {
             console.log("error get revenue", error)
@@ -36,8 +38,8 @@ class DashboardPage extends React.Component {
     getUser = async () => {
         try {
             let user = await HTTP.get('/user/get')
-            console.log(user.data)
-            this.setState({ usersList: user.data })
+            let registeredUser = user.data.length
+            this.setState({ usersList: user.data, registeredUser })
         } catch (error) {
             console.log("getuser", error)
         }
@@ -55,7 +57,7 @@ class DashboardPage extends React.Component {
         return <span>{new Date(rowData.updated_at).toLocaleDateString('id')}</span>
     }
     render() {
-        let { totalRevenue, totalUserTrans, usersList } = this.state
+        let { totalRevenue, totalUserTrans, usersList, registeredUser } = this.state
         return (
             <div class="main-content">
                 <main>
@@ -68,7 +70,7 @@ class DashboardPage extends React.Component {
                             <div class="card-body">
                                 <span class="ti-briefcase"></span>
                                 <div>
-                                    <h5>Account Balance</h5>
+                                    <h5>Profit</h5>
                                     <h4>IDR. {totalRevenue.toLocaleString()}</h4>
                                 </div>
                             </div>
@@ -82,7 +84,7 @@ class DashboardPage extends React.Component {
                                 <span class="ti-reload"></span>
                                 <div>
                                     <h5>Total Registered User</h5>
-                                    <h4>{totalUserTrans}</h4>
+                                    <h4>{registeredUser}</h4>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -109,7 +111,7 @@ class DashboardPage extends React.Component {
                         <div class="activity-grid">
                             <div class="activity-card">
                                 <h3>List of Users</h3>
-                                <DataTable value={this.state.usersList} paginator rows={5} emptyMessage="No customers found" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                <DataTable value={usersList} paginator rows={5} emptyMessage="No customers found" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" rowsPerPageOptions={[5, 10, 25, 50]}>
                                     <Column field="fullname" header="Name" sortable />
                                     <Column field="email" header="Email" style={{ width: '30%' }} sortable />

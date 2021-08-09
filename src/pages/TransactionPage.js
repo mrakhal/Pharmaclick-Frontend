@@ -60,10 +60,9 @@ class TransactionPage extends React.Component {
     ];
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.getTransactionHistory();
-    // this.getDetailTransactions();
-  };
+  }
 
   getDetailTransactions = async (idtransaction) => {
     try {
@@ -178,8 +177,13 @@ class TransactionPage extends React.Component {
                   {this.state.detailTransactions.map((item, idx) => {
                     return (
                       <>
-                      {item.idtype === 1 ? (<><Col md="4">
-                          <img src={item.image_url} width="100%" />
+                      {item.idtype === 1 && item.iduser ? (<><Col md="4">
+                          <img src={
+                            item.image_url.includes("http")
+                              ? `${item.image_url}`
+                              
+                              : `${URL_API}/${item.image_url}`
+                          } width="100%" />
                         </Col>
                         <Col md="8 mt-3">
                           <p>
@@ -191,10 +195,15 @@ class TransactionPage extends React.Component {
                             Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
                           </p>
                         </Col>
-                        <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}}/></>):(<><Col md="12">
+                        </>):(<><Col md="12">
                           <h6>Image Perscription</h6>
-                          {item.img_order_url ? (<><img src={`${URL_API}/${item.img_order_url}`} width="100%" /></>):(<><img src={`${URL_API}/${item.image_url}`} width="100%" /></>)}
-                          <img src={item.image_url} width="100%" />
+                          {item.img_order_url ? (<><img src={
+                          item.img_order_url.includes("http")
+                            ? `${item.img_order_url}`
+                            
+                            : `${URL_API}/${item.img_order_url}`
+                        } width="100%" /></>):(<><img src={`${URL_API}/${item.image_url}`} width="100%" /></>)}
+                          {/* <img src={item.image_url} width="100%" /> */}
                         </Col>
                         {item.unit_price || item.product_name || item.brand ? 
                         (<><Col md="8 mt-3">
@@ -425,6 +434,7 @@ class TransactionPage extends React.Component {
   }
   render() {
     console.log("waw", this.state.historyTransactions);
+    console.log("iduser", this.props.iduser);
     // console.log("detran", this.state.detailTransactions);
     return (
       <Col md="10 mt-5">
@@ -445,7 +455,7 @@ class TransactionPage extends React.Component {
                 this.state.historyTransactions.map((item) => {
                   return (
                     <>
-                    {item.idtype === 1 ? (<><Col md="12">
+                    {item.idtype === 1 && item.iduser === this.props.iduser ? (<><Col md="12">
                         <Card
                           body
                           style={{
@@ -525,7 +535,7 @@ class TransactionPage extends React.Component {
                         </Card>
                       </Col>
                       </>):
-                      (<><Col md="12">
+                      item.idtype === 2 && item.iduser === this.props.iduser &&(<><Col md="12">
                       <Card
                         body
                         style={{
