@@ -37,7 +37,7 @@ class NavbarComp extends React.Component {
   componentDidMount() {
     this.checkImage()
     let list = document.querySelectorAll(`.menu-item`);
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 1; i < list.length; i++) {
       list[i].onclick = function () {
         let j = 0;
         while (j < list.length) {
@@ -236,10 +236,22 @@ class NavbarComp extends React.Component {
                 <UncontrolledDropdown>
                   <DropdownToggle nav caret></DropdownToggle>
                   <DropdownMenu right>
-                    <Link to="/profile" style={{ textDecoration: "none" }}>
+                    <Link to ={{
+                        pathname: "/profile", 
+                        state: { 
+                          indexActive:1
+                        }
+                      }} style={{ textDecoration: "none" }}>
                       <DropdownItem>Edit Profile</DropdownItem>
                     </Link>
-                    <DropdownItem>Change Password</DropdownItem>
+                    <Link to ={{
+                        pathname: "/profile", 
+                        state: { 
+                          indexActive:3
+                        }
+                      }} style={{ textDecoration: "none" }}>
+                    <DropdownItem>Transactions</DropdownItem>
+                    </Link>
                     <Link
                       to="/"
                       style={{ textDecoration: "none" }}

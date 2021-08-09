@@ -121,12 +121,19 @@ class TransactionAdminPage extends React.Component {
                           </p>
                         </Col>
                         </>):(<>
-                        {item.img_order_url && !item.image_url &&(<>
-                        <Col md="12"><img src={`${URL_API}/${item.img_order_url}`} width="100%" /></Col></>)}
-                        {item.image_url && (<><Col md="4"><img src={
-                        item.image_url.includes("http")
-                          ? `${item.image_url}`
-                          : `${URL_API}/${item.image_url}`} width="100%" /></Col></>)}
+                          {item.img_order_url && !item.image_url ? (<><Col md="12"><h6>Image Perscription</h6><img src={
+                          item.img_order_url.includes("http")
+                            ? `${item.img_order_url}`
+                            
+                            : `${URL_API}/${item.img_order_url}`
+                        } width="100%" /></Col></>):(<><Col md="4"><img src={
+                          item.image_url.includes("http")
+                            ? `${item.image_url}`
+                            
+                            : `${URL_API}/${item.image_url}`
+                        } width="100%" /></Col></>)}
+                          
+                        
                         {item.unit_price || item.product_name || item.brand ? 
                         (<><Col md="8 mt-3">
                         <p>
@@ -139,7 +146,7 @@ class TransactionAdminPage extends React.Component {
                         </p>
                       </Col></>):
                         (<></>)}
-                        </>)}  
+                        </>)}   
                       </>
                     );
                   })}

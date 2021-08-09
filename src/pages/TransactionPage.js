@@ -116,7 +116,6 @@ class TransactionPage extends React.Component {
     try {
       await HTTP.post('/product/review', this.state.productReview)
       this.getTransactionHistory()
-      this.getTransactionHistory()
       this.setState({modal: !this.state.modal})
     } catch (error) {
       console.log(error)
@@ -195,16 +194,21 @@ class TransactionPage extends React.Component {
                             Rp.{item.pack_price.toLocaleString()} X {item.qty_buy}
                           </p>
                         </Col>
-                        </>):(<><Col md="12">
-                          <h6>Image Perscription</h6>
-                          {item.img_order_url ? (<><img src={
+                        </>):(<>
+                          
+                          {item.img_order_url && !item.image_url ? (<><Col md="12"><h6>Image Perscription</h6><img src={
                           item.img_order_url.includes("http")
                             ? `${item.img_order_url}`
                             
                             : `${URL_API}/${item.img_order_url}`
-                        } width="100%" /></>):(<><img src={`${URL_API}/${item.image_url}`} width="100%" /></>)}
-                          {/* <img src={item.image_url} width="100%" /> */}
-                        </Col>
+                        } width="100%" /></Col></>):(<><Col md="4"><img src={
+                          item.image_url.includes("http")
+                            ? `${item.image_url}`
+                            
+                            : `${URL_API}/${item.image_url}`
+                        } width="100%" /></Col></>)}
+                          
+                        
                         {item.unit_price || item.product_name || item.brand ? 
                         (<><Col md="8 mt-3">
                         <p>
@@ -497,7 +501,22 @@ class TransactionPage extends React.Component {
                                   Detail
                                 </Button>
                                 &nbsp; &nbsp;
-                                {item.status_name === "request" && (
+                                {item.status_name === "request"  && (
+                                  <>
+                                    <Button
+                                      color="primary"
+                                      onClick={() => {
+                                        this.setState({
+                                          modalUpload: !this.state.modalUpload,
+                                          idtransaction: item.id,
+                                        });
+                                      }}
+                                    >
+                                      Upload
+                                    </Button>
+                                  </>
+                                )}
+                                {item.status_name === "accept"  && (
                                   <>
                                     <Button
                                       color="primary"
@@ -590,6 +609,21 @@ class TransactionPage extends React.Component {
                                   >
                                     Upload
                                   </Button> */}
+                                </>
+                              )}
+                              {item.status_name === "accept" && (
+                                <>
+                                  <Button
+                                    color="primary"
+                                    onClick={() => {
+                                      this.setState({
+                                        modalUpload: !this.state.modalUpload,
+                                        idtransaction: item.id,
+                                      });
+                                    }}
+                                  >
+                                    Upload
+                                  </Button>
                                 </>
                               )}
                               {
