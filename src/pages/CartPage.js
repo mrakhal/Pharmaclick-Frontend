@@ -28,6 +28,7 @@ import HTTP from "../service/HTTP";
 import CartEmpty from "../assets/images/emptyCart.jpg";
 import axios from "axios";
 import { URL_API } from "../Helper";
+import {Link,Redirect} from "react-router-dom"
 
 
 class CartPage extends React.Component {
@@ -47,7 +48,8 @@ class CartPage extends React.Component {
       alertAddress: false,
       alertSuccessOpen: false,
       openAlertForm: false,
-      qtyRemain:[]
+      qtyRemain:[],
+      link: false
     };
   }
 
@@ -55,15 +57,14 @@ class CartPage extends React.Component {
     this.props.getCity();
     const addresses = await this.getAddressDefault();
     if (addresses.length <= 0) {
-      await this.cityForm.value
-      await this.shippingCost()
-    } else {
-      const defaultAddress = addresses[0]
-      const dataShippingCost = await this.getShippingCost(defaultAddress)
-      this.setState({
-        selectedAddress: defaultAddress,
-        dataShippingCost,
-      })
+      this.shippingCost()
+    }else{
+    const defaultAddress = addresses[0]
+    const dataShippingCost = await this.getShippingCost(defaultAddress)
+    this.setState({
+      selectedAddress: defaultAddress,
+      dataShippingCost,
+    })
     }
   }
 
@@ -154,7 +155,7 @@ class CartPage extends React.Component {
   getAddressDefault = () => {
     return HTTP.get(`/user/get-address?set_default=${1}&iduser=${this.props.user.iduser}`)
       .then((res) => {
-        console.log('address', res.data)
+        console.log('address',res.data)
         return res.data
       })
       .catch((err) => {
@@ -467,7 +468,7 @@ class CartPage extends React.Component {
                       innerRef={(e) => (this.cityForm = e)}
                       id="city"
                       // innerRef={(e) => (this.originIn = e)}
-                      onChange={() => { this.shippingCost() }}
+                      onChange={()=>{this.shippingCost()}}
                       required
                     >
                       {this.props.city.map((item) => {
@@ -649,9 +650,12 @@ class CartPage extends React.Component {
         destination: address.id_city_origin,
         weight: 1000,
       })
-      .catch((error) => {
-        return error;
-      });
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          return error;
+        });
   };
 
   shippingCost = () => {
@@ -660,9 +664,12 @@ class CartPage extends React.Component {
         destination: this.cityForm.value,
         weight: 1000,
       })
-      .catch((error) => {
-        return error
-      });
+        .then((res) => {
+          this.setState({dataShippingCost: res.data})
+        })
+        .catch((error) => {
+          return error
+        });
   };
 
   printAlert = () => {
@@ -684,7 +691,7 @@ class CartPage extends React.Component {
           placement="bottom"
           isOpen={this.state.popoverOpen}
           target="Popover1"
-        // toggle={() => this.setState({ popoverOpen: !this.state.popoverOpen })}
+          // toggle={() => this.setState({ popoverOpen: !this.state.popoverOpen })}
         >
           <PopoverHeader>{this.state.popoverMessage}</PopoverHeader>
           <PopoverBody>You can't add more quantity</PopoverBody>
@@ -756,6 +763,9 @@ class CartPage extends React.Component {
               color: "success",
               alertMessage: res.data.message,
             });
+            setTimeout(() => {
+              this.setState({link:true})
+            }, 2000);
           }
         })
         .catch((err) => {
@@ -824,6 +834,9 @@ class CartPage extends React.Component {
             color: "success",
             alertMessage: res.data.message,
           });
+          setTimeout(() => {
+            this.setState({link:true})
+          }, 2000);
         })
         .catch((err) => {
           console.log(err);
@@ -838,8 +851,19 @@ class CartPage extends React.Component {
     console.log("check price", this.cekPrice());
     // console.log("selected address", this.state.selectedAddress);
     console.log("selected address", this.state.selectedAddress);
+    console.log("link",this.state.link)
+    if(this.state.link){
+      return <Redirect push to ={{
+        pathname: "/profile", 
+        state: { 
+          indexActive:3
+        }
+      }} style={{ textDecoration: "none" }}>
+    </Redirect>
+    }
 
     return (
+      
       <Container className="p-5" style={{ backgroundColor: "#F7F7F7" }} fluid>
         <Row>
           <Col md="12 mt-5">
