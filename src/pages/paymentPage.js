@@ -34,7 +34,7 @@ class PaymentPage extends React.Component {
                     </div>
                     <hr style={{border: "2px solid rgba(34, 129, 133, 1)"}} className="mt-3"/>
                     <div className="d-flex justify-content-between align-items-center">
-                    {this.props.location.state.phone_number !== "" ? (<><h6>827{this.props.location.state.phone_number}</h6></>):(<><h6>827{new Date().valueOf()}</h6></>)}
+                    {this.props.location.state.phone_number !== "" ? (<><h6>827{this.props.location.state.phone_number}</h6></>):(<><h6>827938216555</h6></>)}
                     <h6>Virtual Account Number</h6>
                     </div>
                 </Col>
