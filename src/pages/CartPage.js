@@ -49,7 +49,8 @@ class CartPage extends React.Component {
       alertSuccessOpen: false,
       openAlertForm: false,
       qtyRemain:[],
-      link: false
+      link: false,
+      tot_price:null,
     };
   }
 
@@ -150,6 +151,15 @@ class CartPage extends React.Component {
       0
     );
     return price = parseInt(price) + parseInt(this.state.shippingCost)
+  };
+
+  cekPriceTotal = () => {
+    let price = null
+    price = this.props.user.cart.reduce(
+      (a, v) => (a = a + v.price),
+      0
+    );
+    return this.setState({tot_price:parseInt(price) + parseInt(this.state.shippingCost)})
   };
 
   getAddressDefault = () => {
@@ -758,6 +768,7 @@ class CartPage extends React.Component {
               alertMessage: res.data.message,
             });
           } else {
+            this.cekPriceTotal()
             this.setState({
               alertSuccessOpen: true,
               color: "success",
@@ -854,9 +865,11 @@ class CartPage extends React.Component {
     console.log("link",this.state.link)
     if(this.state.link){
       return <Redirect push to ={{
-        pathname: "/profile", 
+        pathname: "/payment", 
         state: { 
-          indexActive:3
+          total_price:this.state.tot_price,
+          phone_number:this.props.user.phone_number,
+          shipping_cost:this.state.shippingCost
         }
       }} style={{ textDecoration: "none" }}>
     </Redirect>
