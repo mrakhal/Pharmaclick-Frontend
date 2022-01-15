@@ -1,5 +1,5 @@
 // URL
-export const URL_API = `https://pharmaclick-backend.herokuapp.com/`;
+export const URL_API = `https://pharmaclick-backend.herokuapp.com`;
 //export const URL_API = `http://localhost:2010`;
 
 // USER CONTROLLER
