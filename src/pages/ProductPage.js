@@ -18,7 +18,10 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,Toast,ToastHeader,ToastBody
+  ModalFooter,
+  Toast,
+  ToastHeader,
+  ToastBody,
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -155,8 +158,8 @@ class ProductPage extends React.Component {
       modal: false,
       modalProtection: false,
       searchFilter: [],
-      show:false,
-      showMessage:""
+      show: false,
+      showMessage: "",
     };
   }
 
@@ -168,7 +171,7 @@ class ProductPage extends React.Component {
     this.setState({
       currentPage: Number(event.target.id),
     });
-  }
+  };
 
   handleSearch = (search) => {
     this.setState({ search });
@@ -212,6 +215,7 @@ class ProductPage extends React.Component {
       },
     });
   };
+
   printFilterAll = () => {
     return (
       <>
@@ -658,9 +662,9 @@ class ProductPage extends React.Component {
         .then((res) => {
           let token = localStorage.getItem("tkn_id");
           this.props.keepLogin(token);
-          this.setState({show:true,showMessage:res.data})
+          this.setState({ show: true, showMessage: res.data });
           setTimeout(() => {
-            this.setState({show:false,})
+            this.setState({ show: false });
           }, 2000);
         })
         .catch((err) => {
@@ -690,15 +694,14 @@ class ProductPage extends React.Component {
     console.log("currentTodos", currentTodos);
     return (
       <Container fluid className="mt-5">
-        <Container style={{position:"fixed",zIndex:999,top:"10%"}} className="p-3 my-2 rounded">
-        <Toast isOpen={this.state.show}>
-          <ToastHeader>
-            Add To Cart
-          </ToastHeader>
-          <ToastBody>
-            {this.state.showMessage}
-          </ToastBody>
-        </Toast>
+        <Container
+          style={{ position: "fixed", zIndex: 999, top: "10%" }}
+          className="p-3 my-2 rounded"
+        >
+          <Toast isOpen={this.state.show}>
+            <ToastHeader>Add To Cart</ToastHeader>
+            <ToastBody>{this.state.showMessage}</ToastBody>
+          </Toast>
         </Container>
         <Row>
           {/* Sidebar */}
@@ -867,8 +870,9 @@ class ProductPage extends React.Component {
                             width="100%"
                             height="auto"
                             src={
-                              item.images[0].includes('http') ?
-                              item.images[0] : `${URL_API}/${item.images}`
+                              item.images[0].includes("http")
+                                ? item.images[0]
+                                : `${URL_API}/${item.images}`
                             }
                             alt={item.product_name}
                             className="img-fluid "
